@@ -32,6 +32,7 @@ export async function syncProfile(
   uid: string,
   profile: StudentProfile,
 ): Promise<void> {
+  if (!db) return;
   try {
     await setDoc(
       doc(db, "users", uid),
@@ -46,6 +47,7 @@ export async function syncProfile(
 export async function loadCloudProfile(
   uid: string,
 ): Promise<StudentProfile | null> {
+  if (!db) return null;
   try {
     const snap = await getDoc(doc(db, "users", uid));
     if (!snap.exists()) return null;
@@ -61,6 +63,7 @@ export async function syncCompletion(
   uid: string,
   lessonId: string,
 ): Promise<void> {
+  if (!db) return;
   try {
     await setDoc(
       doc(db, "users", uid, "completions", lessonId),
@@ -75,6 +78,7 @@ export async function syncCompletion(
 export async function loadCloudCompletions(
   uid: string,
 ): Promise<Record<string, boolean>> {
+  if (!db) return {};
   try {
     const snap = await getDocs(collection(db, "users", uid, "completions"));
     const out: Record<string, boolean> = {};
@@ -106,6 +110,7 @@ export async function syncHumoMessage(
   personaId: string,
   message: HumoChatMessage,
 ): Promise<void> {
+  if (!db) return;
   try {
     const parent = doc(db, "users", uid, "humos", personaId);
     // Auto-id doc inside messages subcollection
@@ -128,6 +133,7 @@ export async function loadHumoChat(
   personaId: string,
   limit = 40,
 ): Promise<HumoChatMessage[]> {
+  if (!db) return [];
   try {
     const ref = collection(db, "users", uid, "humos", personaId, "messages");
     const snap = await getDocs(query(ref, orderBy("ts", "asc")));
@@ -153,6 +159,7 @@ export async function syncEmaktabSnapshot(
   uid: string,
   snapshot: EmaktabSnapshot,
 ): Promise<void> {
+  if (!db) return;
   try {
     await setDoc(
       doc(db, "users", uid, "emaktab", "latest"),
@@ -167,6 +174,7 @@ export async function syncEmaktabSnapshot(
 export async function loadCloudEmaktabSnapshot(
   uid: string,
 ): Promise<EmaktabSnapshot | null> {
+  if (!db) return null;
   try {
     const snap = await getDoc(doc(db, "users", uid, "emaktab", "latest"));
     if (!snap.exists()) return null;

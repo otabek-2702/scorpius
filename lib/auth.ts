@@ -18,18 +18,22 @@ let cached: Promise<string | null> | null = null;
 
 export function ensureAnonymousUser(): Promise<string | null> {
   if (cached) return cached;
+  // Firebase may be unconfigured (no NEXT_PUBLIC_FIREBASE_* env vars) — in that
+  // case `auth` is null. Degrade to the localStorage-only path, never throw.
+  const authClient = auth;
+  if (!authClient) return Promise.resolve(null);
   cached = new Promise((resolve) => {
     // If the user is already signed in (Firebase restored the session from
     // IndexedDB), resolve immediately and skip the signIn round-trip.
     const unsub = onAuthStateChanged(
-      auth,
+      authClient,
       (user) => {
         unsub();
         if (user) {
           resolve(user.uid);
           return;
         }
-        signInAnonymously(auth)
+        signInAnonymously(authClient)
           .then((cred) => resolve(cred.user.uid))
           .catch((err) => {
             console.warn("[auth] anonymous sign-in failed:", err?.code ?? err);
