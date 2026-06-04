@@ -1,0 +1,29 @@
+rules_version = '2';
+
+// Scorpius Firestore security rules.
+//
+// Layout we serve client-side:
+//   users/{uid}                          — student profile + lastActive (owner-only)
+//   users/{uid}/completions/{lessonId}   — lesson completion log (owner-only)
+//   images/{sha}                         — diagram-image cache, server-written via admin SDK
+//   waitlist/{phone}                     — /gdg form submissions, server-written via admin SDK
+//
+// Rule of thumb: only the authenticated owner can touch users/{uid}/**.
+// Everything else stays admin-only.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // A student (anonymous-auth UID) owns their own subtree, full stop.
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
+    }
+
+    // All other collections are server-only by default — deny client reads/writes.
+    // (firebase-admin in API routes bypasses these rules entirely.)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

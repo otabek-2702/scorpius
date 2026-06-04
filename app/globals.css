@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Scorpius design tokens — LIGHT theme (UX-DESIGN.md §9, v1.2)
+   White / ink / gold. Pupil-friendly, classroom-readable.
+   The constellation reads as a gold star-chart on white.
+   (Token names keep their legacy spellings; a rename is Phase-1 cleanup.
+   Role guide: void-950 = app background, void-100 = ink.)
+   ============================================================ */
+@theme {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-newsreader); /* editorial display — landing hero, brand footnotes */
+
+  /* Paper & ink — the neutral ramp (light) */
+  --color-void-950: #fbf9f3; /* app background — warm off-white */
+  --color-void-900: #ffffff; /* surface */
+  --color-void-800: #ffffff; /* raised surface — cards */
+  --color-void-700: #f2efe6; /* inset / input fill */
+  --color-void-600: #d4cdb9; /* border — strong */
+  --color-void-500: #e7e1d1; /* border — default */
+  --color-void-400: #bdb7a4; /* faint / subtle */
+  --color-void-300: #847e6b; /* text — tertiary */
+  --color-void-200: #55513f; /* text — secondary */
+  --color-void-100: #1a1813; /* text — primary (ink) */
+
+  /* Gold — the brand accent (warm, rationed) */
+  --color-antares-50: #fdf3dc;
+  --color-antares-300: #f4b63e;
+  --color-antares-500: #e8a21a;
+  --color-antares-600: #cc8a0c;
+  --color-antares-700: #a9760a;
+
+  /* Starlight — the mastery temperature scale */
+  --color-star-dormant: #d8d2c0;
+  --color-star-ember: #e6cfa0;
+  --color-star-warm: #efc04e;
+  --color-star-bright: #eaa81c;
+  --color-star-ignited: #d98a05;
+
+  /* Functional signals */
+  --color-signal-correct: #2fa86a;
+  --color-signal-rethink: #e8a21a;
+  --color-signal-info: #3b7bd1;
+  --color-signal-error: #d8453b;
+
+  /* Subject identity */
+  --color-subject-math: #3b7bd1;
+  --color-subject-history: #c8920f;
+
+  /* Corner radii */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+}
+
+/* Motion curves — see UX-DESIGN.md §1.5 */
+:root {
+  --ease-out-quart: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.45, 0.5, 1);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--color-void-950);
+  color: var(--color-void-100);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.47;
+  letter-spacing: -0.012em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Apple-tight headline tracking — UX-DESIGN.md §10. */
+h1,
+h2,
+h3 {
+  letter-spacing: -0.022em;
+}
+
+/* The single onboarding micro-motion — content rises and fades in once. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rise-in {
+  animation: rise-in 360ms var(--ease-out-quart) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise-in {
+    animation: none;
+  }
+}
+
+/* Hide the scrollbar on the lesson deck — snap paging needs no visible bar. */
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Answer-feedback motions — UX-DESIGN.md §1.5. */
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+.shake {
+  animation: shake 240ms var(--ease-out-quart);
+}
+
+@keyframes pulse-correct {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.pulse-correct {
+  animation: pulse-correct 180ms var(--ease-out-back);
+}
+
+/* The pulsing halo on the constellation's "available" star. */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+.pulse-ring {
+  animation: pulse-ring 2.6s var(--ease-out-quart) infinite;
+}
+
+/* One-shot celebration when a star first ignites (UX-DESIGN §0). */
+@keyframes ignite-burst {
+  from {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(3.6);
+    opacity: 0;
+  }
+}
+.ignite-burst {
+  animation: ignite-burst 900ms var(--ease-out-quart);
+}
+
+@keyframes ignite-pop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.55);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.ignite-pop {
+  animation: ignite-pop 760ms var(--ease-out-back);
+}
+
+/* Shimmer for image-loading placeholders (DiagramCard waits on gpt-image-1). */
+@keyframes shimmer {
+  0% {
+    background-position: -150% 0;
+  }
+  100% {
+    background-position: 250% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shake,
+  .pulse-correct,
+  .pulse-ring,
+  .ignite-burst,
+  .ignite-pop {
+    animation: none;
+  }
+}

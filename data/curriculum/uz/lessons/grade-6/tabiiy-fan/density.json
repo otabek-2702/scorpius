@@ -1,0 +1,181 @@
+{
+  "id": "density",
+  "grade": 6,
+  "subject": "tabiiy-fan",
+  "titleUz": "Nega temir choʻkadi, kema esa suzadi?",
+  "chapterUz": "2-bob · Modda va uning xossalari · 11–12-darslar",
+  "summaryUz": "Bir narsa suzadimi yoki choʻkadimi — buni ogʻirligi emas, zichligi hal qiladi. ρ = m / V. Buni oʻzingiz sinab koʻrib topasiz.",
+  "source": {
+    "url": "https://uzedu.online/books/689/689-4feb9.pdf",
+    "pulledAt": "2026-06-02",
+    "notes": "6-sinf Tabiiy fanlar 2022 yangi nashr · 11–12-darslar"
+  },
+  "mentorId": "newton",
+  "misconceptions": [
+    {
+      "id": "mass-not-density",
+      "labelUz": "Ogʻirroq narsa har doim choʻkadi deb oʻylash",
+      "watchFor": "thinks heavier always sinks"
+    },
+    {
+      "id": "shape-affects",
+      "labelUz": "Shakl suzishni belgilaydi deb oʻylash",
+      "watchFor": "thinks block vs sphere of same material behaves differently"
+    }
+  ],
+  "cards": [
+    {
+      "type": "intro",
+      "title": "Bitta mix choʻkdi. Butun kema suzadi.",
+      "hook": "Daryoga bir tomosha qiling. Ulkan yogʻoch xoda — oʻzingizdan ogʻir — suv ustida bemalol suzib ketyapti. Yoningizda kichkina temir mixni tashlasangiz, koʻz ochib yumguncha tubga ketadi.\n\nXoda mixdan oʻn barobar ogʻir. Mana pastdagi kema-chi? Toʻla poʻlatdan, yuz minglab tonna — lekin u ham suzadi. Unda nega mix choʻkadi-yu, xoda va kema suzadi? Bu yerda \"ogʻir\" degan gap ishlamayapti — boshqa narsa hal qilyapti. Nima ekanini bugun oʻzingiz topasiz.",
+      "image": {
+        "src": "/lessons/density/steel-ship.jpg",
+        "alt": "Okeanda yuk tashiyotgan ulkan poʻlat konteyner kemasi suv ustida suzib turibdi",
+        "credit": "Surat: Hans Hillewaert, Wikimedia Commons (CC BY-SA 4.0)"
+      },
+      "estMinutes": 12,
+      "cardCount": 11,
+      "voice": "Bir narsani tushuntiring-chi menga. Kichkina temir mix suvga tushsa, darrov choʻkadi. Lekin undan oʻn barobar ogʻir yogʻoch xoda bemalol suzadi. Gʻalati, toʻgʻrimi? Ogʻirlik bunda asosiy emas. Keling, asl sababini birga topamiz."
+    },
+    {
+      "type": "predict",
+      "heading": "Sinashdan oldin — taxminingizni ayting",
+      "prompt": "Toʻrt narsani birma-bir suvga tashlaymiz: yogʻoch, moy, temir va oltin. Hozircha hech narsani sinamang — faqat ichingizdan oʻylang: qaysilari tubga choʻkadi deb oʻylaysiz?",
+      "mode": "choice",
+      "options": [
+        "Faqat temir va oltin choʻkadi",
+        "Hammasi choʻkadi — suv ularni koʻtarib turolmaydi",
+        "Faqat moy choʻkadi",
+        "Eng ogʻiri oltin choʻkadi, qolgani suzadi"
+      ],
+      "correctIndex": 0,
+      "reveal": "Taxminingizni esda tuting. Endi gapni qoʻyaylik-da, pastdagi hovuzning oʻzida sinab koʻraylik — kim haq ekan, oʻz koʻzingiz bilan koʻrasiz.",
+      "voice": "Birortasini tanlang. Xato chiqsa ham hech qisi yoʻq — toʻgʻri taxmin emas, taxmin qilishning oʻzi sizni kashfiyotga olib boradi."
+    },
+    {
+      "type": "explore-sandbox",
+      "heading": "Endi navbat sizda — sinab koʻring",
+      "sim": "density-buoyancy-tank",
+      "minInteractions": 3,
+      "promptUz": "Har bir materialning yonidagi son — uning zichligi (ρ). Materialni bosing yoki suvga sudrab tashlang, keyin nima boʻlishini kuzating: suvga sapchidimi, choʻkdimi, yoki yarmigacha botib suzib qoldimi? Strelkalarga ham qarang. Hech boʻlmasa 3 tasini sinang — qiziq narsani sezasiz.",
+      "voice": "Bir materialni tanlang, u suvga shoʻngʻiydi. Pastga qaragan qizil strelka — ogʻirlik, jismni pastga tortadi. Yuqoriga qaragan koʻk strelka — suvning koʻtarish kuchi. Diqqat qiling: qaysi biri uzunroq? Gap ana shunda."
+    },
+    {
+      "type": "pattern-discover",
+      "heading": "Yashirin qoidani sezdingizmi?",
+      "sim": "density-buoyancy-tank",
+      "paramName": "highlightDensity",
+      "paramValues": [
+        0.5,
+        0.92,
+        1.2,
+        7.87,
+        19.3
+      ],
+      "patternOptions": [
+        "Zichligi 1.0 dan kichik boʻlsa suzadi, 1.0 dan katta boʻlsa choʻkadi",
+        "Aksincha: zichligi 1.0 dan kichik boʻlganlari choʻkadi",
+        "Zichligidan qatʼi nazar hammasi choʻkadi",
+        "Faqat metalldan boʻlganlari choʻkadi"
+      ],
+      "correctIndex": 0,
+      "revealFormulaUz": "Topdingiz! Mana sirning kaliti. Suvning zichligi — 1.0. Jismning soni shundan kichik boʻlsa, suzadi; kattaroq boʻlsa, choʻkadi. Hammasi mana shu bitta chegaraga bogʻliq — ogʻirligiga emas, zichligiga.",
+      "voice": "Endi raqamlarning oʻziga qarang. Suzib qolganlarining sonida nima umumiy? Choʻkkanlarinida-chi? Ularni ikkiga ajratib turgan bitta chegara bor. Uni sezdingizmi?"
+    },
+    {
+      "type": "explainer",
+      "heading": "Siz topgan narsaning nomi — zichlik",
+      "body": "Zichlik shuni koʻrsatadi: bir moddaning har bir kichik hajmiga qancha massa siqilgan? Koʻpmi yoki kammi? Buni topish uchun massani hajmga boʻlamiz: ρ = m / V. Belgisi — yunoncha ρ harfi, \"ro\" deb oʻqiladi.\n\nMana endi xoda siri ochiladi. Yogʻochning ichi gʻovak — har bir hajmiga juda kam massa toʻgʻri keladi, shuning uchun zichligi suvnikidan past, demak suzadi. Temir mix yengildek koʻrinadi, lekin ichi gʻijimlab tashlangandek zich — kichik hajmga koʻp massa siqilgan, shuning uchun choʻkadi.\n\nKoʻrdingizmi, gap \"ogʻirmi yoki yengil\"da emas ekan. Gap — \"qanchalik zich\"da. Mana shuni siz labda oʻz koʻzingiz bilan koʻrdingiz.",
+      "voice": "Siz topgan narsaning nomi bor: zichlik. Uni topish oson — massani hajmga boʻlasiz, vassalom. Aslida buni siz labda allaqachon kashf qilib boʻlgansiz. Men shunchaki uning nomini aytdim."
+    },
+    {
+      "type": "compare-and-decide",
+      "heading": "Endi sinov: qaysi toʻgʻri?",
+      "sim": "density-buoyancy-tank",
+      "scenarioA": {
+        "titleUz": "Idish A — temir va oltin",
+        "simConfig": {
+          "materials": [
+            {
+              "id": "iron",
+              "labelUz": "Temir",
+              "density": 7.87,
+              "color": "#7a818c"
+            },
+            {
+              "id": "gold",
+              "labelUz": "Oltin",
+              "density": 19.3,
+              "color": "#e8b923"
+            }
+          ]
+        }
+      },
+      "scenarioB": {
+        "titleUz": "Idish B — muz va moy",
+        "simConfig": {
+          "materials": [
+            {
+              "id": "ice",
+              "labelUz": "Muz",
+              "density": 0.92,
+              "color": "#bfe4f5"
+            },
+            {
+              "id": "oil",
+              "labelUz": "Moy",
+              "density": 0.92,
+              "color": "#e6c34a",
+              "phase": "liquid"
+            }
+          ]
+        }
+      },
+      "questionUz": "Qaysi idishdagi narsalarning HAMMASI suvda suzib qoladi? Avval sonlarga qarab oʻzingiz tanlang, keyin sinab tekshiring.",
+      "correctScenario": "B",
+      "reveal": "Toʻgʻri — B idish! Muz ham (0.92), moy ham (0.92) 1.0 dan kichik, shuning uchun ikkalasi suzadi. A idishdagi temir (7.87) va oltin (19.3) esa 1.0 dan ancha katta — choʻkadi. Aynan shuning uchun dengizda ulkan aysberg suzadi, idishdagi moy esa suv ustida qalqib, sariq qatlam boʻlib qoladi.",
+      "voice": "Shoshmay turing. Avval faqat raqamlarga qarang. Qaysi idishdagi sonlarning hammasi birdan kichik? Oʻsha idishdagilar suzadi."
+    },
+    {
+      "type": "story",
+      "heading": "Eng katta jumboq: poʻlat kema",
+      "body": "Endi eng zoʻr savolga keldik. Poʻlat — temirdan ham zich, suvdan 8 barobar ogʻir. Bir boʻlak poʻlatni suvga tashlasangiz, toshdek choʻkadi. Unda yuz minglab tonnalik poʻlat kema nega tubga ketmaydi?\n\nSiri — kemaning ichida. U quyma boʻlak emas, ichi boʻsh, havoga toʻla. Poʻlat va havoni birga olsangiz, ulkan hajm chiqadi, lekin massasi unchalik katta emas. Demak butun kemaning oʻrtacha zichligi suvnikidan past boʻlib qoladi — va u suzadi.\n\nBu xuddi oʻsha yogʻoch xodaning siri: muhimi — temirning oʻzi emas, har bir hajmga qancha massa toʻgʻri kelishi. Mana shu fikr 2200 yil avval Arximed degan olimni butun dunyoga tanitgan.",
+      "voice": "Bitta savol qoldi. Poʻlat suvdan ogʻir boʻlsa, ulkan kema nega choʻkmaydi? Endi buni oʻzingiz topa olasiz. Maslahat beray: butun gap kemaning ichidagi havoda."
+    },
+    {
+      "type": "explainer",
+      "heading": "Aysberg: koʻrinmas 90 foiz",
+      "body": "Dengizdagi ulkan muz togʻini — aysbergni — koʻrgansiz. Suv ustida faqat oppoq uchi koʻrinadi, xolos. Lekin asl gavdasi pastda, suv ostida yashiringan.\n\nNega aysberg suzadi? Muzning zichligi 0,92 — suvnikidan (1,0) bir oz kichik, shuning uchun choʻkmaydi. Lekin farqi juda kichik boʻlgani uchun u deyarli butunlay botib turadi: koʻzga koʻrinadigani atigi 10 foiz, qolgan 90 foizi suv ostida.\n\n\"Aysbergning faqat uchini koʻryapmiz\" degan ibora aynan shundan kelib chiqqan. 1912-yilda \"Titanik\" kemasi ana shu koʻrinmas pastki qismga urilgan edi.",
+      "image": {
+        "src": "/lessons/density/iceberg.jpg",
+        "alt": "Aysberg — kichik uchi suv ustida, katta gavdasi suv ostida koʻrinib turibdi",
+        "credit": "Surat: Uwe Kils va Wiska Bodo, Wikimedia Commons (CC BY-SA 3.0)"
+      }
+    },
+    {
+      "type": "explainer",
+      "heading": "Oʻlik dengiz: hech choʻkmaysiz",
+      "body": "Bir joy bor — Oʻlik dengiz — u yerda har qanday odam suv ustida kitob oʻqib yotsa ham choʻkmaydi. Sababi suvning oʻzida.\n\nOddiy suvning zichligi 1,0. Oʻlik dengiz suvi esa shu qadar sho'rki, har litrida oddiy dengizdan oʻn barobar koʻp tuz erigan. Tuz suvni ogʻirlashtiradi — uning zichligi 1,24 gacha koʻtariladi. Endi suv odam tanasidan ham zichroq, shuning uchun tana yengildek qalqib turadi.\n\nKoʻrdingizmi — bu safar jism emas, suyuqlikning oʻzi oʻzgardi. Demak suzish ikki tomonga bogʻliq: jismning zichligiga ham, suyuqlikning zichligiga ham.",
+      "image": {
+        "src": "/lessons/density/dead-sea.jpg",
+        "alt": "Bir kishi Oʻlik dengiz suvida choʻkmasdan, qulay holatda qalqib yotibdi",
+        "credit": "Surat: David Shankbone, Wikimedia Commons (CC BY-SA 3.0)"
+      }
+    },
+    {
+      "type": "explainer",
+      "heading": "Havoda ham xuddi shunday: havo shari",
+      "body": "Shu bitta qoida nafaqat suvda — havoda ham ishlaydi. Havo shari (havo balloni) osmonga aynan shuning uchun koʻtariladi.\n\nShar ichidagi havoni gaz bilan qizdiriladi. Issiq havo kengayadi, siyraklashadi — har bir hajmiga kamroq massa toʻgʻri keladi, yaʼni zichligi pasayadi. Endi shardagi issiq havo atrofdagi sovuq havodan yengilroq boʻlib qoladi, xuddi yogʻoch suvda suzgani kabi — shar havoda \"suzib\" yuqoriga koʻtariladi.\n\nSuvdagi aysberg ham, osmondagi havo shari ham — bitta sirning ikki yuzi: muhimi ogʻirlik emas, zichlik.",
+      "image": {
+        "src": "/lessons/density/hot-air-balloon.jpg",
+        "alt": "Rang-barang havo shari osmonda uchib turibdi",
+        "credit": "Surat: Aaron Burden, Wikimedia Commons (CC0)"
+      }
+    },
+    {
+      "type": "done",
+      "title": "Jumboqni oʻzingiz yechdingiz",
+      "body": "Mana, sir endi sirligini yoʻqotdi. Bir narsa suzadimi yoki choʻkadimi — buni ogʻirligi hal qilmas ekan, zichligi hal qilarkan. Suvnikidan (1.0) zichroq boʻlsa choʻkadi, yengilroq boʻlsa suzadi. Buni hech kim aytib bermadi — oʻzingiz topdingiz.\n\nUyda sinab koʻring: bir boʻlak plastilinni yumalab shar qiling-da, suvga tashlang — choʻkadi. Endi oʻsha shardan ichi boʻsh qayiqcha yasang va suvga qoʻying — suzib qoladi! Bir gramm ham qoʻshmadingiz-ku — shaklini oʻzgartirib, kemaning sirini oʻz qoʻlingiz bilan takrorladingiz."
+    }
+  ]
+}

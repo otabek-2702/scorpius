@@ -1,0 +1,18 @@
+{
+  "profile": {
+    "name": "",
+    "className": null,
+    "school": null,
+    "grade": null,
+    "academicYear": null,
+    "emaktab": { "schoolId": null, "personId": null, "groupId": null }
+  },
+  "grades": [],
+  "diary": [],
+  "homework": [],
+  "meta": {
+    "source": "stub",
+    "pulledAt": "2026-06-04T00:00:00Z",
+    "notes": ["Local dev stub — replace by running scripts/extract-emaktab.ts with real e-maktab credentials."]
+  }
+}

@@ -1,0 +1,95 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+!.env.local.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# scorpius
+/data
+# ...but authored curriculum lessons must ship (build-time import in loader.ts)
+!/data/
+!/data/curriculum/
+!/data/curriculum/**/
+!/data/curriculum/**/*.json
+*.serviceaccount.json
+
+.vercel
+
+# playwright mcp artifacts
+.playwright-mcp/
+
+# share-zip + zip staging (rebuilt on demand, never committed)
+/Scorpius-Checkpoint-2.zip
+/Scorpius-Day2.zip
+/.zipstage
+/.tpl-stage/
+/.tpl2-stage/
+/.survey-stage/
+/.deck-check/
+
+# heavyweight third-party templates (Google BWAI template, license-restricted)
+/BWAI 2026 Master Deck - Template.pptx
+
+# deploy + session artifacts
+/.deploy.log
+/session-*.html
+
+# throwaway QA screenshots (Playwright bug-hunt + slide + live verifications)
+/bug-hunt-*.png
+/landing-v2-*.png
+/learn-*.png
+/personalizing-*.png
+/pitch-slide-*.png
+/pitch-traction-*.png
+/pmain*.png
+/onb-*.png
+/onboarding-*.png
+/homework-*.png
+/humo-*.png
+/parent-live-*.png
+/emaktab-honest.png
+/gdg-mobile.png
+/gdg-submit-*.png
+/live-*.png
+/scorpius-uz-*.png
+/call-card-*.png
+
+# internal strategy docs that must NEVER be served publicly
+/public/emaktab-call-card.html
