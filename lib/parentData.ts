@@ -40,7 +40,9 @@ export function useParentSnapshot(): ParentDataState {
     (async () => {
       const uid = await ensureAnonymousUser();
       if (!alive) return;
-      if (!uid) {
+      if (!uid || !db) {
+        // No signed-in user, or Firebase isn't configured (db === null) —
+        // there's no cloud data to read. Degrade to the honest empty state.
         setState({ status: "anonymous-only" });
         return;
       }
