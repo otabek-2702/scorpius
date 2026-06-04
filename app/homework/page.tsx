@@ -1,13 +1,9 @@
-// STAGE 1 STUB — homework photo help is planned but not built yet. See STAGE-PLAN.md.
-import { ComingSoon } from "@/components/_stage1/ComingSoon";
+import { HomeworkFlow } from "@/components/homework/HomeworkFlow";
 
-export const metadata = { title: "Uy vazifa · Scorpius" };
+export const metadata = {
+  title: "Uy vazifasi · Scorpius",
+};
 
 export default function HomeworkPage() {
-  return (
-    <ComingSoon
-      titleUz="Uy vazifa yordamchisi"
-      descUz="Vazifa rasmini yuklab, bosqichma-bosqich yechim olish — keyingi bosqichda."
-    />
-  );
+  return <HomeworkFlow />;
 }
