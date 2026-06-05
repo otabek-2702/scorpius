@@ -9,7 +9,7 @@
  */
 "use client";
 
-import type { Base, RnaBase } from "@/lib/sims/biology/dna/data";
+import type { Base, RnaBase, BaseInfo } from "@/lib/sims/biology/dna/data";
 import { DNA_BASES, RNA_BASES, AMINO_ACIDS } from "@/lib/sims/biology/dna/data";
 
 export const ACCENT = "#34d399"; // emerald — the biology lab accent
@@ -30,7 +30,8 @@ interface BaseChipProps {
 
 /** A single nucleotide chip — a rounded square with the base letter. */
 export function BaseChip({ base, rna, size = 30, dim, active }: BaseChipProps) {
-  const info = (rna ? RNA_BASES : DNA_BASES)[base as keyof typeof DNA_BASES];
+  const palette: Record<string, BaseInfo> = rna ? RNA_BASES : DNA_BASES;
+  const info = palette[base];
   const color = info?.color ?? "#888";
   const stroke = info?.stroke ?? "#555";
   return (

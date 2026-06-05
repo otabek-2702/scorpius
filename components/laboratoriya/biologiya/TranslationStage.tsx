@@ -122,7 +122,7 @@ export default function TranslationStage({ model }: { model: DnaModel }) {
         </div>
         <div className="flex min-h-[52px] w-full max-w-full flex-wrap items-center justify-center gap-1.5 overflow-x-auto px-2">
           {peptide.length === 0 && (
-            <span className="text-[12px] text-void-300">ribosoma AUG'dan boshlaydi…</span>
+            <span className="text-[12px] text-void-300">ribosoma AUGʻdan boshlaydi…</span>
           )}
           {peptide.map((res, i) => {
             const isNewest = i === peptide.length - 1;
@@ -159,7 +159,7 @@ export default function TranslationStage({ model }: { model: DnaModel }) {
                 {AMINO_ACIDS[reading.aa]?.abbr3} · {AMINO_ACIDS[reading.aa]?.nameUz}
               </span>
             ) : (
-              <span className="text-void-300">to'liqsiz</span>
+              <span className="text-void-300">toʻliqsiz</span>
             )}
             {reading.kind === "start" && (
               <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold text-emerald-300">
@@ -169,7 +169,7 @@ export default function TranslationStage({ model }: { model: DnaModel }) {
           </>
         ) : (
           <span className="text-[12px] font-semibold text-emerald-300">
-            {stoppedAtStop ? "Oqsil tayyor — STOP kodonда to'xtadi ✓" : "Oqsil tayyor ✓"}
+            {stoppedAtStop ? "Oqsil tayyor — STOP kodonda toʻxtadi ✓" : "Oqsil tayyor ✓"}
           </span>
         )}
       </div>

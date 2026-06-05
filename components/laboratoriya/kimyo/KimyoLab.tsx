@@ -76,11 +76,6 @@ type SpeedKey = "slow" | "normal" | "fast";
 type Mode = "reaction" | "atoms" | "table";
 
 const VALID_MODES: Mode[] = ["reaction", "atoms", "table"];
-/** Curated elements that drive real reactions — the "lab core" for quick pick. */
-const CORE_ELEMENTS = [
-  "H", "He", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al",
-  "Si", "P", "S", "Cl", "Ar", "K", "Ca", "Fe", "Cu",
-];
 
 const SPEEDS: Record<SpeedKey, number> = { slow: 0.5, normal: 1, fast: 2 };
 const SPEED_LABEL: Record<SpeedKey, string> = {
@@ -880,8 +875,37 @@ export default function KimyoLab() {
           <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-void-300">
             Tayyor reaksiyalar
           </div>
+
+          {/* reaction-TYPE filter — Birikish · Parchalanish · Oʻrin olish … */}
+          <div className="mb-2 flex flex-wrap gap-1">
+            <TypeChip
+              active={typeFilter === null}
+              onClick={() => {
+                setTypeFilter(null);
+                play("ui");
+              }}
+            >
+              Hammasi
+            </TypeChip>
+            {REACTION_TYPE_ORDER.map((t) => (
+              <TypeChip
+                key={t}
+                active={typeFilter === t}
+                title={REACTION_TYPE_UZ[t].blurb}
+                onClick={() => {
+                  setTypeFilter((cur) => (cur === t ? null : t));
+                  play("ui");
+                }}
+              >
+                {REACTION_TYPE_UZ[t].label}
+              </TypeChip>
+            ))}
+          </div>
+
           <div className="flex flex-wrap gap-1.5">
-            {FEATURED.map((r) => (
+            {FEATURED.filter(
+              (r) => typeFilter === null || r.reactionType === typeFilter,
+            ).map((r) => (
               <button
                 key={r.id}
                 type="button"
@@ -966,10 +990,169 @@ export default function KimyoLab() {
         </div>
       </div>
     </div>
+    </div>
   );
 }
 
 /* ============================================================ */
+
+/**
+ * A segmented-pill tab for the lab-mode switch (Reaksiya · Atomlar · Davriy
+ * jadval). Active = filled antares pill; inactive = muted, hover-lifts. Children
+ * are an icon + label laid out in a flex row.
+ */
+function ModeTab({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={active}
+      onClick={onClick}
+      className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12.5px] font-semibold transition active:scale-95 ${
+        active
+          ? "bg-antares-500 text-void-950 shadow-sm"
+          : "text-void-300 hover:bg-void-700 hover:text-void-100"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** Small pill for the reaction-TYPE filter row in the picker. */
+function TypeChip({
+  active,
+  onClick,
+  title,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  title?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={title}
+      aria-pressed={active}
+      className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition active:scale-95 ${
+        active
+          ? "border-antares-500 bg-antares-50 text-antares-700"
+          : "border-void-600 bg-void-700 text-void-300 hover:border-antares-400 hover:text-void-100"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+/**
+ * The selected element's structure card, shown under the stage in the Atomlar /
+ * Davriy jadval modes. Reads the curated/Bohr atomic structure (Z, mass number
+ * A = Z + N, neutrons, electron-shell config) plus the element's category, and
+ * offers two actions: drop it into the reaction chamber, and (from the table)
+ * jump to its Bohr atom in the AtomViewer.
+ */
+function ElementCard({
+  sym,
+  onAddToChamber,
+  onViewAtom,
+}: {
+  sym: string;
+  onAddToChamber: () => void;
+  onViewAtom?: () => void;
+}) {
+  const struct = atomStructure(sym);
+  const pt = PT_BY_SYM[sym];
+  if (!struct || !pt) {
+    return (
+      <div className="rounded-[16px] border border-void-600 bg-void-800 p-3 text-[13px] text-void-300">
+        Maʼlumot topilmadi.
+      </div>
+    );
+  }
+  const info = ATOMS[sym];
+  const accent = info?.color ?? pt.color;
+  const A = massNumber(struct);
+
+  return (
+    <div className="rounded-[16px] border border-void-600 bg-void-800 p-3">
+      <div className="flex items-center gap-3">
+        {/* element glyph */}
+        <span
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] font-serif text-[22px] font-bold"
+          style={{
+            background: "#0f1620",
+            color: sym === "H" ? "#e9eef4" : accent,
+            boxShadow: `inset 0 0 0 1.5px ${accent}`,
+          }}
+        >
+          {sym}
+        </span>
+        <div className="min-w-0">
+          <div className="text-[15px] font-bold text-void-100">{pt.nameUz}</div>
+          <div className="text-[11px] text-void-300">
+            {CATEGORY_UZ[pt.cat]} · {struct.exact ? "aniq" : "Bor modeli (taxminiy)"}
+          </div>
+        </div>
+      </div>
+
+      {/* structure readout: Z · A · N · shells */}
+      <div className="mt-2.5 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+        <Stat label="Z (proton)" value={String(struct.protons)} />
+        <Stat label="A (massa)" value={String(A)} />
+        <Stat label="Neytron" value={String(struct.neutrons)} />
+        <Stat label="Qavatlar" value={shellConfig(struct)} mono />
+      </div>
+
+      {/* actions */}
+      <div className="mt-2.5 flex flex-wrap gap-1.5">
+        <button
+          type="button"
+          onClick={onAddToChamber}
+          className="flex-1 rounded-[12px] bg-antares-500 px-3 py-2 text-[12.5px] font-bold text-void-950 transition hover:bg-antares-300 active:scale-95"
+        >
+          Kameraga qoʻshish
+        </button>
+        {onViewAtom && (
+          <button
+            type="button"
+            onClick={onViewAtom}
+            className="rounded-[12px] border border-void-500 bg-void-700 px-3 py-2 text-[12.5px] font-semibold text-void-200 transition hover:border-antares-400 active:scale-95"
+          >
+            Atomni koʻrish
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** One labelled stat cell inside the ElementCard structure readout. */
+function Stat({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+  return (
+    <div className="rounded-[10px] border border-void-600 bg-void-700 px-2 py-1.5">
+      <div className="text-[9.5px] font-medium uppercase tracking-wide text-void-300">
+        {label}
+      </div>
+      <div
+        className={`text-[14px] font-bold text-void-100 ${mono ? "font-mono tabular-nums" : ""}`}
+      >
+        {value}
+      </div>
+    </div>
+  );
+}
 
 function StageBtn({
   onClick,
