@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getModel } from "@/lib/ai";
 import { PERSONAS, isPersonaId } from "@/lib/personas";
+import { SIM_CATALOG, SIM_CATALOG_KEYS } from "@/lib/sims/catalog";
 
 export const dynamic = "force-dynamic";
 
@@ -67,12 +68,33 @@ export async function POST(request: Request) {
           "O'quvchining savoliga o'zbek tilida, sodda va qisqa (2-4 jumla) javob bering.",
           "Tayyor uy-vazifa javobini bermang — tushunchani tushuntiring.",
         ];
+    // In a Lab, let the mentor SHOW a relevant animation by picking one key from
+    // a fixed catalog (so it can never invent a sim that doesn't exist).
+    if (persona) {
+      lines.push(
+        "",
+        "Agar quyidagi jonli animatsiyalardan BIRI savolni koʻrsatib bera olsa, javobing OXIRIDA alohida qatorda `SIM: <kalit>` deb yoz (faqat bitta kalit, faqat roʻyxatdan). Mos animatsiya boʻlmasa `SIM: none` yoz.",
+        ...SIM_CATALOG.map((c) => `- ${c.key}: ${c.summaryUz}`)
+      );
+    }
+
     const pl = profileLine(profile);
     if (pl) lines.push(pl);
     lines.push("", `Savol: ${question.trim()}`);
 
-    const answer = await getModel().ask(lines.join("\n"));
-    return NextResponse.json({ answer: answer.trim(), personaId: persona?.id ?? null });
+    const raw = (await getModel().ask(lines.join("\n"))).trim();
+
+    // Pull out the optional inline-animation suggestion (a `SIM: <key>` line),
+    // validate it against the catalog, and strip it from the visible answer.
+    let simKey: string | null = null;
+    let answer = raw;
+    const match = raw.match(/^\s*SIM:\s*([a-z0-9-]+)\s*$/im);
+    if (match) {
+      const key = match[1].toLowerCase();
+      if (key !== "none" && SIM_CATALOG_KEYS.includes(key)) simKey = key;
+      answer = raw.replace(/^\s*SIM:\s*[a-z0-9-]+\s*$/im, "").trim();
+    }
+    return NextResponse.json({ answer, personaId: persona?.id ?? null, simKey });
   } catch {
     return NextResponse.json({ error: "failed" }, { status: 500 });
   }

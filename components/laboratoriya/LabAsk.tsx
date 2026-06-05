@@ -16,9 +16,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Loader2, MessageCircleQuestion, Send, Volume2, X } from "lucide-react";
+import { Loader2, MessageCircleQuestion, Send, Sparkles, Volume2, X } from "lucide-react";
 import { PERSONAS, type PersonaId } from "@/lib/personas";
 import { loadProfile } from "@/lib/profile";
+import { SIM_REGISTRY } from "@/components/learn/sims";
+import { SIM_CATALOG_BY_KEY } from "@/lib/sims/catalog";
 
 /** Persona → ElevenLabs voice id (env). Only some personas have a voice;
  *  the rest simply hide the "listen" affordance. Mirrors MentorOverlay. */
@@ -38,6 +40,8 @@ interface Turn {
   text: string;
   personaId?: PersonaId;
   error?: boolean;
+  /** Optional inline animation the mentor chose to illustrate the answer. */
+  simKey?: string | null;
 }
 
 export default function LabAsk({
@@ -112,9 +116,12 @@ export default function LabAsk({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: q, topic, profile: profileHints, personaId }),
       });
-      const data = (await res.json()) as { answer?: string };
+      const data = (await res.json()) as { answer?: string; simKey?: string | null };
       if (!res.ok || !data.answer) throw new Error("no answer");
-      setThread((t) => [...t, { role: "persona", text: data.answer!, personaId }]);
+      setThread((t) => [
+        ...t,
+        { role: "persona", text: data.answer!, personaId, simKey: data.simKey ?? null },
+      ]);
     } catch {
       setThread((t) => [
         ...t,
@@ -288,6 +295,7 @@ export default function LabAsk({
                           Eshitish
                         </button>
                       )}
+                      {!turn.error && turn.simKey && <InlineSim simKey={turn.simKey} />}
                     </div>
                   </div>
                 )
@@ -335,5 +343,23 @@ export default function LabAsk({
         </div>
       )}
     </>
+  );
+}
+
+/** Renders the animation the mentor chose, inline under its answer. The key is
+ *  validated server-side against SIM_CATALOG, so SIM_REGISTRY[key] always exists;
+ *  we still guard for safety. */
+function InlineSim({ simKey }: { simKey: string }) {
+  const Sim = SIM_REGISTRY[simKey];
+  if (!Sim) return null;
+  const meta = SIM_CATALOG_BY_KEY[simKey];
+  return (
+    <div className="mt-2 max-w-[420px] rounded-[14px] border border-void-600 bg-void-900 p-2.5">
+      <div className="mb-1.5 flex items-center gap-1.5 px-0.5 text-[10.5px] font-semibold uppercase tracking-[0.1em] text-void-300">
+        <Sparkles className="h-3 w-3 text-antares-500" />
+        {meta?.titleUz ?? "Animatsiya"}
+      </div>
+      <Sim />
+    </div>
   );
 }
