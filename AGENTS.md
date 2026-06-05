@@ -9,6 +9,7 @@ Next.js code, and heed deprecation notices.
 # Scorpius — agent notes
 
 - **Constitution:** `CLAUDE.md` — read it first.
+- **Master plan:** `docs/PROJECT-PLAN.md`. **Current build plan:** `docs/M0-BUILD-PLAN.md`.
 - **Stack:** Next.js 16 (App Router, TypeScript), Tailwind v4, Firebase (Firestore, Auth),
   Gemini 2.5 — all LLM calls go through the adapter in `lib/ai/`.
 

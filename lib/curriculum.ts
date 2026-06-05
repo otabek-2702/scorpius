@@ -167,7 +167,13 @@ const CURATED_UNITS: Record<string, CurriculumUnit[]> = {
         { id: "kuch", title: "Jismlarning o'zaro ta'siri. Kuch", order: 4 },
         { id: "dinamometr-lab", title: "Lab: Dinamometr bilan kuch o'lchash", order: 5 },
         { id: "bosim", title: "Bosim va uning birliklari", order: 6 },
-        { id: "paskal", title: "Paskal qonuni va uning qo'llanilishi", order: 7, prereqs: ["bosim"] },
+        {
+          id: "paskal",
+          title: "Paskal qonuni va uning qo'llanilishi",
+          order: 7,
+          prereqs: ["bosim"],
+          lessonId: "paskal",
+        },
         { id: "gaz-bosim", title: "Tinch holatdagi gaz va suyuqlikda bosim", order: 8 },
         { id: "atmosfera", title: "Atmosfera bosimi. Torrichelli tajribasi", order: 9 },
         {
@@ -187,7 +193,13 @@ const CURATED_UNITS: Record<string, CurriculumUnit[]> = {
       order: 4,
       topics: [
         { id: "massa-markazi", title: "Massa markazi. Muvozanat turlari", order: 1 },
-        { id: "kuch-momenti", title: "Kuch momenti. Richag muvozanati", order: 2 },
+        {
+          id: "kuch-momenti",
+          title: "Kuch momenti. Richag muvozanati",
+          order: 2,
+          prereqs: ["massa-markazi"],
+          lessonId: "richag",
+        },
         { id: "richag-lab", title: "Lab: Richag muvozanatini o'rganish", order: 3 },
         { id: "oddiy-mexanizm", title: "Oddiy mexanizmlar: blok, qiya tekislik, vint, pona", order: 4 },
         { id: "mexanizm-ish", title: "Mexanizmlardan foydalanishda ishlar tengligi", order: 5 },
@@ -215,7 +227,13 @@ const CURATED_UNITS: Record<string, CurriculumUnit[]> = {
       topics: [
         { id: "elektrlanish", title: "Jismlarning elektrlanishi", order: 1 },
         { id: "elektr-toki", title: "Elektr toki. Tok manbalari", order: 2 },
-        { id: "elektr-zanjiri", title: "Oddiy elektr zanjiri va elektr tokining ahamiyati", order: 3 },
+        {
+          id: "elektr-zanjiri",
+          title: "Oddiy elektr zanjiri va elektr tokining ahamiyati",
+          order: 3,
+          prereqs: ["elektr-toki"],
+          lessonId: "zanjir",
+        },
         { id: "elektr-tejash", title: "Xonadondagi elektr asboblari. Elektr energiyasini tejash", order: 4 },
       ],
     },
@@ -236,7 +254,13 @@ const CURATED_UNITS: Record<string, CurriculumUnit[]> = {
         { id: "qaytish-sinish", title: "Yorug'lik tezligi. Qaytish va sinish", order: 4 },
         { id: "yorug-tarixi", title: "Beruniy va Ibn Sinoning yorug'lik haqida fikrlari", order: 5 },
         { id: "yassi-kozgu", title: "Yassi ko'zgu", order: 6 },
-        { id: "linza", title: "Linzalar haqida tushuncha", order: 7 },
+        {
+          id: "linza",
+          title: "Linzalar haqida tushuncha",
+          order: 7,
+          prereqs: ["qaytish-sinish"],
+          lessonId: "linza",
+        },
         {
           id: "kamalak",
           title: "Prizma, spektr va kamalak",
@@ -255,7 +279,13 @@ const CURATED_UNITS: Record<string, CurriculumUnit[]> = {
       topics: [
         { id: "tovush-manba", title: "Tovush manbalari va qabul qilgichlar", order: 1 },
         { id: "tovush-muhit", title: "Tovushning turli muhitlarda tarqalishi", order: 2 },
-        { id: "tovush-kattalik", title: "Tovush kattaliklari", order: 3 },
+        {
+          id: "tovush-kattalik",
+          title: "Tovush kattaliklari",
+          order: 3,
+          prereqs: ["tovush-manba"],
+          lessonId: "tovush",
+        },
         { id: "aks-sado", title: "Tovushning qaytishi. Aks sado", order: 4 },
         { id: "musiqa-shovqin", title: "Musiqiy tovushlar va shovqinlar. Tovush va salomatlik", order: 5 },
       ],

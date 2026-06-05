@@ -135,7 +135,7 @@ export default function BuildStage({ model }: { model: DnaModel }) {
           </span>
         ) : (
           <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-[11.5px] font-semibold text-amber-300">
-            Hali AUG (start kodoni) yo'q — mRNK'da {START_CODON} hosil bo'lsin (shablonda T-A-C)
+            Hali AUG (start kodoni) yoʻq — mRNKʻda {START_CODON} hosil boʻlsin (shablonda T-A-C)
           </span>
         )}
       </div>
@@ -178,7 +178,7 @@ export default function BuildStage({ model }: { model: DnaModel }) {
                 onDragEnd={() => setDragBase(null)}
                 onClick={() => model.addBase(b)}
                 className="flex flex-1 flex-col items-center gap-1 rounded-[12px] border border-white/10 bg-white/[0.03] p-2 transition hover:border-emerald-400/50 hover:bg-white/[0.06] active:scale-95"
-                aria-label={`${info.nameUz} (${b}) qo'shish`}
+                aria-label={`${info.nameUz} (${b}) qoʻshish`}
               >
                 <span
                   className="flex h-8 w-8 items-center justify-center rounded-[8px] font-mono text-[15px] font-bold"
@@ -198,11 +198,11 @@ export default function BuildStage({ model }: { model: DnaModel }) {
             type="button"
             onClick={() => model.removeLast()}
             className="flex flex-col items-center justify-center gap-1 rounded-[12px] border border-white/10 bg-white/[0.03] px-2.5 py-2 text-void-300 transition hover:border-white/25 hover:text-void-100 active:scale-95"
-            aria-label="Oxirgi asosni o'chirish"
-            title="Oxirgi asosni o'chirish"
+            aria-label="Oxirgi asosni oʻchirish"
+            title="Oxirgi asosni oʻchirish"
           >
             <span className="text-[16px] leading-none">⌫</span>
-            <span className="text-[9px]">o'chir</span>
+            <span className="text-[9px]">oʻchir</span>
           </button>
         </div>
 

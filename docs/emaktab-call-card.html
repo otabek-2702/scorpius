@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>emaktab.uz — Call Battle Card · Scorpius</title>
+<meta name="robots" content="noindex,nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #fbf9f3;
+    --bg-soft: #f6f2e6;
+    --surface: #fffefa;
+    --ink: #1a1813;
+    --soft: #6b675f;
+    --mute: #9b958a;
+    --gold: #e8a21a;
+    --gold-deep: #c98910;
+    --gold-soft: #fdf3dc;
+    --green: #2d8a4e;
+    --green-soft: #e6f1ea;
+    --amber: #c98910;
+    --amber-soft: #fcefd0;
+    --red: #b53b32;
+    --red-soft: #f7e1df;
+    --blue: #3b7bd1;
+    --blue-soft: #e1ecf9;
+    --border: #ede9dc;
+    --border-strong: #d4cdb9;
+
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
+    --font-serif: 'Newsreader', 'Charter', Georgia, serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Layout — left sticky nav + main column */
+  .shell {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    max-width: 1240px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; }
+    .nav { position: relative !important; height: auto !important; padding: 24px 20px !important; border-right: 0 !important; border-bottom: 1px solid var(--border); }
+    .main { padding: 32px 20px !important; }
+  }
+
+  /* Left nav */
+  .nav {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding: 36px 28px;
+    border-right: 1px solid var(--border);
+    background: var(--bg);
+    overflow-y: auto;
+  }
+  .brand {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    margin-bottom: 6px;
+  }
+  .nav-title {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.18;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+  .nav-meta {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mute);
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .nav a {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--soft);
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: background 120ms, color 120ms;
+  }
+  .nav a:hover { background: var(--bg-soft); color: var(--ink); }
+  .nav a .num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gold-deep);
+    min-width: 18px;
+  }
+
+  /* Main */
+  .main {
+    padding: 48px 56px 96px;
+    max-width: 900px;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--soft);
+    margin-bottom: 32px;
+  }
+  .meta-row span { display: inline-flex; align-items: center; gap: 6px; }
+  .meta-row .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); display: inline-block; }
+
+  h1.title {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 56px;
+    line-height: 1.05;
+    letter-spacing: -0.022em;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  h1.title em { font-style: italic; color: var(--gold-deep); font-weight: 500; }
+  .lede {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--soft);
+    max-width: 720px;
+    margin-bottom: 56px;
+  }
+  .lede strong { color: var(--ink); font-weight: 600; }
+
+  /* Section */
+  section { margin-top: 56px; scroll-margin-top: 24px; }
+  .section-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 1.12;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  h2 .secondary { color: var(--soft); font-weight: 400; }
+  .section-hint {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--soft);
+    margin-bottom: 24px;
+  }
+
+  /* Script block — the verbatim text they read aloud */
+  .script {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-left: 4px solid var(--gold);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin: 16px 0;
+    font-family: var(--font-serif);
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--ink);
+    box-shadow: 0 1px 2px rgba(20,18,14,.04);
+  }
+  .script .para { margin-bottom: 14px; }
+  .script .para:last-child { margin-bottom: 0; }
+  .script.compact { font-size: 16.5px; padding: 18px 22px; }
+
+  /* Variants — visually distinct scenario branches */
+  .branch {
+    margin: 24px 0;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .branch-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 16px 22px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .branch-head .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .branch-body { padding: 18px 22px 22px; }
+  .branch.yes   .branch-head { background: var(--green-soft); color: var(--green); }
+  .branch.yes   .branch-head .tag { background: var(--green); color: white; }
+  .branch.wait  .branch-head { background: var(--amber-soft); color: var(--amber); }
+  .branch.wait  .branch-head .tag { background: var(--amber); color: white; }
+  .branch.no    .branch-head { background: var(--red-soft); color: var(--red); }
+  .branch.no    .branch-head .tag { background: var(--red); color: white; }
+  .branch.curious .branch-head { background: var(--blue-soft); color: var(--blue); }
+  .branch.curious .branch-head .tag { background: var(--blue); color: white; }
+  .branch.close .branch-head { background: var(--bg-soft); color: var(--soft); }
+  .branch.close .branch-head .tag { background: var(--soft); color: white; }
+
+  /* Wins/extracts callout */
+  .callout {
+    background: var(--gold-soft);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 14px;
+    font-size: 14.5px;
+    color: var(--ink);
+  }
+  .callout strong { color: var(--gold-deep); }
+  .callout ul { margin-top: 8px; padding-left: 0; list-style: none; }
+  .callout li {
+    padding-left: 28px;
+    position: relative;
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+  .callout li::before {
+    content: "□";
+    position: absolute;
+    left: 4px;
+    top: 0;
+    font-family: var(--font-mono);
+    color: var(--gold-deep);
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  /* Word-choice table */
+  table.word-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  table.word-table th {
+    text-align: left;
+    padding: 12px 18px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: var(--bg-soft);
+    color: var(--soft);
+    border-bottom: 1px solid var(--border-strong);
+  }
+  table.word-table th:first-child { color: var(--green); }
+  table.word-table th:last-child { color: var(--red); }
+  table.word-table td {
+    padding: 11px 18px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14.5px;
+  }
+  table.word-table td:first-child {
+    font-family: var(--font-mono);
+    color: var(--green);
+    font-weight: 600;
+  }
+  table.word-table td:last-child {
+    font-family: var(--font-mono);
+    color: var(--red);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+  table.word-table tr:last-child td { border-bottom: 0; }
+  table.word-table td .literal {
+    color: var(--soft);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 400;
+    text-decoration: none;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* Q&A items */
+  .qa { margin-top: 18px; }
+  .qa-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    transition: border-color 120ms;
+  }
+  .qa-item:hover { border-color: var(--border-strong); }
+  .qa-q {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 10px;
+    letter-spacing: -0.008em;
+  }
+  .qa-q .qa-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold-deep);
+    letter-spacing: 0.14em;
+    min-width: 28px;
+  }
+  .qa-a {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink);
+    padding-left: 40px;
+  }
+  .qa-a strong { color: var(--ink); font-weight: 600; }
+  .qa-a em { color: var(--gold-deep); font-style: italic; }
+
+  /* Killer line — slide 9 style */
+  .killer {
+    background: linear-gradient(135deg, var(--gold-soft), var(--bg-soft));
+    border: 1.5px solid var(--gold);
+    border-radius: 22px;
+    padding: 32px 36px;
+    margin: 24px 0;
+    text-align: center;
+  }
+  .killer .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    margin-bottom: 14px;
+  }
+  .killer .quote {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    line-height: 1.45;
+    font-style: italic;
+    color: var(--ink);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .killer .footnote {
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--soft);
+  }
+
+  /* Checklist */
+  .checklist {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-top: 14px;
+  }
+  .checklist ul { list-style: none; }
+  .checklist li {
+    padding: 8px 0 8px 36px;
+    position: relative;
+    font-size: 15.5px;
+    line-height: 1.55;
+    border-bottom: 1px dashed var(--border);
+  }
+  .checklist li:last-child { border-bottom: 0; }
+  .checklist li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 13px;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 5px;
+    background: var(--bg);
+  }
+
+  /* Footer / after-call section */
+  .after {
+    background: var(--bg-soft);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-top: 14px;
+  }
+  .after ol {
+    padding-left: 22px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .after ol li { margin-bottom: 10px; }
+  .after ol li:last-child { margin-bottom: 0; }
+  .after .mini-script {
+    background: var(--surface);
+    border-left: 3px solid var(--gold);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 8px;
+    font-family: var(--font-serif);
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+
+  /* Tactical tooltip-style notes */
+  .why {
+    background: var(--blue-soft);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 14px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .why .label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-right: 8px;
+  }
+
+  /* Footer */
+  footer.bottom {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mute);
+    text-align: center;
+  }
+
+  /* Print */
+  @media print {
+    @page { size: A4 portrait; margin: 14mm 14mm; }
+    body { background: white; font-size: 11pt; }
+    .nav { display: none; }
+    .shell { display: block; max-width: none; }
+    .main { padding: 0; max-width: none; }
+    section { break-inside: avoid; margin-top: 24pt; }
+    h1.title { font-size: 36pt; }
+    .branch, .qa-item, .checklist, .after, .killer { break-inside: avoid; }
+  }
+
+  /* Subtle hover for jump-to-top arrow */
+  .to-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: white;
+    display: grid;
+    place-items: center;
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 16px;
+    box-shadow: 0 4px 16px rgba(20,18,14,0.15);
+    transition: transform 160ms;
+  }
+  .to-top:hover { transform: translateY(-2px); }
+  @media print { .to-top { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <aside class="nav">
+    <div class="brand">Scorpius · Internal</div>
+    <div class="nav-title">emaktab.uz<br/><em style="font-style:italic;color:var(--gold-deep);font-weight:500;">Call Battle Card</em></div>
+    <div class="nav-meta">Sun 24-May-2026 · Pre-pitch</div>
+    <ul>
+      <li><a href="#telegram"><span class="num">00</span>Telegram first contact</a></li>
+      <li><a href="#opening"><span class="num">01</span>Opening (memorize)</a></li>
+      <li><a href="#hook"><span class="num">02</span>The hook</a></li>
+      <li><a href="#ask"><span class="num">03</span>The narrow ask</a></li>
+      <li><a href="#branching"><span class="num">04</span>Branching — 4 scenarios</a></li>
+      <li><a href="#words"><span class="num">05</span>Word-choice law</a></li>
+      <li><a href="#qa"><span class="num">06</span>Judge Q&amp;A — 10 answers</a></li>
+      <li><a href="#killer"><span class="num">07</span>The killer line</a></li>
+      <li><a href="#checklist"><span class="num">08</span>Pre-call checklist</a></li>
+      <li><a href="#after"><span class="num">09</span>After the call</a></li>
+    </ul>
+  </aside>
+
+  <main class="main">
+
+    <div class="meta-row">
+      <span><span class="dot"></span>Pitch in &lt; 90 min</span>
+      <span>Tone — partnership, not permission</span>
+      <span>siz form throughout</span>
+    </div>
+
+    <h1 class="title">Call them <em>like partners,</em><br/>not like petitioners.</h1>
+    <p class="lede">
+      One phone call. Eight minutes. <strong>Get a verbal "we're aware, no objection"</strong> from emaktab.uz today — so you can quote it on stage at 12:00 and kill the legal/data question before it's asked. Every line below is verbatim. Read it as written.
+    </p>
+
+    <!-- ========== TELEGRAM FIRST CONTACT ========== -->
+    <section id="telegram">
+      <div class="section-eyebrow">00 · Telegram first contact</div>
+      <h2>Send this first <span class="secondary">— before you dial</span></h2>
+      <p class="section-hint">Telegram message to emaktab's business account. Short, polite, partnership-framed. Asks one tiny thing: "are you the right person, or can you connect us?" If they answer yes → schedule a call. If they connect you → use the right person's contact for the call. If no reply in 60 min → just dial.</p>
+
+      <div class="script">
+        <div class="para">Assalomu alaykum!</div>
+        <div class="para">Mening ismim <strong>Murodjon Tolipov</strong>. Men <em style="font-style:italic;color:var(--gold-deep);">"Scorpius"</em> loyihasi asoschisiman — biz O'zbekiston o'quvchilari uchun <strong>shaxsiy AI o'qituvchi platforma</strong> quryapmiz.</div>
+        <div class="para">Bizning yondashuvimiz oddiy: har bir o'quvchining <em style="font-style:italic;">kuchli va kuchsiz tomonlarini tushunib</em>, aynan kerakli mavzu bo'yicha qisqa darslar beramiz. Agar o'quvchi xohlasa, o'z emaktab hisobini ulashi mumkin — shunda darslarni uning baholariga qarab yanada moslashtiramiz. Albatta, hech narsa <strong>foydalanuvchining roziligisiz</strong> olinmaydi.</div>
+        <div class="para">Hozir <strong>Farg'ona viloyati Maktabgacha va Maktab ta'limi bo'limi</strong> loyihamizni qo'llab-quvvatlamoqda. Biz emaktab.uz bilan ham <em style="font-style:italic;">uzoq muddatli hamkorlik g'oyasiga ochiqmiz</em>.</div>
+        <div class="para">Bu bo'yicha <strong>kim bilan gaplashishim mumkinligini</strong> bilsam, juda yaxshi bo'lardi. Agar imkon bo'lsa, menga telefon qilish mumkin: <span style="font-family:var(--font-mono);color:var(--gold-deep);">+998 50 554 01 31</span>.</div>
+        <div class="para">Demo: <span style="font-family:var(--font-mono);font-size:15px;color:var(--gold-deep);">scorpius.uz</span></div>
+        <div class="para" style="margin-top:18px;color:var(--soft);font-size:15px;">Vaqtingiz uchun rahmat.<br/>Murodjon · <span style="font-family:var(--font-mono);color:var(--gold-deep);">@murodjon</span></div>
+      </div>
+
+      <div class="why">
+        <span class="label">Why this softer message works</span>
+        Four deliberate moves: (1) <strong>"shaxsiy AI o'qituvchi"</strong> leads with the product, not the data fear. (2) <strong>"Agar o'quvchi xohlasa, o'z emaktab hisobini ulashi mumkin"</strong> — frames emaktab connection as the <em>student's</em> optional choice, not something we do <em>to</em> emaktab. (3) <strong>"g'oyasiga ochiqmiz"</strong> — "open to the idea" is much softer than "we want to establish". (4) <strong>The ask is open + offers a callback number</strong> — they have the lowest possible activation energy to reply.
+      </div>
+
+      <div class="branch yes">
+        <div class="branch-head"><span class="tag">IF</span> they reply YES / "Bu menga tegishli" → schedule a call</div>
+        <div class="branch-body">
+          <div class="script compact">Rahmat! Sizga qulay vaqt qaysi? Bugun yoki ertaga 10 daqiqalik qisqa telefon suhbati bo'lsa kifoya — keyin rasmiy hujjatlarimni email orqali yuboraman.</div>
+          <div class="why"><span class="label">Then</span>Use the call script (§01 onward) on that scheduled call.</div>
+        </div>
+      </div>
+
+      <div class="branch curious">
+        <div class="branch-head"><span class="tag">IF</span> they redirect → "X kishini ko'ring"</div>
+        <div class="branch-body">
+          <div class="script compact">Katta rahmat tavsiyangiz uchun! Iltimos, agar imkoni bo'lsa, meni unga <strong>tanishtirib qo'ying</strong> — sizning so'zingiz bilan boshlanishi men uchun juda muhim.</div>
+          <div class="why"><span class="label">Why ask for warm intro</span>A reply from "X" is 5× more likely if Y intros you. If they hesitate, just ask for X's contact and message them with "Y dan eshitdim".</div>
+        </div>
+      </div>
+
+      <div class="branch wait">
+        <div class="branch-head"><span class="tag">IF</span> no reply in 60 min → just dial the phone number</div>
+        <div class="branch-body">
+          Telegram silence ≠ rejection. They're busy. Move to the phone call (§01 below) and mention you also messaged on Telegram so they have a paper trail.
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== OPENING ========== -->
+    <section id="opening">
+      <div class="section-eyebrow">01 · The opening</div>
+      <h2>First 30 seconds <span class="secondary">— memorize verbatim</span></h2>
+      <p class="section-hint">Calm voice. Smile. They hear the smile. Pause after "5 daqiqa beradigan vaqtingiz bormi?"</p>
+
+      <div class="script">
+        <div class="para">Assalomu alaykum. Mening ismim <strong>Murodjon Tolipov</strong>.</div>
+        <div class="para">Men <em style="font-style:italic;color:var(--gold-deep);">Scorpius</em> loyihasi asoschisiman — emaktab.uz o'quvchilari uchun AI o'qituvchi platforma quryapmiz.</div>
+        <div class="para">Sizning vaqtingiz bo'lsa, qisqa hamkorlik gaplashishni xohlardim. <strong>5 daqiqa beradigan vaqtingiz bormi?</strong></div>
+      </div>
+
+      <div class="branch curious">
+        <div class="branch-head"><span class="tag">IF</span> "Nima haqida?"</div>
+        <div class="branch-body">Continue to §2 — the hook.</div>
+      </div>
+
+      <div class="branch wait">
+        <div class="branch-head"><span class="tag">IF</span> "Hozir banman"</div>
+        <div class="branch-body">
+          <div class="script compact">Tushunaman. Sizga qaysi vaqt qulay bo'ladi? Bugun yoki ertaga 1-2 daqiqa.</div>
+          <div class="why"><span class="label">Why</span>Don't push. Get a callback time. The fact that you didn't push earns trust.</div>
+        </div>
+      </div>
+
+      <div class="branch no">
+        <div class="branch-head"><span class="tag">IF</span> "Bizga shu kabi takliflar ko'p keladi"</div>
+        <div class="branch-body">
+          <div class="script compact">Tushunaman. Lekin biz bugun <strong>GDG EdTech Hakathonida</strong> finalga chiqdik va <strong>Farg'ona viloyat Maktabgacha va Maktab ta'lim boshqarmasi</strong> bilan ham hamkorlik qilyapmiz. Faqat 3 daqiqa.</div>
+          <div class="why"><span class="label">Lever</span>Use the institutional credibility. Most startups don't have a regional education department backing them — you do.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== HOOK ========== -->
+    <section id="hook">
+      <div class="section-eyebrow">02 · The hook</div>
+      <h2>The next 60 seconds <span class="secondary">— what we built, why it matters</span></h2>
+      <p class="section-hint">Lead with the partnership, end with their importance. Don't pitch the AI tech — pitch the outcome.</p>
+
+      <div class="script">
+        <div class="para">Biz <strong>Farg'ona viloyat Maktabgacha va Maktab ta'lim boshqarmasi</strong> bilan birgalikda 6-sinf o'quvchilari uchun <em style="font-style:italic;color:var(--gold-deep);">shaxsiy AI o'qituvchi</em> quryapmiz.</div>
+        <div class="para">Ishlash printsipi juda oddiy: o'quvchi yoki ota-onaning <strong>roziligi bilan</strong> uning emaktab hisobiga ulanamiz. Baholarni o'qiymiz, qaysi mavzu qiyin kelyaptini topamiz, va o'sha mavzu bo'yicha <strong>8 daqiqalik shaxsiy darsni o'zbek tilida</strong> beramiz.</div>
+        <div class="para">Hozir <strong>demo tayyor</strong>, 10 nafar o'quvchi sinab ko'rdi, ko'rsatkichlar yaxshi.</div>
+        <div class="para">Bugun <strong>soat 12 da GDG hakatonida</strong> rasmiy ko'rsatamiz va kelajak qadamlar haqida gaplashamiz. <em style="font-style:italic;">Sizning rasmiy bilimingiz bizning loyiha uchun juda muhim — siz bizning ekotizimning poydevorisiz.</em></div>
+      </div>
+
+      <div class="why">
+        <span class="label">What this does</span>
+        <code style="background:var(--bg);padding:1px 6px;border-radius:4px;">birgalikda</code> = together (partnership, not request) ·
+        <code style="background:var(--bg);padding:1px 6px;border-radius:4px;">roziligi bilan</code> = with consent (legal basis up front) ·
+        <code style="background:var(--bg);padding:1px 6px;border-radius:4px;">sizning rasmiy bilimingiz</code> = your formal awareness (soft no-objection ask). All three earn you the right to ask in §3.
+      </div>
+    </section>
+
+    <!-- ========== ASK ========== -->
+    <section id="ask">
+      <div class="section-eyebrow">03 · The narrow ask</div>
+      <h2>30 seconds <span class="secondary">— two specific small things</span></h2>
+      <p class="section-hint">Ask for the smallest possible thing. <strong>Then wait. Don't fill silence with extra promises.</strong></p>
+
+      <div class="script">
+        <div class="para">Sizdan ikkita kichik narsa so'ramoqchiman:</div>
+        <div class="para"><strong>BIRINCHI:</strong> bugun bilingki, biz emaktab.uz nomini hurmat bilan eslatib, foydalanuvchi roziligi bilan ishlayapmiz. Hech qanday avtomatik ma'lumot olish, hech qanday tijoriy sotish yo'q.</div>
+        <div class="para"><strong>IKKINCHI:</strong> kelasi haftada <em style="font-style:italic;color:var(--gold-deep);">30 daqiqalik uchrashuv</em> — rasmiy hamkorlik shakli qanday bo'lishi mumkinligi haqida gaplashamiz. Sizning vaqtingizga moslashtirib.</div>
+      </div>
+
+      <div class="callout" style="text-align:center;">
+        <strong>STOP TALKING.</strong><br/>
+        <span style="font-family:var(--font-serif);font-style:italic;font-size:17px;">Now wait.</span>
+      </div>
+    </section>
+
+    <!-- ========== BRANCHING ========== -->
+    <section id="branching">
+      <div class="section-eyebrow">04 · Branching</div>
+      <h2>Four scenarios <span class="secondary">— exact words for each</span></h2>
+      <p class="section-hint">Whatever they say, the answer is here. Don't improvise off-script when stressed.</p>
+
+      <!-- YES -->
+      <div class="branch yes">
+        <div class="branch-head"><span class="tag">4A · YES</span> "Yaxshi, gaplashamiz" — they're in</div>
+        <div class="branch-body">
+          <div class="script compact">Rahmat. Demak, bugun pitch'imda sizning ismingizdan <strong>e'tirozsizlik borligini</strong> ayta olamanmi? Yoki faqat <em style="font-style:italic;">"emaktab bilan suhbat boshlandi"</em> desam bo'ladimi?</div>
+          <div class="why"><span class="label">Tip</span>They'll usually pick option 2 — that's a <strong>WIN</strong>. Quotable as "We're in conversation with emaktab" on stage.</div>
+          <div class="script compact">Iltimos, Telegram username yoki email bering — rasmiy xat va demo havolasini yuboraman.</div>
+          <div class="callout">
+            <strong>BEFORE HANGING UP — extract these:</strong>
+            <ul>
+              <li>Telegram username OR email address</li>
+              <li>Their full name + position / role</li>
+              <li>Explicit permission to mention them (any form)</li>
+              <li>Best time next week for the 30-min meeting</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- WAIT -->
+      <div class="branch wait">
+        <div class="branch-head"><span class="tag">4B · WAIT</span> "We need to review / Legal opinion needed"</div>
+        <div class="branch-body">
+          <div class="script compact">
+            <div class="para">Albatta, tushunaman. Bu sizning <em style="font-style:italic;">professional ehtiyotkorligingiz</em> — biz uni hurmat qilamiz. Bugun men yo'q narsani da'vo qilmayman. <strong>Faqat suhbat boshladik</strong> deyman.</div>
+            <div class="para">Sizga bugun rasmiy xat yuborib, hujjatlarni ko'rib chiqishingiz uchun vaqt beramen. Kelasi hafta qulay vaqtda gaplashsak bo'ladi. Sizga <strong>Telegram orqali yuborayinmi yoki email orqali?</strong></div>
+          </div>
+          <div class="why"><span class="label">Still a win</span>You honestly say on stage: <em>"We're in formal conversation with emaktab.uz — letter sent today, review in progress."</em></div>
+        </div>
+      </div>
+
+      <!-- NO -->
+      <div class="branch no">
+        <div class="branch-head"><span class="tag">4C · NO</span> "We're against this / Stop"</div>
+        <div class="branch-body">
+          <div class="script compact">Tushundim. Iltimos, <strong>aniq qaysi qism</strong> sizni xavotirga solyapti? Foydalanuvchi roziligimi, ma'lumot xavfsizligimi, biznes modelimi? <em style="font-style:italic;">Men o'rganishni xohlayman</em>, chunki bizning maqsadimiz sizga qarshi emas, balki sizning tizimingizni qo'llab-quvvatlash.</div>
+          <div class="why"><span class="label">Listen. Don't argue.</span>Their objection becomes your roadmap. Take notes. Don't promise anything you can't keep.</div>
+          <div class="script compact">Rahmat, bu juda muhim. Bugun pitch'da hech narsa aytmaymen. Kelasi hafta rasmiy uchrashuvga taklif qilsam bo'ladimi — bu masalalarni birga ko'rib chiqamiz?</div>
+          <div class="why"><span class="label">Recovery</span>Even a NO becomes <em>"we paused our launch out of respect"</em> — itself credible.</div>
+        </div>
+      </div>
+
+      <!-- WHO TOLD YOU -->
+      <div class="branch curious">
+        <div class="branch-head"><span class="tag">4D · WHO?</span> "Who told you to call us?"</div>
+        <div class="branch-body">
+          <div class="script compact">Hech kim. Bu <strong>bizning tashabbusimiz</strong> — biz emaktab.uz ni hurmat qilamiz va siz bilan birinchi bo'lib gaplashishni to'g'ri deb topdik. Aks holda, biz sizning bilimingizsiz ishlasaida bo'lardi — lekin biz <em style="font-style:italic;color:var(--gold-deep);">shaffof yo'lni</em> tanladik.</div>
+          <div class="why"><span class="label">Power move</span>This is a HUGE positive frame. They will respect this. You may convert a hostile call into a partnership conversation right here.</div>
+        </div>
+      </div>
+
+      <!-- CLOSE -->
+      <div class="branch close">
+        <div class="branch-head"><span class="tag">4Z · CLOSE</span> Regardless of outcome</div>
+        <div class="branch-body">
+          <div class="script compact">Vaqtingiz uchun chin yurakdan rahmat. Bugun rasmiy xat yuboraman — sizning ko'rib chiqishingiz uchun. <strong>Ko'rishguncha.</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== WORD CHOICE ========== -->
+    <section id="words">
+      <div class="section-eyebrow">05 · Word-choice law</div>
+      <h2>The vocabulary that <span class="secondary">wins partnerships</span></h2>
+      <p class="section-hint">Each row below saved a partnership somewhere. Use the left column. Avoid the right column. Always.</p>
+
+      <table class="word-table">
+        <thead>
+          <tr>
+            <th>USE</th>
+            <th>NEVER SAY</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>o'qiymiz<span class="literal">"we read"</span></td>
+            <td>scrape</td>
+          </tr>
+          <tr>
+            <td>ulanamiz<span class="literal">"we connect"</span></td>
+            <td>extract</td>
+          </tr>
+          <tr>
+            <td>rozilik bilan<span class="literal">"with consent"</span></td>
+            <td>pull data</td>
+          </tr>
+          <tr>
+            <td>foydalanuvchi tomonidan<span class="literal">"by the user"</span></td>
+            <td>automate</td>
+          </tr>
+          <tr>
+            <td>shaffof<span class="literal">"transparent"</span></td>
+            <td>bypass</td>
+          </tr>
+          <tr>
+            <td>birgalikda<span class="literal">"together"</span></td>
+            <td>our system takes</td>
+          </tr>
+          <tr>
+            <td>hamkorlik<span class="literal">"partnership"</span></td>
+            <td>we already have access</td>
+          </tr>
+          <tr>
+            <td>siz<span class="literal">formal "you" — always</span></td>
+            <td>sen<span style="font-family:var(--font-sans);font-size:12px;color:var(--soft);text-decoration:none;display:block;">informal — never on this call</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ========== Q&A ========== -->
+    <section id="qa">
+      <div class="section-eyebrow">06 · Pitch Q&amp;A defense</div>
+      <h2>10 questions that can crack you <span class="secondary">— rehearsed answers</span></h2>
+      <p class="section-hint">Read each twice out loud before pitch. When the question lands on stage, you don't think — you reply.</p>
+
+      <div class="qa">
+
+        <div class="qa-item">
+          <div class="qa-q"><span class="qa-num">Q1</span>"How do you get the data from emaktab? Is this legal?"</div>
+          <div class="qa-a">
+            Foydalanuvchi o'zining roziligi bilan o'zining emaktab kirish ma'lumotlarini bizga beradi — xuddi <em>'Sign in with Google'</em> kabi. Biz faqat <strong>o'sha foydalanuvchining o'zining ma'lumotini</strong> shifrlangan tarzda olib, <strong>o'sha foydalanuvchining o'zi uchun</strong> ishlatamiz. Bugun ertalab emaktab.uz vakili bilan rasmiy suhbat boshladik — ular bizning yondashuvimizdan xabardor.
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-q"><span class="qa-num">Q2</span>"What if emaktab.uz sues you?"</div>
+          <div class="qa-a">
+            Hozir emaktab.uz bilan to'g'ridan-to'g'ri <em>hamkorlik suhbati</em> olib boryapmiz. Bizning yondashuvimiz <strong>shaffof va o'quvchi roziligiga asoslangan</strong> — bu bizni qonuniy himoyaga oladi. Bundan tashqari, <strong>Farg'ona viloyat Maktabgacha va Maktab ta'lim boshqarmasi</strong> bilan ham hamkorlikdamiz, ya'ni davlat tomonidan ham tanilgan loyiha.
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-q"><span class="qa-num">Q3</span>"What stops emaktab from just building this themselves?"</div>
+          <div class="qa-a">
+            Hech narsa — va biz buni <em>xush ko'ramiz</em>. Agar ular shu featureni qo'shsalar — biz <strong>rasmiy partner</strong> bo'lib qolamiz. Agar ular qo'ymasalar — biz mustaqil shaxsiy o'qituvchi sifatida davom etamiz. Ikkala variant ham <strong>o'zbek o'quvchisi uchun foyda</strong>.
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-q"><span class="qa-num">Q4</span>"Why won't emaktab block your IP / disable your scraping?"</div>
+          <div class="qa-a">
+            Biz <em>scraping</em> qilmayapmiz. Har bir foydalanuvchi <strong>o'zining brauzerida o'zining hisobiga kiradi</strong> — bu emaktab uchun oddiy o'quvchi sessiyasi. Texnik tomondan bloklash imkoni yo'q, chunki biz <em>alohida foydalanuvchi sifatida</em> ulanamiz.
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-q"><span class="qa-num">Q5</span>"How do you store passwords? What about a data breach?"</div>
+          <div class="qa-a">
+            Parollar <strong>hech qachon</strong> ochiq saqlanmaydi. <em>AES-256 shifrlash</em> bilan saqlaymiz va faqat o'sha foydalanuvchining o'z ma'lumotini olish uchun ishlatamiz. Hech kim — hatto biz ham — boshqa foydalanuvchining ma'lumotiga ko'ra olmaymiz.
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-q"><span class="qa-num">Q6</span>"What's your terms-of-service / privacy policy?"</div>
+          <div class="qa-a">
+            Rasmiy hujjatlarimiz <strong>launch'dan oldin</strong> tayyor bo'ladi — hozir mavjud draft — O'zbekiston qonunchiligi va GDPR me'yorlariga muvofiq. Foydalanuvchi har doim <em>o'z ma'lumotini olib tashlashi</em> yoki hisobni o'chirishi mumkin.
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-q"><span class="qa-num">Q7</span>"Who's on your team? What's your experience?"</div>
+          <div class="qa-a">
+            Men Murodjon — backend va sistem dizayni. <strong>Amirsaid</strong> — product va biznes. <strong>Zaynobiddin</strong> — CTO, infrastruktura. Bizning oldingi loyihamiz <em>Humopedia</em> — 1 yil ichida 10K+ foydalanuvchiga ega bo'ldi.
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-q"><span class="qa-num">Q8</span>"What if a 15-year-old kid signs up without parental consent?"</div>
+          <div class="qa-a">
+            13 yoshdan kichik foydalanuvchilar uchun <strong>ota-ona elektron rozilik talab qilinadi</strong>. Onboardingda yosh tasdiqlanadi va kichik yoshli foydalanuvchilarda <em>ota-onaning telefon raqami majburiy</em>. Bu O'zbekiston <em>'Shaxsiy ma'lumotlar to'g'risida'gi qonunining</em> <strong>14-moddasiga</strong> mos keladi.
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-q"><span class="qa-num">Q9</span>"Why Uzbek and not Russian? Don't you exclude Russian-speaking kids?"</div>
+          <div class="qa-a">
+            Yo'q — biz <strong>o'zbek tilini ustun</strong> qilamiz, chunki shu yerda <em>bo'shliq eng katta</em>. Russian content YouTube'da yetarli. Lekin <strong>Russian + Karakalpak</strong> ham roadmap'da bor — Q4 2026.
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-q"><span class="qa-num">Q10</span>"How will you scale technically? AI is expensive."</div>
+          <div class="qa-a">
+            Bizning <em>kesh qatlami</em> har bir AI chaqiruvini hash bilan saqlaydi. <strong>Bir o'quvchi to'laydi — qolgan barcha o'quvchilar bepul oladi</strong>. Bu shuni anglatadiki, 100K foydalanuvchidagi marginal cost = 10 foydalanuvchidagi cost. Boshqa edtech startuplar bunday qura olmaydi.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== KILLER LINE ========== -->
+    <section id="killer">
+      <div class="section-eyebrow">07 · The killer line</div>
+      <h2>The single sentence <span class="secondary">— quote this on stage after the call</span></h2>
+
+      <div class="killer">
+        <div class="label">ON-STAGE, IN UZBEK</div>
+        <div class="quote">
+          "Bugun ertalab emaktab.uz vakili bilan to'g'ridan-to'g'ri suhbatlashdik. Ular bizning yondashuvimizdan xabardor — biz <em style="font-style:italic;color:var(--gold-deep);">foydalanuvchi roziligi bilan</em>, <em style="font-style:italic;color:var(--gold-deep);">shifrlangan tarzda</em>, faqat o'sha foydalanuvchining o'z ma'lumotini ishlatamiz. Kelasi haftada rasmiy uchrashuv kelishilgan."
+        </div>
+        <div class="footnote">Every word is true after a real call. This one sentence kills the legal/data-source question.</div>
+      </div>
+    </section>
+
+    <!-- ========== CHECKLIST ========== -->
+    <section id="checklist">
+      <div class="section-eyebrow">08 · Pre-call</div>
+      <h2>60 seconds before dialing</h2>
+
+      <div class="checklist">
+        <ul>
+          <li>Glass of water in arm's reach</li>
+          <li>Quiet room — no background noise</li>
+          <li>This document open on a second screen (or this tab)</li>
+          <li>Notepad + pen ready for their name + position</li>
+          <li>Your phone DND OFF — they may need to call back</li>
+          <li>Smile — they hear it through the phone</li>
+          <li>Mental picture: <em style="font-style:italic;color:var(--gold-deep);">this is partnership talk, not permission asking</em></li>
+          <li>Slow breath. Then dial.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ========== AFTER ========== -->
+    <section id="after">
+      <div class="section-eyebrow">09 · After the call</div>
+      <h2>Within 2 hours <span class="secondary">— lock the win</span></h2>
+
+      <div class="after">
+        <ol>
+          <li><strong>Write down their exact words.</strong> Name, position, what they said, what you promised. Memory fades fast post-adrenaline.</li>
+          <li><strong>Send the formal letter</strong> (<code style="background:var(--bg);padding:1px 6px;border-radius:4px;font-family:var(--font-mono);font-size:13px;">docs/emaktab-outreach.md</code>) via the Telegram/email they gave you. In the email body, reference the call:
+            <div class="mini-script">
+              Bugun (24-may, soat <strong>HH:MM</strong>) telefonda gaplashganimizdan keyin va'da qilganimdek, rasmiy xat va hujjatlarimizni yuborayapman. Sizning vaqtingiz uchun rahmat.
+            </div>
+          </li>
+          <li><strong>Tell Amirsaid the outcome</strong> so he updates the pitch line accordingly. If YES → quote killer line §7. If WAIT → quote "letter sent, review in progress." If NO → quote "we paused out of respect."</li>
+          <li><strong>Tell Zaynobiddin</strong> on Telegram so he knows what to say if asked during the booth demo.</li>
+        </ol>
+      </div>
+    </section>
+
+    <footer class="bottom">
+      Scorpius · internal · 2026-05-24 · pitch +90 min · siz uchun yozildi
+    </footer>
+
+  </main>
+</div>
+
+<a href="#opening" class="to-top" title="Back to top">↑</a>
+
+</body>
+</html>

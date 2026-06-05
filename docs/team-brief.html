@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Scorpius — Team Brief</title>
+    <style>
+      @page { size: A4; margin: 15mm 16mm; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        color: #1c2433;
+        font-size: 10.3pt;
+        line-height: 1.5;
+      }
+      .header {
+        background: #0b0e1a;
+        color: #e8ecf6;
+        border-radius: 10px;
+        padding: 18px 22px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+      .header svg { flex-shrink: 0; }
+      .header h1 { font-size: 19pt; font-weight: 700; letter-spacing: -0.02em; }
+      .header .sub { color: #8b97b8; font-size: 9pt; margin-top: 2px; }
+      h2 {
+        font-size: 11.5pt;
+        color: #0b0e1a;
+        margin: 16px 0 6px;
+        padding-bottom: 3px;
+        border-bottom: 2px solid #c8920f;
+      }
+      h2 .n { color: #c8920f; }
+      p { margin: 4px 0; }
+      ul { margin: 4px 0 4px 18px; }
+      li { margin: 2px 0; }
+      strong { color: #0b0e1a; }
+      table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 9.6pt; }
+      th, td { border: 1px solid #d5dbe6; padding: 5px 8px; text-align: left; vertical-align: top; }
+      th { background: #eef1f7; color: #0b0e1a; font-weight: 600; }
+      .lead { font-size: 10.6pt; }
+      .accent { color: #c8920f; font-weight: 600; }
+      .callout {
+        background: #fff8e3;
+        border: 1px solid #ecd58f;
+        border-left: 4px solid #c8920f;
+        border-radius: 6px;
+        padding: 10px 13px;
+        margin: 8px 0;
+      }
+      .callout h2 { border: 0; margin-top: 0; }
+      .muted { color: #5a6788; }
+      .foot { margin-top: 14px; color: #8b97b8; font-size: 8.3pt; text-align: center; }
+      .page-break { break-before: page; }
+      .check li { list-style: none; margin-left: -18px; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <svg width="86" height="40" viewBox="0 0 200 90" fill="none">
+        <polyline points="20,30 45,27 70,33 95,46 118,59 139,69 154,58 162,40"
+          stroke="#3d496f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="20" cy="30" r="3" fill="#b6bfd6" /><circle cx="45" cy="27" r="3" fill="#b6bfd6" />
+        <circle cx="70" cy="33" r="3" fill="#b6bfd6" /><circle cx="118" cy="59" r="3" fill="#b6bfd6" />
+        <circle cx="139" cy="69" r="3" fill="#b6bfd6" /><circle cx="154" cy="58" r="3" fill="#b6bfd6" />
+        <circle cx="162" cy="40" r="3" fill="#b6bfd6" />
+        <circle cx="95" cy="46" r="10" fill="#c8920f" opacity="0.22" />
+        <circle cx="95" cy="46" r="5" fill="#c8920f" />
+      </svg>
+      <div>
+        <h1>Scorpius — Team Brief</h1>
+        <div class="sub">Build with AI: EdTech Hackathon · 23–24 May 2026 · New Uzbekistan University</div>
+      </div>
+    </div>
+
+    <p class="lead muted">
+      Read this once before the hackathon. It tells you what we're building, what you
+      personally do, and how the two days run. Most of us haven't done a hackathon before —
+      that's fine. This is the map.
+    </p>
+
+    <h2><span class="n">1.</span> What we're building — Scorpius</h2>
+    <p>
+      <strong>Scorpius</strong> is an AI tutor that turns <strong>emaktab.uz</strong> from a
+      passive gradebook into a personalized tutor. It reads a student's real grades, finds the
+      exact lesson in the Uzbek curriculum, and teaches it one swipeable card at a time — then
+      briefs the parent. Our track is <span class="accent">General Education</span> (schools,
+      learners, parents, teachers).
+    </p>
+    <p>
+      <strong>Why it can win:</strong> it's built on real emaktab data nobody else has, and a
+      genuine adaptive learning engine — not a thin chatbot. The judges explicitly reward AI
+      that "supports the core value," not a chatbot layer.
+    </p>
+
+    <h2><span class="n">2.</span> The hackathon — the hard facts</h2>
+    <ul>
+      <li>Two-day build, <strong>23–24 May</strong>, New Uzbekistan University. Venue closes
+        <strong>19:00</strong> each day (remote work allowed after, no official support).</li>
+      <li>Platform: <strong>ai.gdgtashkent.uz</strong> — team registration, dashboard,
+        checkpoint status, final submission.</li>
+      <li><strong>Every member must register individually on the GDG portal BEFORE the event
+        starts.</strong> After it starts, only the team lead registers the team.</li>
+      <li><strong>Final submission: 24 May, 14:30 sharp</strong> — the dashboard locks at the
+        deadline. Two links required: a <strong>Google Slides</strong> deck (official template,
+        shared "Anyone with the link – Viewer") + a <strong>public GitHub repo</strong> with a
+        clear README.</li>
+      <li><strong>Presentation: 6 minutes</strong> — 4 min pitch + demo, 1 min judge Q&amp;A,
+        1 min scoring. A working demo beats long slides.</li>
+    </ul>
+
+    <h2><span class="n">3.</span> The three checkpoints</h2>
+    <p class="muted">Organizers verify these in person — they are not self-submitted. The
+      required number of us must be at our table, on time.</p>
+    <table>
+      <tr><th>Checkpoint</th><th>When</th><th>What organizers check</th></tr>
+      <tr><td><strong>CP1 — Team &amp; Idea Lock</strong></td><td>Day 1, 13:30–14:15</td>
+        <td>Team present, 3–5 members, everyone GDG-registered, track chosen, one EdTech idea,
+          project started at the hackathon.</td></tr>
+      <tr><td><strong>CP2 — MVP Plan &amp; AI</strong></td><td>Day 1, 17:30–18:15</td>
+        <td>A demoable MVP, the core AI feature, models/APIs used, repository status, realistic
+          scope, current blockers.</td></tr>
+      <tr><td><strong>CP3 — Demo Readiness</strong></td><td>Day 2, 11:30–12:15</td>
+        <td>Demo flow, Google Slides prepared, repo + README ready, AI feature status,
+          submission risks.</td></tr>
+    </table>
+    <p class="muted">Minimum presence: a 3-member team needs 2 present; a 4–5-member team needs
+      3. Missing checkpoints can disqualify us — treat these windows as fixed.</p>
+
+    <h2><span class="n">4.</span> Roles — who does what</h2>
+    <table>
+      <tr><th>Person</th><th>Role &amp; responsibility</th></tr>
+      <tr><td><strong>Amirsaid</strong> — Team Lead</td>
+        <td>Owns registration, the team dashboard, checkpoint coordination, and <strong>the
+          pitch</strong> (the 4-minute presentation). Single point of contact with organizers.</td></tr>
+      <tr><td><strong>Murodjon</strong> — Lead Developer</td>
+        <td>Builds the product — the app, the AI integration, the working demo. Uses AI
+          dev tools (disclosed in the README, as the rules require).</td></tr>
+      <tr><td><strong>Research &amp; Operations</strong><br/>(the rest of the team)</td>
+        <td>Problem &amp; curriculum research, competitor evidence, Slides content, demo
+          testing, and being present at every checkpoint.</td></tr>
+    </table>
+    <p><strong>Everyone:</strong> be at our table during the three checkpoint windows, and be
+      reachable the whole event.</p>
+
+    <div class="page-break"></div>
+
+    <h2><span class="n">5.</span> The two-day plan</h2>
+    <table>
+      <tr><th>Window</th><th>Focus</th></tr>
+      <tr><td>Day 1, morning</td><td>Register the team on ai.gdgtashkent.uz; lock track
+        (General Education) + the idea. <strong>→ CP1 (13:30)</strong></td></tr>
+      <tr><td>Day 1, afternoon</td><td>Build the MVP demo path — the core lesson experience +
+        the AI feature working. <strong>→ CP2 (17:30)</strong></td></tr>
+      <tr><td>Day 1, evening / night</td><td>Deepen: more lesson content, the other surfaces,
+        polish. Draft the Slides + README.</td></tr>
+      <tr><td>Day 2, morning</td><td>Demo polish, finish the Slides + README, dry-run.
+        <strong>→ CP3 (11:30)</strong></td></tr>
+      <tr><td>Day 2, by 14:30</td><td><strong>Final submission</strong> (Slides + repo links).
+        Then rehearse the 4-minute pitch until the slot.</td></tr>
+    </table>
+
+    <h2><span class="n">6.</span> How we win — the judging rubric (100 points)</h2>
+    <table>
+      <tr><th>Criterion</th><th>Pts</th><th>Owned by</th></tr>
+      <tr><td>Technical Execution &amp; Code</td><td>30</td><td>Murodjon — working build, clean
+        repo + README</td></tr>
+      <tr><td>Innovation &amp; Creativity</td><td>30</td><td>Murodjon + team — original idea,
+        real adaptive AI</td></tr>
+      <tr><td>Problem–Solution Fit</td><td>20</td><td>Research team — clear problem, right user,
+        evidence</td></tr>
+      <tr><td>Presentation &amp; Completeness</td><td>20</td><td>Amirsaid — demo quality, story</td></tr>
+    </table>
+    <p class="muted">Plus Ideathon loyalty points (up to +5) if our team continued the same
+      idea, track, and majority of members from the Ideathon. Every role maps to points — no
+      one is a passenger.</p>
+
+    <h2><span class="n">7.</span> For first-time hackathoners — how to be useful</h2>
+    <ul>
+      <li>A hackathon is a sprint: a real problem turned into a <strong>working demo</strong> in
+        ~30 hours. A demo that works beats a beautiful slide that doesn't.</li>
+      <li>If you're not writing code, your job is just as real: <strong>become the expert on the
+        problem</strong> — why Uzbek students and parents need this, with concrete evidence —
+        and turn that into the Slides and the pitch story.</li>
+      <li>Be at the table during checkpoint windows. Be reachable. <strong>Ask mentors
+        questions</strong> — that is allowed and smart.</li>
+      <li>Small, steady help compounds: test the app, find one good statistic, prep one slide,
+        catch one bug in the story. Don't disappear.</li>
+    </ul>
+
+    <div class="callout">
+      <h2><span class="n">8.</span> One honest rules note — read this</h2>
+      <p>The rules say the project must "start at the hackathon" and that "pre-built full
+        solutions are not allowed." We have early scaffolding and the design done as
+        preparation. Two things keep us safe:</p>
+      <ul>
+        <li><strong>Before CP1, Amirsaid asks an organizer/mentor directly</strong> what is
+          acceptable, given we are continuing our Ideathon idea — get a clear answer in person.</li>
+        <li><strong>Disclose everything</strong> — every tool, library, template, AI agent, and
+          all prior work — in the README and Slides. The rules require disclosure; judges
+          review the repository and its history. Transparency protects us.</li>
+      </ul>
+      <p class="muted">There is still a large amount to build live during the 34 hours — that
+        is genuine hackathon work, done openly.</p>
+    </div>
+
+    <h2><span class="n">9.</span> Before you arrive — checklist</h2>
+    <ul class="check">
+      <li>☐ Registered individually on the GDG portal (do this <strong>before</strong> 23 May)</li>
+      <li>☐ Laptop + charger; a power strip if you have one</li>
+      <li>☐ GitHub account + Google account ready and logged in</li>
+      <li>☐ Know our track: <strong>General Education</strong></li>
+      <li>☐ Arrive in time for <strong>CP1 — Day 1, 13:30</strong></li>
+    </ul>
+
+    <div class="foot">Scorpius · Build with AI: EdTech Hackathon · prepared 22 May 2026</div>
+  </body>
+</html>

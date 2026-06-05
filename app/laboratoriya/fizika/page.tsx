@@ -13,6 +13,12 @@ export default function FizikaPage() {
       title="Fizika laboratoriyasi"
       subtitle="Toʻqnashuvlar — impuls va energiya jonli"
       accent="#2dd4bf"
+      askTopic="Fizika — sharlar toʻqnashuvi, impuls va kinetik energiya"
+      askStarters={[
+        "Nega birinchi shar toʻxtaydi?",
+        "Impuls nima?",
+        "Elastik va noelastik toʻqnashuv farqi?",
+      ]}
     >
       <FizikaLab />
     </LabShell>

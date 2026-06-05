@@ -15,7 +15,7 @@
 
 import { useProperty } from "@/lib/sim/observable/useProperty";
 import type { DnaModel } from "@/lib/sims/biology/dna/Model";
-import { DNA_BASES, complementDNA } from "@/lib/sims/biology/dna/data";
+import { complementDNA } from "@/lib/sims/biology/dna/data";
 import { BaseChip, BackboneRail, ACCENT, smooth } from "./dnaPrimitives";
 
 const CHIP = 28;
@@ -105,7 +105,7 @@ export default function TranscriptionStage({ model }: { model: DnaModel }) {
       {/* legend / pairing being applied right now */}
       <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-void-300">
         <span className="font-semibold text-emerald-300">RNK polimeraza</span>
-        <span>shablonni o'qiydi · mRNK juftlanish bilan o'sadi</span>
+        <span>shablonni oʻqiydi · mRNK juftlanish bilan oʻsadi</span>
         <span className="rounded-full bg-white/5 px-2 py-0.5 font-mono text-[10.5px]">
           A→<span className="text-orange-300">U</span> · T→A · G→C · C→G
         </span>

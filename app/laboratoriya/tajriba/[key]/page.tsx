@@ -32,6 +32,31 @@ const TAJRIBA: Record<
     subtitle: "Qaysi egri chiziq eng tez? — Brakistoxrona",
     accent: "#e8a21a",
   },
+  richag: {
+    title: "Richag",
+    subtitle: "Kuch, yelka va muvozanat",
+    accent: "#2dd4bf",
+  },
+  paskal: {
+    title: "Paskal qonuni",
+    subtitle: "Suyuqlikdagi bosim — gidravlika",
+    accent: "#3b7bd1",
+  },
+  tovush: {
+    title: "Tovush toʻlqini",
+    subtitle: "Chastota, amplituda va tovush kuchi",
+    accent: "#a855f7",
+  },
+  linza: {
+    title: "Linza",
+    subtitle: "Yorugʻlik sinishi, fokus va tasvir",
+    accent: "#e8a21a",
+  },
+  zanjir: {
+    title: "Elektr zanjiri",
+    subtitle: "Tok, kuchlanish va qarshilik",
+    accent: "#6366f1",
+  },
 };
 
 export function generateStaticParams() {

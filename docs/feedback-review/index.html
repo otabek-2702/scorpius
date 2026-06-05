@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Scorpius — Mentor Feedback Review · YC-Level Mentor Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700;800&family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:         #f4f1e8;
+    --paper:      #ffffff;
+    --inset:      #ede9dc;
+    --border:     #e2dcc7;
+    --border-st:  #cbc4ab;
+    --faint:      #b9b29c;
+    --ink:        #1a1813;
+    --ink-2:      #55513f;
+    --ink-3:      #847e6b;
+    --gold:       #e8a21a;
+    --gold-deep:  #c98910;
+    --gold-700:   #a9760a;
+    --gold-50:    #fdf3dc;
+    --signal-ok:  #2fa86a;
+    --signal-no:  #d8453b;
+    --blue:       #3b7bd1;
+
+    --f-sans:    'Inter', system-ui, sans-serif;
+    --f-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
+    --f-serif:   'Newsreader', Georgia, serif;
+    --f-mono:    'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg); color: var(--ink); font-family: var(--f-sans);
+    -webkit-font-smoothing: antialiased; font-size: 16px; line-height: 1.55;
+  }
+  body { padding: 56px 0; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 32px; }
+
+  /* ============ HEADER ============ */
+  .top-chip {
+    display: inline-flex; align-items: center; gap: 10px;
+    border: 1.5px solid var(--border); background: var(--paper);
+    padding: 10px 18px; border-radius: 999px;
+    font-family: var(--f-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .top-chip .dot { width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold); box-shadow: 0 0 8px 1px rgba(232,162,26,0.55); }
+  .top-chip strong { color: var(--ink); font-weight: 700; }
+
+  h1.hero {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 64px; line-height: 1.05; letter-spacing: -0.025em;
+    color: var(--ink); margin-top: 28px; max-width: 22ch;
+  }
+  h1.hero em { font-style: italic; color: var(--gold-deep); font-weight: 500; }
+
+  p.lede {
+    font-family: var(--f-serif); font-weight: 400; font-style: italic;
+    font-size: 22px; line-height: 1.45; color: var(--ink-2);
+    margin-top: 24px; max-width: 64ch;
+  }
+  p.lede em { color: var(--gold-deep); }
+
+  /* ============ TL;DR CARD ============ */
+  .tldr {
+    margin-top: 48px;
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 32px 36px;
+  }
+  .tldr-label {
+    font-family: var(--f-mono); font-weight: 700; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-deep);
+  }
+  .tldr h2 {
+    font-family: var(--f-serif); font-weight: 500; font-size: 32px;
+    letter-spacing: -0.02em; line-height: 1.15; color: var(--ink);
+    margin-top: 6px; max-width: 30ch;
+  }
+  .tldr h2 em { font-style: italic; color: var(--gold-deep); }
+  .verdict-list { margin-top: 24px; display: flex; flex-direction: column; gap: 14px; }
+  .verdict {
+    display: grid; grid-template-columns: 32px 1fr 100px;
+    gap: 18px; align-items: baseline;
+    padding-top: 14px; border-top: 1px solid var(--border);
+  }
+  .verdict:first-child { border-top: 0; padding-top: 0; }
+  .verdict .n {
+    font-family: var(--f-mono); font-weight: 700; font-size: 14px;
+    color: var(--gold-deep); letter-spacing: 0.1em;
+  }
+  .verdict .text {
+    font-family: var(--f-serif); font-size: 17.5px; line-height: 1.45;
+    color: var(--ink);
+  }
+  .verdict .text em { color: var(--gold-deep); font-style: italic; }
+  .verdict .text strong { color: var(--ink); font-weight: 700; }
+  .verdict .tag {
+    font-family: var(--f-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 999px;
+    text-align: center;
+  }
+  .verdict .tag.fix  { background: rgba(216,69,59,0.10); color: #a8362e; }
+  .verdict .tag.add  { background: rgba(232,162,26,0.14); color: var(--gold-700); }
+  .verdict .tag.keep { background: rgba(47,168,106,0.12); color: #1f7d4d; }
+  .verdict .tag.flip { background: rgba(59,123,209,0.12); color: #2b5fa8; }
+
+  /* ============ SECTIONS ============ */
+  .section {
+    margin-top: 72px;
+  }
+  .section-head {
+    display: grid; grid-template-columns: 56px 1fr;
+    gap: 22px; align-items: baseline;
+  }
+  .section-head .num {
+    font-family: var(--f-serif); font-style: italic; font-weight: 500;
+    font-size: 64px; color: var(--gold); line-height: 1; letter-spacing: -0.04em;
+  }
+  .section-head .title {
+    font-family: var(--f-display); font-weight: 700;
+    font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .section-head h3 {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 40px; line-height: 1.1; letter-spacing: -0.022em;
+    color: var(--ink); margin-top: 6px; max-width: 28ch;
+  }
+  .section-head h3 em { font-style: italic; color: var(--gold-deep); }
+
+  /* the verbatim Uzbek block */
+  .quote {
+    margin-top: 28px;
+    background: var(--inset);
+    border-left: 4px solid var(--gold);
+    border-radius: 0 14px 14px 0;
+    padding: 22px 28px;
+  }
+  .quote .qtag {
+    font-family: var(--f-mono); font-weight: 700; font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .quote p {
+    font-family: var(--f-serif); font-style: italic; font-size: 18px;
+    color: var(--ink); line-height: 1.55; margin-top: 8px;
+  }
+
+  /* sub-blocks */
+  .block { margin-top: 28px; }
+  .block-label {
+    font-family: var(--f-mono); font-weight: 700; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-deep);
+    margin-bottom: 10px;
+  }
+  .block-label.muted { color: var(--ink-3); }
+  .block p {
+    font-family: var(--f-serif); font-size: 17px; line-height: 1.6;
+    color: var(--ink-2); max-width: 78ch;
+  }
+  .block p + p { margin-top: 14px; }
+  .block p strong { color: var(--ink); font-weight: 600; }
+  .block p em { color: var(--gold-deep); font-style: italic; }
+  .block code { font-family: var(--f-mono); font-size: 13.5px;
+    background: var(--inset); padding: 2px 7px; border-radius: 5px;
+    color: var(--ink); border: 1px solid var(--border); }
+  .block a { color: var(--gold-deep); text-decoration: underline; text-underline-offset: 3px; }
+
+  /* a small fact strip */
+  .facts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+  }
+  .facts .fct {
+    background: var(--paper); border: 1.5px solid var(--border);
+    border-radius: 14px; padding: 16px 18px;
+  }
+  .facts .fct .v {
+    font-family: var(--f-serif); font-weight: 500; font-size: 26px;
+    letter-spacing: -0.018em; color: var(--ink); line-height: 1;
+  }
+  .facts .fct .v em { color: var(--gold-deep); font-style: italic; }
+  .facts .fct .k {
+    font-family: var(--f-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3);
+    margin-top: 8px; line-height: 1.4;
+  }
+
+  /* scorecard table */
+  table.score {
+    width: 100%; border-collapse: collapse; margin-top: 16px;
+    background: var(--paper);
+    border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden;
+    font-size: 13.5px;
+  }
+  table.score th, table.score td {
+    padding: 9px 12px; border-bottom: 1px solid var(--border);
+    text-align: left; vertical-align: top;
+  }
+  table.score th {
+    background: var(--inset);
+    font-family: var(--f-mono); font-weight: 700; font-size: 10.5px;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink);
+  }
+  table.score td { font-family: var(--f-sans); color: var(--ink-2); }
+  table.score td:first-child { color: var(--ink); font-weight: 600; }
+  table.score .n { text-align: center; font-family: var(--f-mono); font-weight: 700; }
+  table.score .n.weak { color: var(--signal-no); }
+  table.score .n.ok   { color: var(--ink-2); }
+  table.score .n.good { color: var(--signal-ok); }
+  table.score tr:last-child td { border-bottom: 0; }
+
+  /* recs list */
+  .recs { margin-top: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .rec {
+    background: var(--paper); border: 1.5px solid var(--border);
+    border-radius: 16px; padding: 18px 22px;
+    display: grid; grid-template-columns: 36px 1fr; gap: 16px;
+  }
+  .rec .rn {
+    font-family: var(--f-serif); font-style: italic; font-weight: 500;
+    font-size: 28px; color: var(--gold); line-height: 1; padding-top: 1px;
+  }
+  .rec .rt {
+    font-family: var(--f-display); font-weight: 700; font-size: 16px;
+    letter-spacing: -0.012em; color: var(--ink);
+  }
+  .rec .rb {
+    font-family: var(--f-serif); font-size: 15px; line-height: 1.55;
+    color: var(--ink-2); margin-top: 6px;
+  }
+  .rec .rb code { font-family: var(--f-mono); font-size: 12.5px;
+    background: var(--inset); padding: 1px 6px; border-radius: 4px;
+    color: var(--ink); }
+  .rec .rmeta {
+    font-family: var(--f-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-deep);
+    margin-top: 10px;
+  }
+
+  /* verdict pill */
+  .verdict-pill {
+    margin-top: 26px;
+    background: linear-gradient(135deg, rgba(232,162,26,0.10), rgba(232,162,26,0.04));
+    border: 1.5px solid var(--gold); border-radius: 18px;
+    padding: 22px 28px;
+  }
+  .verdict-pill .vlabel {
+    font-family: var(--f-mono); font-weight: 700; font-size: 10.5px;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-700);
+  }
+  .verdict-pill .vbody {
+    font-family: var(--f-serif); font-style: italic; font-size: 19px;
+    color: var(--ink); margin-top: 8px; line-height: 1.5;
+  }
+  .verdict-pill .vbody strong { font-style: normal; font-weight: 600; color: var(--ink); }
+  .verdict-pill.warn {
+    background: linear-gradient(135deg, rgba(216,69,59,0.08), rgba(216,69,59,0.02));
+    border-color: #c84638;
+  }
+  .verdict-pill.warn .vlabel { color: #a8362e; }
+
+  /* priority matrix */
+  .matrix {
+    margin-top: 32px;
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 32px 36px;
+  }
+  .matrix h4 {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 28px; letter-spacing: -0.018em; line-height: 1.15;
+    color: var(--ink); margin-bottom: 6px;
+  }
+  .matrix-rows { margin-top: 22px; display: flex; flex-direction: column; gap: 0; }
+  .mrow {
+    display: grid; grid-template-columns: 40px 1.4fr 0.6fr 0.5fr 0.6fr;
+    gap: 16px; align-items: center;
+    padding: 14px 0; border-top: 1px solid var(--border);
+  }
+  .mrow:first-child { border-top: 0; }
+  .mrow.head {
+    font-family: var(--f-mono); font-weight: 700; font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
+    padding-bottom: 4px;
+  }
+  .mrow .midx {
+    font-family: var(--f-serif); font-style: italic; font-weight: 500;
+    font-size: 26px; color: var(--gold); line-height: 1;
+  }
+  .mrow .what {
+    font-family: var(--f-display); font-weight: 600; font-size: 15px;
+    color: var(--ink); letter-spacing: -0.01em;
+  }
+  .mrow .what .sub {
+    font-family: var(--f-serif); font-style: italic; font-weight: 400;
+    font-size: 13px; color: var(--ink-3); margin-top: 2px;
+  }
+  .mrow .imp, .mrow .eff, .mrow .when {
+    font-family: var(--f-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em; color: var(--ink-2); text-align: center;
+    padding: 4px 8px; border-radius: 999px;
+    background: var(--inset);
+  }
+  .mrow .imp.hi { background: rgba(216,69,59,0.10); color: #a8362e; }
+  .mrow .imp.md { background: rgba(232,162,26,0.14); color: var(--gold-700); }
+  .mrow .imp.lo { background: var(--inset); color: var(--ink-3); }
+  .mrow .eff.s  { background: rgba(47,168,106,0.12); color: #1f7d4d; }
+  .mrow .eff.m  { background: rgba(232,162,26,0.14); color: var(--gold-700); }
+  .mrow .eff.l  { background: rgba(216,69,59,0.10); color: #a8362e; }
+
+  /* footer */
+  .foot {
+    margin-top: 72px; padding-top: 32px; border-top: 1.5px solid var(--border);
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.12em;
+    color: var(--ink-3); text-transform: uppercase;
+  }
+  .foot .hash { color: var(--gold-deep); }
+
+  /* sources */
+  .sources { margin-top: 18px; font-family: var(--f-serif); font-size: 14px;
+    color: var(--ink-3); line-height: 1.7; }
+  .sources a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; }
+  .sources a:hover { color: var(--gold-deep); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<div class="top-chip"><span class="dot"></span><strong>Scorpius</strong>&nbsp;·&nbsp;Mentor Feedback Review</div>
+
+<h1 class="hero">Muxammadali was <em>right</em> on four of five &mdash; here&rsquo;s the audit, the research, and what to ship next.</h1>
+
+<p class="lede">
+Five points landed. Four are real product gaps the deck can&rsquo;t paper over. One &mdash; the &ldquo;students should pay, not parents&rdquo; pivot &mdash; is the wrong answer to a real observation, and we&rsquo;ll explain why. Each section below has the verbatim quote, what&rsquo;s true in the code today, what the best EdTech apps do, and the YC-mentor call.
+</p>
+
+<!-- ============ TL;DR ============ -->
+<div class="tldr">
+  <div class="tldr-label">TL;DR &middot; the five verdicts</div>
+  <h2>Build instruments, not exhibits. Show the personalization. Give the journey an end. Keep parent-pay. Add a Burj.</h2>
+
+  <div class="verdict-list">
+    <div class="verdict">
+      <div class="n">01</div>
+      <div class="text"><strong>Sims aren&rsquo;t &ldquo;tests with pretty design&rdquo; &mdash; but they aren&rsquo;t labs either.</strong> Every sim has the right physics underneath and a frozen scenario on top. Freedom score: <em>2.1/5</em>. Fix: kill <code>onComplete</code> win-conditions, add sandbox modes + a Lab Notebook.</div>
+      <div class="tag fix">FIX</div>
+    </div>
+    <div class="verdict">
+      <div class="n">02</div>
+      <div class="text"><strong>The personalization is real but invisible.</strong> The weakest-lesson picker exists &mdash; and returns <code>"density"</code> for everyone (<code>lib/emaktab/weakest.ts:37</code>). Streak is hardcoded to <code>1</code>. The audience can&rsquo;t see what the model knows. Fix: surface mastery, expose the &ldquo;why this lesson, why now&rdquo;.</div>
+      <div class="tag fix">FIX</div>
+    </div>
+    <div class="verdict">
+      <div class="n">03</div>
+      <div class="text"><strong>The journey has no end.</strong> Ignite all stars in a constellation &rarr; nothing happens. No supernova, no certificate, no catalog. The brand has the perfect metaphor (Beruniy &middot; Ulug&rsquo;bek &middot; zij) sitting unused. <em>Add</em> a chapter-end ceremony + personal star catalog.</div>
+      <div class="tag add">ADD</div>
+    </div>
+    <div class="verdict">
+      <div class="n">04</div>
+      <div class="text"><strong>Parent-pays is the right call. Don&rsquo;t flip.</strong> Muxammadali conflated user with buyer. At 80K so&rsquo;m the realistic distribution is 85% parent / 5% self-pay. Switching to student-pay collapses LTV from 1.9M to &lt;500K. Optional 25K so&rsquo;m student tier as a hedge.</div>
+      <div class="tag keep">KEEP</div>
+    </div>
+    <div class="verdict">
+      <div class="n">05</div>
+      <div class="text"><strong>The deck reads as &ldquo;test with prettier design&rdquo; because the deck IS a test.</strong> Progress dots, lock pill, A/B/C/D buttons, green/red feedback. Build the <em>Burj</em> &mdash; a Khorezmi-themed constellation collection &mdash; before everything else. 1.5 days. Single biggest perception fix.</div>
+      <div class="tag flip">FLIP</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============ SECTION 1 — SIMS ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">01</div>
+    <div>
+      <div class="title">Feedback &middot; Simulations don&rsquo;t replace the lab</div>
+      <h3>Build <em>instruments</em>, not exhibits.</h3>
+    </div>
+  </div>
+
+  <div class="quote">
+    <div class="qtag">Muxammadali &middot; verbatim</div>
+    <p>&ldquo;xozir o&rsquo;ziz aytgan shartni o&rsquo;ziz qanoatlantrimayapsiz labaratoriyaga sharoit yo&rsquo;q biz shunga qildik deyapsizlar qani labaratoriya silar o&rsquo;quvchi o&rsquo;rnida bo&rsquo;lsanglar shu ishilar qoniqarmidingar dedi.&rdquo;</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">What&rsquo;s true today</div>
+    <p>11 simulations exist (Brachistochrone, Brownian, Buoyancy, Eclipse, Prism, Lens, Lever, Pascal, Sound, Circuit, DivisorGrid). The physics is real &mdash; <code>requestAnimationFrame</code> integration loops, Snell&rsquo;s law, Archimedes, Ohm. Animations are smooth. But every sim is a <strong>single-screen scenario with a hidden win condition</strong>: drop 3 blocks &rarr; <code>onComplete?.()</code>. Drag past focal point &rarr; <code>onComplete?.()</code>. Hear a tone &rarr; <code>onComplete?.()</code>. That is structurally a quiz disguised as a sim.</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">The PhET / Brilliant / Labster bar</div>
+    <p>A real virtual lab gives the learner <strong>a system, not a question</strong>. PhET&rsquo;s <em>Energy Skate Park</em> lets you drag-build any track shape, then watches energy bars animate; <em>Wave Interference</em> drops measurement probes anywhere in the field. Labster lets you set a P200 pipette volume on a virtual physical dial. Algodoo is pure-sandbox 2D physics with a pen tool. None of them say &ldquo;you finished, here&rsquo;s a green check.&rdquo; Completion is the learner&rsquo;s own <em>aha</em>.</p>
+    <p>Four criteria all good sims hit: <strong>multi-knob continuous control</strong>, <strong>multiple synchronized representations</strong> (visual + numeric + graph), <strong>free-roam state space</strong>, and <strong>no win condition</strong>.</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">Scorpius scorecard &middot; 1&ndash;5 against the bar</div>
+    <table class="score">
+      <thead><tr><th>Sim</th><th class="n">Interaction</th><th class="n">Feedback</th><th class="n">Freedom</th><th>One-line fix</th></tr></thead>
+      <tbody>
+        <tr><td>Brachistochrone</td><td class="n weak">1</td><td class="n ok">2</td><td class="n weak">1</td><td>Let users draw a 4th custom path by dragging waypoints, race it</td></tr>
+        <tr><td>Brownian</td><td class="n ok">2</td><td class="n ok">3</td><td class="n weak">2</td><td>Add grain mass slider + live &lang;r&sup2;&rang; vs t graph</td></tr>
+        <tr><td>Buoyancy</td><td class="n good">4</td><td class="n good">4</td><td class="n ok">3</td><td>&ldquo;Build your own block&rdquo; with density + size sliders</td></tr>
+        <tr><td>Eclipse</td><td class="n ok">3</td><td class="n ok">2</td><td class="n weak">2</td><td>Live umbra/penumbra coverage % + cone depth labels</td></tr>
+        <tr><td>Prism</td><td class="n ok">3</td><td class="n ok">3</td><td class="n weak">2</td><td>Glass-material picker (crown/flint) + second light source</td></tr>
+        <tr><td>Lens</td><td class="n ok">3</td><td class="n good">4</td><td class="n weak">2</td><td>Diverging-lens toggle + draggable object height + 2nd lens</td></tr>
+        <tr><td>Lever</td><td class="n good">4</td><td class="n good">4</td><td class="n ok">3</td><td>&ldquo;+ Add weight&rdquo; button spawning arbitrary-mass weights</td></tr>
+        <tr><td>Pascal</td><td class="n ok">3</td><td class="n ok">3</td><td class="n weak">2</td><td>Car-mass slider, stack multiple loads, find breaking ratio</td></tr>
+        <tr><td>Sound</td><td class="n ok">3</td><td class="n good">4</td><td class="n weak">2</td><td>Second oscillator + waveform picker &rarr; beats &amp; timbre</td></tr>
+        <tr><td>Circuit</td><td class="n good">4</td><td class="n good">4</td><td class="n weak">2</td><td>Drag-from-palette builder &mdash; series vs parallel + ammeter probe</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top: 14px; font-family: var(--f-mono); font-size: 12px; color: var(--ink-3); letter-spacing: 0.08em;">Mean: interaction <strong style="color:var(--ink)">3.0</strong> &middot; feedback <strong style="color:var(--ink)">3.3</strong> &middot; freedom <strong style="color:var(--signal-no)">2.1</strong>. Freedom is the structural weakness.</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">Ship this week &middot; 3 builds, in order</div>
+    <div class="recs">
+      <div class="rec">
+        <div class="rn">1</div>
+        <div>
+          <div class="rt">Kill the win-conditions. Add a Lab Notebook.</div>
+          <div class="rb">Remove every <code>onComplete</code>-triggers-after-N-actions in <code>components/learn/sims/</code>. Replace with a persistent right-side panel where every reading the user takes (&tau;, V&middot;I, v/u, displaced volume, spectrum spread) appends with a timestamp. Now the sim is an instrument that <em>records</em> &mdash; not a quiz dressed up as one.</div>
+          <div class="rmeta">Effort &middot; 1&ndash;2 days &middot; touches all 10 sims</div>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="rn">2</div>
+        <div>
+          <div class="rt">Add sandbox mode to the 3 strongest sims.</div>
+          <div class="rb">Buoyancy &mdash; 7th shelf item opens density + size sliders before drop. Lever &mdash; &ldquo;+ Add weight&rdquo; spawning a draggable mass (1&ndash;20 kg slider). Circuit &mdash; palette of components dragged onto a grid for series/parallel topologies. These three carry the demo: make them sandboxes, not exhibits.</div>
+          <div class="rmeta">Effort &middot; 3&ndash;5 days &middot; touches 3 files</div>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="rn">3</div>
+        <div>
+          <div class="rt">Live time-series graphs + a draggable protractor.</div>
+          <div class="rb">Brownian needs &lang;r&sup2;&rang; vs t (the actual physics &mdash; diffusion is linear in time, only visible on a graph). Sound needs a spectrum strip below the waveform. Prism + Lens need an on-canvas protractor users drop onto any ray. This is PhET&rsquo;s tools-you-deploy pattern &mdash; small effort, huge perceived depth jump.</div>
+          <div class="rmeta">Effort &middot; 2 days &middot; reusable component</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict-pill">
+    <div class="vlabel">YC-mentor verdict</div>
+    <div class="vbody">The mentor is half-right. The physics is genuine, the metaphors (gold buoyancy arrows, fly-as-object, Brownian zig-zag) are strong. What&rsquo;s missing is <strong>freedom</strong>. PhET wins on freedom and tools-you-deploy, not on prettier graphics. Don&rsquo;t build new sims. Convert the 10 you have from <em>scenario</em> to <em>instrument</em>. That closes the gap and is the difference between &ldquo;Grade-6 textbook with animations&rdquo; and &ldquo;the PhET of Uzbekistan.&rdquo;</div>
+  </div>
+</div>
+
+
+<!-- ============ SECTION 2 — PERSONALIZATION ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">02</div>
+    <div>
+      <div class="title">Feedback &middot; The individual approach isn&rsquo;t shown end-to-end</div>
+      <h3>Make the model <em>visible</em>.</h3>
+    </div>
+  </div>
+
+  <div class="quote">
+    <div class="qtag">Muxammadali &middot; verbatim</div>
+    <p>&ldquo;keyin har bitta o&rsquo;quvchiga individual yondashib smulyatsiya qilamiz desak shuni xam to&rsquo;liq qilib ko&rsquo;rsatinglar dedi.&rdquo;</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">What&rsquo;s actually in the code</div>
+    <p>Plenty exists. Profile capture &mdash; name, grade, interests, sub-interests (Batman/Real Madrid), goal, painPoint &mdash; in <code>lib/profile.ts:5-17</code>. Personas inject <code>profileLine()</code> into every LLM system prompt (<code>lib/personas.ts:268-284</code>). The emaktab live snapshot pipeline pulls real grades + diary (<code>lib/emaktab/live.ts</code>). There&rsquo;s even a weakest-lesson picker (<code>lib/emaktab/weakest.ts</code>) that scans diary marks &le; 3.</p>
+    <p>But: <code>pickWeakestLesson</code> at line 37 is <strong>hardcoded</strong> to return <code>"density"</code> for every user, regardless of which topic the bad mark was on. <code>SkyView.tsx:336</code> hardcodes <code>const streak = 1</code>. No per-topic mastery state exists. The Batman/Real-Madrid personalization only enters the LLM prompt &mdash; the student has no UI hint that &ldquo;your example uses Batman.&rdquo; And <code>app/personalizing/page.tsx</code> is a <em>theatrical</em> 5-stage loader (&ldquo;843 ta baho yuklanmoqda&hellip;&rdquo;) &mdash; performed personalization, not measured.</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">What other EdTech apps actually SHOW</div>
+    <p>Five UI primitives the leaders use to make personalization observable: <strong>(A) per-skill mastery meter</strong> &mdash; Khan&rsquo;s mastery bar, IXL&rsquo;s SmartScore, NWEA RIT. <strong>(B) named &ldquo;next thing&rdquo; card with a <em>reason</em></strong> &mdash; Khanmigo&rsquo;s &ldquo;you got stuck on equivalent fractions&rdquo;, Brilliant&rsquo;s &ldquo;Continue&rdquo; + &ldquo;Recommended for you.&rdquo; <strong>(C) decay/risk indicator</strong> &mdash; Duolingo&rsquo;s crown levels dimming, Anki&rsquo;s color-coded due cards. <strong>(D) visible difficulty fork</strong> &mdash; IXL stepping up after a streak, Brilliant&rsquo;s &ldquo;Quick check &mdash; making sure this clicked.&rdquo; <strong>(E) greeting that names prior state</strong> &mdash; Duolingo home: &ldquo;Hi Murod &middot; streak 47 &middot; weakest skill: past tense.&rdquo;</p>
+    <p>The pattern: <em>every screen names a piece of per-user state and shows it changing</em>. Personalization isn&rsquo;t a backend fact &mdash; it is a <strong>visible delta</strong>.</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">The gap &middot; what a 60-second demo needs</div>
+    <p>To convince a pitch judge, you&rsquo;d need to point at, on stage, five things we don&rsquo;t have:</p>
+    <p>
+      &mdash; A per-topic mastery percentage on each star (&ldquo;EKUB: 60% &middot; 2/5 mashq&rdquo;).<br/>
+      &mdash; A named &ldquo;Bugungi tavsiya &mdash; chunki&hellip;&rdquo; card with a <em>reason</em> sentence.<br/>
+      &mdash; A visible difficulty fork inside a lesson (&ldquo;Bu osonroq bo&rsquo;ldi, keyingisi qiyinroq&rdquo; toast).<br/>
+      &mdash; A &ldquo;siz Batman&rsquo;ni yoqtirasiz &mdash; mana misol&rdquo; inline label that <em>names</em> the interest being used.<br/>
+      &mdash; A returning-user home that names prior state (&ldquo;Oxirgi safar EKUKda to&rsquo;xtagansiz&rdquo;).
+    </p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">Ship this week &middot; 3 builds, in order</div>
+    <div class="recs">
+      <div class="rec">
+        <div class="rn">1</div>
+        <div>
+          <div class="rt">Replace the hardcoded <code>"density"</code> return in <code>weakest.ts:37</code>.</div>
+          <div class="rb">Route by actual subject of the bad mark, and surface the reason text on the <em>Bugungi</em> star: &ldquo;Kecha fizikada 3 &mdash; Paskalni birga ko&rsquo;rib chiqaylik.&rdquo; Now the demo can open the diary, get a 3, and watch the badge move to a different topic with a different reason line. <strong>This single fix sells the personalization story.</strong></div>
+          <div class="rmeta">Effort &middot; half a day</div>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="rn">2</div>
+        <div>
+          <div class="rt">Per-topic mastery integer in Firestore.</div>
+          <div class="rb">Store <code>users/{uid}/mastery/{topicId}</code> as a simple correct/total integer. Render the percentage on every <code>StarTile</code>; let <code>litCount</code> become &ldquo;27% of constellation mastered.&rdquo; Every star now has a number that visibly changes &mdash; the single highest-density &ldquo;this app knows me&rdquo; signal in EdTech.</div>
+          <div class="rmeta">Effort &middot; 1&ndash;2 days</div>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="rn">3</div>
+        <div>
+          <div class="rt">Named-interest chip in the lesson header.</div>
+          <div class="rb">&ldquo;Bu darsda misollar Batman uslubida&rdquo; &mdash; read from <code>profile.subInterests</code> and inject the same string into the LLM prompt deterministically so the rendered example matches the chip. Personalization stops being invisible LLM mood and becomes a labeled, falsifiable UI promise.</div>
+          <div class="rmeta">Effort &middot; 1 day</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict-pill">
+    <div class="vlabel">YC-mentor verdict</div>
+    <div class="vbody">Stop selling what the backend believes &mdash; sell what the screen <strong>shows</strong>. Personalization is a UI claim that must have a UI receipt. Today the receipt is a hardcoded string and a fake streak. Fix the receipt and the same backend reads as miraculous.</div>
+  </div>
+</div>
+
+
+<!-- ============ SECTION 3 — END OF JOURNEY ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">03</div>
+    <div>
+      <div class="title">Feedback &middot; What happens after the constellation map?</div>
+      <h3>Give the journey an <em>end</em>.</h3>
+    </div>
+  </div>
+
+  <div class="quote">
+    <div class="qtag">Muxammadali &middot; verbatim</div>
+    <p>&ldquo;biz shu yulduz turkumlari bo&rsquo;yicha xaritada boradi desak, keyin oxirida nima bo&rsquo;ladi dedi.&rdquo;</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">The 4-layer engagement loop &middot; how every winner does it</div>
+    <p>Successful EdTech apps stack <strong>four loops at different time scales</strong>: immediate (cards, XP tick), daily (streak, daily quest), weekly (league, leaderboard), and lifelong (badges, certificates, public titles). Khan goes Meteorite &rarr; Black Hole over 10M energy points. Duolingo&rsquo;s &ldquo;5 years on Duo&rdquo; anniversary makes the veteran legible to a stranger. Prodigy has a pet roster other kids can see. The 5-year-veteran <em>looks different</em>.</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">Scorpius today &middot; honest audit</div>
+    <div class="facts">
+      <div class="fct"><div class="v">solid</div><div class="k">Immediate &middot; card lock + ignite</div></div>
+      <div class="fct"><div class="v">fake</div><div class="k">Daily &middot; <code>streak = 1</code> hardcoded</div></div>
+      <div class="fct"><div class="v">absent</div><div class="k">Weekly &middot; no league, no rank</div></div>
+      <div class="fct"><div class="v">void</div><div class="k">Lifelong &middot; the &ldquo;done&rdquo; card is a flat string</div></div>
+    </div>
+    <p style="margin-top: 18px;">The <code>done</code> card type at <code>lib/lesson.ts</code> is literally <code>{title, body}</code>. After all 6 stars in a constellation ignite: <strong>nothing happens</strong>. No chapter ceremony. No supernova. No certificate. No permanent artifact. No profile change. Exactly the void the mentor named.</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">The brand already has the long-arc metaphor sitting unused</div>
+    <p>Use it. Five payoffs that extend the star metaphor and lean into Uzbek astronomy heritage (Ulug&rsquo;bek&rsquo;s Samarqand observatory, Beruniy&rsquo;s celestial measurements):</p>
+    <p>
+      &mdash; <strong>Supernova on chapter completion</strong>. The 6th star ignites &rarr; the constellation collapses into a single named supernova labeled with the student&rsquo;s name + date (&ldquo;Murodjonning supernovasi &middot; 2026-yil noyabr&rdquo;). Permanent. 5-second cinematic. Replaces today&rsquo;s nothing-happens.<br/>
+      &mdash; <strong>The Ulug&rsquo;bek Catalog</strong> (Zij-i Sultani 2.0). Every supernova gets a row in the student&rsquo;s personal zij &mdash; modeled on the 1437 Samarqand catalog of 1,018 stars. After a year, they have <em>their own</em> zij. Exportable PDF. Shareable link.<br/>
+      &mdash; <strong>Galaxies from constellations</strong>. Six supernovas (one per subject-unit) merge into a galaxy on the profile. The 5-year-veteran has multiple galaxies; the new student has a few ignited stars. Legibility-at-a-glance.<br/>
+      &mdash; <strong>Beruniy / Ibn Sino / Ulug&rsquo;bek tiers</strong>. Three milestone titles tied to depth: <em>Beruniy darajasi</em> (3 chapters), <em>Ibn Sino darajasi</em> (6 chapters across 2 subjects), <em>Ulug&rsquo;bek darajasi</em> (12 chapters &mdash; the year-veteran). Each visibly changes the night-sky background.<br/>
+      &mdash; <strong>Mahalla guilds</strong>. Students join a mahalla (school, class, friends). Weekly: whose mahalla ignited the most stars. Replaces Duolingo&rsquo;s cold leagues with a culturally native unit kids already understand.
+    </p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">Ship this week &middot; 3 builds, in order</div>
+    <div class="recs">
+      <div class="rec">
+        <div class="rn">1</div>
+        <div>
+          <div class="rt">Supernova ceremony &mdash; the chapter-end moment.</div>
+          <div class="rb">Detect when all stars in <code>SUBJECT_SKIES[subject].stars</code> are ignited. Replace the silent return-to-sky with a fullscreen cinematic: star collapse &rarr; named supernova &rarr; &ldquo;Sizning supernovangiz.&rdquo; Persist in <code>users/{uid}/supernovas</code> and render as a permanent badge on /learn.</div>
+          <div class="rmeta">Effort &middot; 2&ndash;3 days &middot; fills lifelong layer</div>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="rn">2</div>
+        <div>
+          <div class="rt">Real daily streak + daily quest.</div>
+          <div class="rb">Kill the <code>streak = 1</code> lie. Add <code>lib/streak.ts</code> reading <code>users/{uid}/sessions</code>. Surface one &ldquo;Bugungi yulduz&rdquo; card on /learn that nominates the next lesson + grants 2&times; ignition glow if completed before midnight Tashkent.</div>
+          <div class="rmeta">Effort &middot; 3&ndash;4 days &middot; fills daily layer</div>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="rn">3</div>
+        <div>
+          <div class="rt">Personal Zij at <code>/osmonim/zij</code>.</div>
+          <div class="rb">A scrollable, dated list of every star + supernova the student has ignited, styled like Ulug&rsquo;bek&rsquo;s 1437 catalog. Shareable URL. Becomes the &ldquo;5-year-veteran&rdquo; artifact the moment we ship &mdash; every existing user&rsquo;s history backfills.</div>
+          <div class="rmeta">Effort &middot; 3 days &middot; fills lifelong depth</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict-pill">
+    <div class="vlabel">YC-mentor verdict</div>
+    <div class="vbody">The brand has the perfect metaphor &mdash; <em>yulduz, burj, zij, supernova</em> &mdash; and it&rsquo;s sitting in the constitution.md file unused. Build the supernova ceremony first. It&rsquo;s the cheapest fix for the exact void the mentor named, culturally on-brand, and it makes the Zij catalog worth shipping (you need named supernovas before the catalog has spine).</div>
+  </div>
+</div>
+
+
+<!-- ============ SECTION 4 — STUDENT VS PARENT PAY ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">04</div>
+    <div>
+      <div class="title">Feedback &middot; Students should pay, not parents</div>
+      <h3>The one place Muxammadali is <em>wrong</em>.</h3>
+    </div>
+  </div>
+
+  <div class="quote">
+    <div class="qtag">Muxammadali &middot; verbatim</div>
+    <p>&ldquo;ota onalardan ko&rsquo;ra b2c da o&rsquo;quvchilar pul to&rsquo;lashi uchun ko&rsquo;proq urgu beringlar dedi.&rdquo;</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">Who actually pays in EdTech B2C</div>
+    <p>The pattern is clean: <strong>self-pay works when the product is identity, status, or urgent utility</strong>. Parent-pay works when the product is outcomes, safety, or prestige investment. Brilliant ($27.99/mo) is ~70% self-paying adults &mdash; sold as &ldquo;stay sharp&rdquo; status, not homework help. Photomath is mostly students themselves &mdash; pure utility, homework due in 6 hours, paid because the alternative is failing. Quizlet ($35.99/yr) is student-pay because it&rsquo;s cheap enough for a teen&rsquo;s pocket money. Chegg / CourseHero are 100% student-pay because the user is 18&ndash;24 with their own credit card.</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">The Uzbekistan reality check</div>
+    <div class="facts">
+      <div class="fct"><div class="v">41&ndash;65<em>%</em></div><div class="k">Parents already paying <strong>500K+ so&rsquo;m/mo</strong> for tutors</div></div>
+      <div class="fct"><div class="v">~3<em>%</em></div><div class="k">Teen card penetration <strong>under 18</strong></div></div>
+      <div class="fct"><div class="v">50&ndash;200K</div><div class="k">Typical teen pocket money <strong>per month</strong></div></div>
+      <div class="fct"><div class="v">85<em>%</em></div><div class="k">Realistic <strong>parent-payer share</strong> at 80K/mo</div></div>
+    </div>
+    <p style="margin-top: 18px;">The parent-pay budget is already provisioned and flowing &mdash; often the single largest discretionary spend after food. Education is non-negotiable parental duty in Central Asian family structure. Repetitor (tutor) culture is <em>prestige</em> for parents. Teens have Spotify-tier pocket money &mdash; not serious-EdTech-subscription money. Almost no teen-owned cards under 18. Culturally, a 14-year-old buying their own learning is <em>abnormal</em> &mdash; parents would feel shamed.</p>
+    <p>At 80K so&rsquo;m, realistic distribution: <strong>85% parent &middot; 10% older-sibling/relative &middot; 5% self-pay 10&ndash;11 sinf preppers</strong>. Switching to student-pay-first messaging at this price destroys it &mdash; teens won&rsquo;t, parents will feel the product isn&rsquo;t for them.</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">The strategic call</div>
+    <p>Muxammadali is solving a real problem: <em>the student is the user</em>. But he&rsquo;s conflating user with buyer. <strong>The student is the user; the parent is the buyer; the product serves both, but the deck speaks to the buyer.</strong> This is exactly how Kumon, Khan Academy Kids, and every Korean hagwon app positions. The same product surface can feel like &ldquo;yours&rdquo; to the student while the payment flow feels like &ldquo;your investment&rdquo; to the parent.</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">If we keep parent-pay (the recommendation) &middot; 3 product changes</div>
+    <div class="recs">
+      <div class="rec">
+        <div class="rn">1</div>
+        <div>
+          <div class="rt">Add <code>role: 'parent' | 'student'</code> + <code>parentPhone</code> to <code>lib/profile.ts</code>.</div>
+          <div class="rb">Currently the profile only models the student. One day&rsquo;s work unlocks the buyer-facing surface and enables targeted daily briefs.</div>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="rn">2</div>
+        <div>
+          <div class="rt">Ship the daily Uzbek Telegram brief to parents.</div>
+          <div class="rb">&ldquo;Bugun Aziz Arximed qonunini o&rsquo;rgandi. Kechki ovqatda so&rsquo;rang: &lsquo;suvga tushgan tosh nega ko&rsquo;tarilmaydi?&rsquo;&rdquo; Start manual (you sending 10 parents yourself) &mdash; this is the wedge that justifies the 80K price. Becomes the retention weapon.</div>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="rn">3</div>
+        <div>
+          <div class="rt">Strengthen pitch slide 6 with the parent anchor.</div>
+          <div class="rb">&ldquo;Repetitor 200K/soat. Scorpius 80K/oy &mdash; cheksiz. Ota-ona ko&rsquo;radi, bola o&rsquo;rganadi.&rdquo; Add the 41&ndash;65% repetitor-pay anchor. Don&rsquo;t apologize for parent-pays &mdash; it&rsquo;s the strongest unit economics story on offer.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-label">Optional hedge</div>
+    <p>A 25K so&rsquo;m/oy &ldquo;O&rsquo;quvchi&rdquo; tier with Humo AI only, no parent dashboard, for the 5&ndash;10% of self-paying 10&ndash;11 sinf students prepping for DTM. Keep it as a secondary line in the deck, not the headline. This catches Muxammadali&rsquo;s edge case without diluting the main story.</p>
+  </div>
+
+  <div class="verdict-pill warn">
+    <div class="vlabel">YC-mentor verdict &middot; pushback on Muxammadali</div>
+    <div class="vbody">Reject the reframe. Tell him: <strong>user &ne; buyer</strong>. The budget you want already exists in the parent&rsquo;s wallet (41&ndash;65% of surveyed families pay 500K+ for a tutor). Student-pay collapses LTV from 1.9M to &lt;500K and CAC stops penciling. Two surfaces, one subscription &mdash; that&rsquo;s the answer. Send him this section if there&rsquo;s disagreement &mdash; the math is on this side.</div>
+  </div>
+</div>
+
+
+<!-- ============ SECTION 5 — GAMIFICATION ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">05</div>
+    <div>
+      <div class="title">Feedback &middot; Looks like a test with prettier design</div>
+      <h3>Build the <em>Burj</em>.</h3>
+    </div>
+  </div>
+
+  <div class="quote">
+    <div class="qtag">Muxammadali &middot; verbatim</div>
+    <p>&ldquo;iloji bo&rsquo;lsa yoshroq o&rsquo;quvchilarga o&rsquo;yinga o&rsquo;xshatib xar hil jarayonlar qo&rsquo;shingalr sizlarniki xozir bir xil testga o&rsquo;xshan qolgan faqat test dizayni yaxshiroq xolda ekan, goya yaxshi lekin&hellip;&rdquo;</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">Why he&rsquo;s right &middot; what reads as &ldquo;test&rdquo;</div>
+    <p>Look at <code>LessonDeck.tsx</code>. The five quiz-grammar primitives are all there: <strong>(1)</strong> progress-dot rail at the top &mdash; kids read this as &ldquo;5 questions remaining,&rdquo; <strong>(2)</strong> the literal &ldquo;Davom etish uchun javob bering&rdquo; lock pill &mdash; the single most quiz-like artifact in the app, <strong>(3)</strong> A/B/C/D button rows with green check + red shake + explain reveal &mdash; the visual grammar of every standardized testing UI since 2010, <strong>(4)</strong> no persistent state between lessons &mdash; finish a lesson, blank slate next, <strong>(5)</strong> no surprise &mdash; every completion produces the same explain box.</p>
+    <p>What&rsquo;s already game-shaped (keep): <code>simulation</code>, <code>explore-sandbox</code>, <code>challenge</code>, <code>pattern-discover</code>, <code>compare-and-decide</code>, <code>build</code>. <code>DivisorGridSim</code> lets the learner <em>discover</em> factor pairs by dragging a slider &mdash; that&rsquo;s a DragonBox moment. The TikTok-style vertical paging is the right gesture; it&rsquo;s the content inside that reads as quiz.</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">The 5 patterns that turn &ldquo;test&rdquo; into &ldquo;game&rdquo; at 10&ndash;14yo</div>
+    <p>
+      <strong>(A) Loop-hiding via meta-progression.</strong> Prodigy never says &ldquo;you&rsquo;re doing math&rdquo; &mdash; the kid says &ldquo;I&rsquo;m farming the Dark Tower.&rdquo;<br/>
+      <strong>(B) Collectible identity.</strong> Avatars, pets, gear. Erikson identity formation at 11&ndash;12yo. Critical: avatar must visibly change after a session.<br/>
+      <strong>(C) Variable-ratio reward.</strong> Duolingo&rsquo;s chest. 50% chance of gems after a lesson. Variable beats fixed at this age.<br/>
+      <strong>(D) Agency that isn&rsquo;t &ldquo;right answer.&rdquo;</strong> Pick a class, pick a path, pick a 2-of-4 challenge. 11&ndash;12yo are leaving obedience stage.<br/>
+      <strong>(E) Social proof.</strong> Class leaderboard, mahalla guild, sinfdosh competition.
+    </p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">Cultural fit &middot; what works for Uzbek 11&ndash;12yo</div>
+    <table class="score" style="margin-top: 6px;">
+      <thead><tr><th>Mechanic</th><th>Fit</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Burj / constellation collection</td><td class="n good">STRONG</td><td>Astronomy + heritage (Ulug&rsquo;bek, Beruniy, Khorezmi) is celebrated national identity, not imported</td></tr>
+        <tr><td>Sinf reytingi (class leaderboard)</td><td class="n good">STRONG</td><td>Uzbek classrooms already run on sinfdosh competition &mdash; just digitize it</td></tr>
+        <tr><td>Mentor ensemble (Khorezmi / Beruniy / Ibn Sino)</td><td class="n good">STRONG</td><td>Textbook figures every Grade-6 already knows &mdash; feels like national pride, not Pokemon</td></tr>
+        <tr><td>Random loot chest</td><td class="n ok">MEDIUM</td><td>Fine if culturally local (constellation fragment, not random gem). Pure Duolingo gems feels gambling-adjacent &mdash; UZ parents are sensitive</td></tr>
+        <tr><td>Wizard hats / fantasy avatar shop</td><td class="n weak">WEAK</td><td>Reads American-fantasy. If you do an avatar, do do&rsquo;ppi + Samarqand tile patterns, not robes</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="block">
+    <div class="block-label">The ONE addition to ship first</div>
+    <div class="recs">
+      <div class="rec">
+        <div class="rn">★</div>
+        <div>
+          <div class="rt">The Burj &mdash; a Khorezmi-themed constellation collection.</div>
+          <div class="rb">Each completed lesson plants a star. Every 5 stars forms a named <em>burj</em>: <strong>Khorezmi&rsquo;s Compass</strong>, <strong>Beruniy&rsquo;s Astrolabe</strong>, <strong>Ulug&rsquo;bek&rsquo;s Quadrant</strong>. Burjs sit on <code>/burj</code> &mdash; a new page. Visible at a glance, shareable, culturally specific. Hits four of the five conversion patterns in one mechanic (identity + surprise + agency + culture).<br/><br/>You already persist <code>scorpius:done:{lessonId}</code> in localStorage + Firestore. The data is shipped. You only need a visual layer: one SVG burj per subject, one star-fill animation on lesson completion.</div>
+          <div class="rmeta">Effort &middot; 1.5 days &middot; biggest perception fix per dev-hour</div>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top: 18px;">After the Burj ships: chest mechanic on every 3rd star (constellation fragments, not gems), then sinf reytingi (weekly leaderboard scoped to a 6-digit class code). Skip the avatar shop for now &mdash; cultural fit too weak.</p>
+  </div>
+
+  <div class="verdict-pill">
+    <div class="vlabel">YC-mentor verdict</div>
+    <div class="vbody">Stop calling them &ldquo;kartalar&rdquo; in the deck. Start calling them <em>qadamlar</em> (steps in a quest). Language reframes perception before any pixel changes. Then build the Burj. Not &ldquo;more fun&rdquo; &mdash; a constellation that fills, named after Khorezmi, visible to friends, that you literally cannot get without finishing lessons.</div>
+  </div>
+</div>
+
+
+<!-- ============ THE PRIORITY MATRIX ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">★</div>
+    <div>
+      <div class="title">The priority matrix &middot; what to ship next</div>
+      <h3>Eight builds. Two weeks. <em>Ranked.</em></h3>
+    </div>
+  </div>
+
+  <div class="matrix">
+    <h4>Pick the top three. Ship them in order. Re-pitch.</h4>
+    <p style="font-family: var(--f-serif); font-style: italic; font-size: 16px; color: var(--ink-2); margin-top: 8px;">Sorted by &ldquo;biggest pitch-perception fix per dev-day.&rdquo; Numbers are calendar days, not man-days &mdash; assume one dev focused.</p>
+
+    <div class="matrix-rows">
+      <div class="mrow head">
+        <div></div><div>Build</div><div>Impact</div><div>Effort</div><div>When</div>
+      </div>
+      <div class="mrow">
+        <div class="midx">1</div>
+        <div class="what">Fix the personalization receipt<div class="sub">Real weakest-topic routing + reason text on the &ldquo;Bugungi&rdquo; star</div></div>
+        <div class="imp hi">HIGH</div>
+        <div class="eff s">0.5d</div>
+        <div class="when">Mon</div>
+      </div>
+      <div class="mrow">
+        <div class="midx">2</div>
+        <div class="what">Build the Burj<div class="sub">Khorezmi&rsquo;s Compass &middot; Beruniy&rsquo;s Astrolabe &middot; Ulug&rsquo;bek&rsquo;s Quadrant</div></div>
+        <div class="imp hi">HIGH</div>
+        <div class="eff s">1.5d</div>
+        <div class="when">Mon&ndash;Tue</div>
+      </div>
+      <div class="mrow">
+        <div class="midx">3</div>
+        <div class="what">Kill sim win-conditions &middot; add Lab Notebook<div class="sub">Remove every <code>onComplete</code>-triggers-after-N-actions; persistent measurement log</div></div>
+        <div class="imp hi">HIGH</div>
+        <div class="eff m">2d</div>
+        <div class="when">Wed&ndash;Thu</div>
+      </div>
+      <div class="mrow">
+        <div class="midx">4</div>
+        <div class="what">Supernova ceremony<div class="sub">Chapter-end cinematic + named permanent artifact on /learn</div></div>
+        <div class="imp hi">HIGH</div>
+        <div class="eff m">2&ndash;3d</div>
+        <div class="when">Fri&ndash;Mon</div>
+      </div>
+      <div class="mrow">
+        <div class="midx">5</div>
+        <div class="what">Sandbox mode on Buoyancy / Lever / Circuit<div class="sub">The 3 strongest sims become instruments, not exhibits</div></div>
+        <div class="imp md">MED</div>
+        <div class="eff l">3&ndash;5d</div>
+        <div class="when">Wk 2</div>
+      </div>
+      <div class="mrow">
+        <div class="midx">6</div>
+        <div class="what">Per-topic mastery percentage on each star<div class="sub">Firestore <code>users/{uid}/mastery/{topicId}</code> + visible % on every <code>StarTile</code></div></div>
+        <div class="imp md">MED</div>
+        <div class="eff m">1&ndash;2d</div>
+        <div class="when">Wk 2</div>
+      </div>
+      <div class="mrow">
+        <div class="midx">7</div>
+        <div class="what">Real daily streak + &ldquo;Bugungi yulduz&rdquo;<div class="sub">Kill <code>streak = 1</code>; add <code>lib/streak.ts</code> + daily quest card</div></div>
+        <div class="imp md">MED</div>
+        <div class="eff m">3&ndash;4d</div>
+        <div class="when">Wk 2</div>
+      </div>
+      <div class="mrow">
+        <div class="midx">8</div>
+        <div class="what">Parent role + Telegram daily brief<div class="sub"><code>role: 'parent' | 'student'</code> in profile + manual brief MVP</div></div>
+        <div class="imp md">MED</div>
+        <div class="eff m">2&ndash;3d</div>
+        <div class="when">Wk 2</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============ THE PITCH-DECK IMPLICATIONS ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">⌘</div>
+    <div>
+      <div class="title">Deck rewrites &middot; what to change in the pitch</div>
+      <h3>Three slide edits, after the builds land.</h3>
+    </div>
+  </div>
+
+  <div class="block">
+    <p>The mentor&rsquo;s feedback isn&rsquo;t a styling note &mdash; it&rsquo;s a credibility note. Don&rsquo;t change the deck before the builds: a deck that <em>claims</em> sandbox sims while the demo still ships scenarios looks worse than the current deck. After builds 1&ndash;4 land, edit:</p>
+  </div>
+
+  <div class="recs">
+    <div class="rec">
+      <div class="rn">A</div>
+      <div>
+        <div class="rt">Slide 02 &middot; Biz kimmiz</div>
+        <div class="rb">Add a 4th feature card: <em>Burj &mdash; yulduz turkumlari, supernovaning portreti</em>. Now you have a concrete artifact to show on stage, not a metaphor.</div>
+      </div>
+    </div>
+    <div class="rec">
+      <div class="rn">B</div>
+      <div>
+        <div class="rt">Slide 05 &middot; Solution row &ldquo;Interaktiv fizika simulyatsiyalari&rdquo;</div>
+        <div class="rb">Reframe to &ldquo;<em>Erkin laboratoriya</em> (sandbox lab)&rdquo; with Scorpius &check; / Brilliant &middot;<em>cheklangan</em> / Khan &middot;<em>cheklangan</em>. This is the PhET-tier claim &mdash; only valid after build #3.</div>
+      </div>
+    </div>
+    <div class="rec">
+      <div class="rn">C</div>
+      <div>
+        <div class="rt">Slide 06 &middot; Monetization</div>
+        <div class="rb">Strengthen with the parent anchor: &ldquo;<em>Repetitor 200K/soat. Scorpius 80K/oy &mdash; cheksiz. Ota-ona ko&rsquo;radi, bola o&rsquo;rganadi.</em>&rdquo; Add the 41&ndash;65% repetitor-spend figure. Optional second line: &ldquo;O&rsquo;quvchi tarifi: 25K/oy&rdquo; for the hedge.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============ SOURCES ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">∞</div>
+    <div>
+      <div class="title">Research sources &middot; what was read</div>
+      <h3>Citations &amp; further reading.</h3>
+    </div>
+  </div>
+
+  <div class="block">
+    <p class="block-label muted">Lab simulations</p>
+    <p class="sources">
+      <a href="https://phet.colorado.edu/en/simulations/wave-interference">PhET Wave Interference</a> &middot;
+      <a href="https://phet.colorado.edu/en/simulations/energy-skate-park">PhET Energy Skate Park</a> &middot;
+      <a href="https://phet.colorado.edu/en/simulations/bending-light">PhET Bending Light</a> &middot;
+      <a href="https://www.labster.com/simulations">Labster Catalog</a> &middot;
+      <a href="http://www.algodoo.com/">Algodoo</a> &middot;
+      <a href="https://demonstrations.wolfram.com/">Wolfram Demonstrations Project</a> &middot;
+      <a href="https://brilliant.org/science/">Brilliant Science</a>
+    </p>
+
+    <p class="block-label muted" style="margin-top: 24px;">Personalization UI patterns</p>
+    <p class="sources">
+      <a href="https://khanmigo.ai/">Khanmigo</a> &middot;
+      <a href="https://brilliant.org/help/pricing-and-plans/what-is-brilliant-premium-and-how-do-i-subscribe/">Brilliant Koji</a> &middot;
+      Duolingo crown levels &middot; Anki SRS &middot; NWEA MAP / IXL adaptive testing
+    </p>
+
+    <p class="block-label muted" style="margin-top: 24px;">Long-arc engagement</p>
+    <p class="sources">
+      <a href="https://duolingo.deconstructoroffun.com/mechanics/leagues">Duolingo Leagues case study</a> &middot;
+      <a href="https://support.khanacademy.org/hc/en-us/articles/202487710">Khan Academy badges &amp; energy points</a> &middot;
+      <a href="https://www.petercollingridge.co.uk/blog/khan-academy/black-hole-badges/">Khan Black Hole badge tier</a> &middot;
+      <a href="https://www.mathacademy.com/how-it-works">Math Academy progression</a> &middot;
+      <a href="https://trophy.so/blog/brilliant-gamification-case-study">Brilliant gamification case study</a>
+    </p>
+
+    <p class="block-label muted" style="margin-top: 24px;">Payment models</p>
+    <p class="sources">
+      Brilliant.org pricing &middot; Duolingo Super &middot; Photomath Plus &middot; Quizlet &middot; Chegg / CourseHero &middot; Spotify Student &middot; Snapchat+ &middot; Roblox Premium &middot; Khanmigo pricing
+    </p>
+
+    <p class="block-label muted" style="margin-top: 24px;">Gamification for 10&ndash;14yo</p>
+    <p class="sources">
+      Prodigy Math Game &middot; DragonBox &middot; Duolingo ABC &middot; Khan Academy Kids &middot; Beast Academy &middot; Scratch &middot; Roblox Education &middot; Minecraft Education
+    </p>
+  </div>
+</div>
+
+
+<!-- ============ FOOTER ============ -->
+<div class="foot">
+  <span><span class="hash">#MilliyAIXakaton</span> &middot; <span class="hash">#AndijonAI</span> &middot; mentor feedback audit</span>
+  <span>scorpius.uz &middot; 2026</span>
+</div>
+
+</div>
+
+</body>
+</html>

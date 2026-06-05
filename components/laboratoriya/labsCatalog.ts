@@ -20,17 +20,23 @@ import {
   Droplets,
   Eclipse,
   FlaskConical,
+  Gauge,
+  Glasses,
   Grid3x3,
   Leaf,
   Microscope,
+  Orbit,
+  Scale,
   Sigma,
   Spline,
   Triangle,
+  Volume2,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
 
-/** The four teachable subjects, plus the "all" pseudo-tab. */
-export type SubjectId = "fizika" | "kimyo" | "biologiya" | "matematika";
+/** The teachable subjects, plus the "all" pseudo-tab. */
+export type SubjectId = "fizika" | "kimyo" | "biologiya" | "matematika" | "astronomiya";
 export type TabId = "all" | SubjectId;
 
 /** Per-card kind drives which card component renders the entry. */
@@ -52,6 +58,7 @@ export const SUBJECTS: SubjectMeta[] = [
   { id: "kimyo", label: "Kimyo", accent: "#a855f7", soft: "rgba(168,85,247,0.14)" },
   { id: "biologiya", label: "Biologiya", accent: "#34d399", soft: "rgba(52,211,153,0.14)" },
   { id: "matematika", label: "Matematika", accent: "#3b7bd1", soft: "rgba(59,123,209,0.14)" },
+  { id: "astronomiya", label: "Astronomiya", accent: "#6366f1", soft: "rgba(99,102,241,0.14)" },
 ];
 
 /** Quick lookup of a subject's accent pair by id. */
@@ -163,6 +170,61 @@ export const CATALOG: CatalogEntry[] = [
     soft: "rgba(232,162,26,0.14)",
     icon: Spline,
   },
+  {
+    subject: "fizika",
+    kind: "experiment",
+    id: "richag",
+    title: "Richag",
+    hook: "Kuch va yelka",
+    href: "/laboratoriya/tajriba/richag",
+    accent: "#2dd4bf",
+    soft: "rgba(45,212,191,0.14)",
+    icon: Scale,
+  },
+  {
+    subject: "fizika",
+    kind: "experiment",
+    id: "paskal",
+    title: "Paskal qonuni",
+    hook: "Suyuqlikdagi bosim",
+    href: "/laboratoriya/tajriba/paskal",
+    accent: "#3b7bd1",
+    soft: "rgba(59,123,209,0.12)",
+    icon: Gauge,
+  },
+  {
+    subject: "fizika",
+    kind: "experiment",
+    id: "tovush",
+    title: "Tovush toʻlqini",
+    hook: "Chastota va amplituda",
+    href: "/laboratoriya/tajriba/tovush",
+    accent: "#a855f7",
+    soft: "rgba(168,85,247,0.12)",
+    icon: Volume2,
+  },
+  {
+    subject: "fizika",
+    kind: "experiment",
+    id: "linza",
+    title: "Linza",
+    hook: "Yorugʻlik va fokus",
+    href: "/laboratoriya/tajriba/linza",
+    accent: "#e8a21a",
+    soft: "rgba(232,162,26,0.14)",
+    icon: Glasses,
+  },
+  {
+    subject: "fizika",
+    kind: "experiment",
+    id: "zanjir",
+    title: "Elektr zanjiri",
+    hook: "Tok va qarshilik",
+    href: "/laboratoriya/tajriba/zanjir",
+    accent: "#6366f1",
+    soft: "rgba(99,102,241,0.14)",
+    icon: Zap,
+  },
 
   // ---------------- KIMYO ----------------
   {
@@ -238,5 +300,29 @@ export const CATALOG: CatalogEntry[] = [
     accent: "#3b7bd1",
     soft: "rgba(59,123,209,0.12)",
     icon: Sigma,
+  },
+
+  // ---------------- ASTRONOMIYA ----------------
+  {
+    subject: "astronomiya",
+    kind: "experiment",
+    id: "koinot",
+    title: "Quyosh tizimi 3D",
+    hook: "Sayyoralarni 3D da aylantiring",
+    href: "/laboratoriya/koinot",
+    accent: "#6366f1",
+    soft: "rgba(99,102,241,0.14)",
+    icon: Orbit,
+  },
+  {
+    subject: "astronomiya",
+    kind: "soon",
+    id: "astronomiya-fazalar",
+    title: "Oy fazalari",
+    hook: "Oy nega goh toʻlin, goh yangi koʻrinadi.",
+    href: "",
+    accent: "#6366f1",
+    soft: "rgba(99,102,241,0.14)",
+    icon: Eclipse,
   },
 ];

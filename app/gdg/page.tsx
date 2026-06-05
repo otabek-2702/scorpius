@@ -119,7 +119,7 @@ export default function GdgWaitlistPage() {
             tushuntiradi, ota-onangizga o&apos;zbek tilida kunlik xulosa yuboradi.
           </p>
           <p className="mt-3 font-mono text-[10.5px] uppercase tracking-[0.16em] text-void-300">
-            — Andijan · Build with AI · NUU · 2026
+            — Toshkent · GDG Build with AI · NUU · 2026
           </p>
         </div>
       </footer>

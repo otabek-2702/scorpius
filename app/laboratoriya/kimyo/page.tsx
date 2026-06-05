@@ -13,6 +13,12 @@ export default function KimyoPage() {
       title="Kimyo laboratoriyasi"
       subtitle="Elementlarni qoʻshing — reaksiyani koʻring"
       accent="#a855f7"
+      askTopic="Kimyo — atomlar, elementlar, davriy jadval va reaksiyalar"
+      askStarters={[
+        "H va O nega suv hosil qiladi?",
+        "Proton va neytron nima?",
+        "Reaksiya turlari qanday boʻladi?",
+      ]}
     >
       <KimyoLab />
     </LabShell>

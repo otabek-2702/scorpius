@@ -110,12 +110,28 @@ export const skyStars: SkyStar[] = buildSky(6, "math");
  * two stay dormant as "Tez orada" placeholders.
  */
 export const physicsSkyStars: SkyStar[] = buildFeaturedSky(6, "physics", [
-  "molekula", // Bob I — dormant intro
-  "broun", // Bob I — lesson
-  "arximed", // Bob II — lesson
-  "issiqlik-uzatish", // Bob IV — dormant
-  "tutilish", // Bob VI — lesson
-  "kamalak", // Bob VI — lesson
+  "broun", // Bob I — Broun harakati va diffuziya
+  "paskal", // Bob II — Paskal qonuni (yangi)
+  "kuch-momenti", // Bob III — Richag (yangi)
+  "elektr-zanjiri", // Bob V — Oddiy elektr zanjiri (yangi)
+  "linza", // Bob VI — Linzalar (yangi)
+  "tovush-kattalik", // Bob VII — Tovush kattaliklari (yangi)
+]);
+
+/**
+ * Full physics path — every cached lesson in pedagogical order. Used by the
+ * "Yulduzlarni ko'rsatish" / list view when the curated 6 isn't enough.
+ */
+export const physicsAllStars: SkyStar[] = buildFeaturedSky(6, "physics", [
+  "broun",
+  "arximed",
+  "paskal",
+  "kuch-momenti",
+  "elektr-zanjiri",
+  "linza",
+  "tutilish",
+  "kamalak",
+  "tovush-kattalik",
 ]);
 
 /** Subject metadata used by the constellation page (labels, pills, blurbs). */

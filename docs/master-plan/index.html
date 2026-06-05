@@ -1,0 +1,1516 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Scorpius v2 — The Master Plan · 1-2 hour obsessive learning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700;800&family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:         #f4f1e8;
+    --paper:      #ffffff;
+    --inset:      #ede9dc;
+    --border:     #e2dcc7;
+    --border-st:  #cbc4ab;
+    --faint:      #b9b29c;
+    --ink:        #1a1813;
+    --ink-2:      #55513f;
+    --ink-3:      #847e6b;
+    --gold:       #e8a21a;
+    --gold-deep:  #c98910;
+    --gold-700:   #a9760a;
+    --gold-50:    #fdf3dc;
+    --ok:         #2fa86a;
+    --no:         #d8453b;
+    --blue:       #3b7bd1;
+    --violet:     #7a4cd4;
+
+    --f-sans:    'Inter', system-ui, sans-serif;
+    --f-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
+    --f-serif:   'Newsreader', Georgia, serif;
+    --f-mono:    'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg); color: var(--ink); font-family: var(--f-sans);
+    -webkit-font-smoothing: antialiased; font-size: 16px; line-height: 1.55;
+  }
+  body { padding: 56px 0 96px; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+
+  /* ============ HEADER ============ */
+  .top-chip {
+    display: inline-flex; align-items: center; gap: 10px;
+    border: 1.5px solid var(--border); background: var(--paper);
+    padding: 10px 18px; border-radius: 999px;
+    font-family: var(--f-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .top-chip .dot { width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold); box-shadow: 0 0 8px 1px rgba(232,162,26,0.55); }
+  .top-chip strong { color: var(--ink); font-weight: 700; }
+
+  h1.hero {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 72px; line-height: 1.02; letter-spacing: -0.028em;
+    color: var(--ink); margin-top: 28px; max-width: 22ch;
+  }
+  h1.hero em { font-style: italic; color: var(--gold-deep); font-weight: 500; }
+
+  p.lede {
+    font-family: var(--f-serif); font-weight: 400; font-style: italic;
+    font-size: 22px; line-height: 1.45; color: var(--ink-2);
+    margin-top: 24px; max-width: 64ch;
+  }
+  p.lede em { color: var(--gold-deep); }
+
+  /* ============ THE ONE LINE ============ */
+  .northstar {
+    margin-top: 48px;
+    background: linear-gradient(135deg, rgba(232,162,26,0.10), rgba(232,162,26,0.02));
+    border: 1.5px solid var(--gold);
+    border-radius: 24px;
+    padding: 36px 40px;
+    position: relative;
+  }
+  .northstar .nlbl {
+    font-family: var(--f-mono); font-weight: 700; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-700);
+  }
+  .northstar h2 {
+    font-family: var(--f-serif); font-weight: 500; font-size: 38px;
+    letter-spacing: -0.022em; line-height: 1.15; color: var(--ink);
+    margin-top: 8px; max-width: 32ch;
+  }
+  .northstar h2 em { font-style: italic; color: var(--gold-deep); }
+  .northstar .nbody {
+    margin-top: 18px;
+    font-family: var(--f-serif); font-size: 17px; line-height: 1.55;
+    color: var(--ink-2); max-width: 72ch;
+  }
+  .northstar .nbody strong { color: var(--ink); font-weight: 600; }
+
+  /* ============ KPI STRIP ============ */
+  .kpi-strip {
+    margin-top: 28px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  }
+  .kpi {
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    padding: 20px 22px;
+  }
+  .kpi .v {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 32px; letter-spacing: -0.022em; line-height: 1;
+    color: var(--ink);
+  }
+  .kpi .v em { color: var(--gold-deep); font-style: italic; }
+  .kpi .k {
+    font-family: var(--f-mono); font-weight: 700; font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-700);
+    margin-top: 8px; line-height: 1.4;
+  }
+  .kpi .sub {
+    font-family: var(--f-sans); font-size: 13px; color: var(--ink-3);
+    margin-top: 6px; line-height: 1.4;
+  }
+
+  /* ============ SECTIONS ============ */
+  .section {
+    margin-top: 88px;
+  }
+  .section-head {
+    display: grid; grid-template-columns: 72px 1fr;
+    gap: 26px; align-items: baseline;
+  }
+  .section-head .num {
+    font-family: var(--f-serif); font-style: italic; font-weight: 500;
+    font-size: 72px; color: var(--gold); line-height: 1; letter-spacing: -0.04em;
+  }
+  .section-head .title {
+    font-family: var(--f-display); font-weight: 700;
+    font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .section-head h3 {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 44px; line-height: 1.08; letter-spacing: -0.023em;
+    color: var(--ink); margin-top: 8px; max-width: 26ch;
+  }
+  .section-head h3 em { font-style: italic; color: var(--gold-deep); }
+  .section-head .blurb {
+    margin-top: 14px; max-width: 66ch;
+    font-family: var(--f-serif); font-size: 17px; line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .section-head .blurb em { color: var(--gold-deep); font-style: italic; }
+
+  /* ============ THE 6 PILLARS GRID ============ */
+  .pillars {
+    margin-top: 36px;
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px;
+  }
+  .pillar {
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 22px;
+    padding: 26px 28px;
+    display: flex; flex-direction: column;
+  }
+  .pillar .ptag {
+    font-family: var(--f-mono); font-weight: 700; font-size: 10.5px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-deep);
+  }
+  .pillar .pname {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 26px; letter-spacing: -0.018em; line-height: 1.15;
+    color: var(--ink); margin-top: 8px;
+  }
+  .pillar .pname em { font-style: italic; color: var(--gold-deep); }
+  .pillar .pbody {
+    font-family: var(--f-serif); font-size: 15px; line-height: 1.6;
+    color: var(--ink-2); margin-top: 12px;
+  }
+  .pillar .pbody strong { color: var(--ink); font-weight: 600; }
+  .pillar .pbody em { color: var(--gold-deep); font-style: italic; }
+  .pillar .pbody code { font-family: var(--f-mono); font-size: 12.5px;
+    background: var(--inset); padding: 1px 6px; border-radius: 4px;
+    color: var(--ink); }
+
+  /* ============ CURRENT STATE TABLE ============ */
+  table.audit {
+    width: 100%; border-collapse: collapse; margin-top: 18px;
+    background: var(--paper);
+    border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden;
+    font-family: var(--f-sans); font-size: 14px;
+  }
+  table.audit th, table.audit td {
+    padding: 11px 14px; border-bottom: 1px solid var(--border);
+    text-align: left; vertical-align: top;
+  }
+  table.audit th {
+    background: var(--inset);
+    font-family: var(--f-mono); font-weight: 700; font-size: 10.5px;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink);
+  }
+  table.audit td:first-child { font-weight: 600; color: var(--ink); width: 22%; }
+  table.audit td:nth-child(2) { color: var(--ink-2); }
+  table.audit code { font-family: var(--f-mono); font-size: 12px;
+    background: var(--inset); padding: 1px 6px; border-radius: 4px; color: var(--ink); }
+  table.audit .ok  { color: var(--ok); font-weight: 700; }
+  table.audit .no  { color: var(--no); font-weight: 700; }
+  table.audit .mid { color: var(--gold-deep); font-weight: 700; }
+  table.audit tr:last-child td { border-bottom: 0; }
+
+  /* ============ PHASES ============ */
+  .phase {
+    margin-top: 28px;
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 36px 40px;
+    position: relative;
+  }
+  .phase::before {
+    content: ""; position: absolute; top: 0; left: 36px;
+    width: 56px; height: 4px; background: var(--gold);
+    border-radius: 0 0 4px 4px;
+  }
+  .phase.now::before { background: var(--gold); }
+  .phase.wk1::before { background: var(--no); }
+  .phase.m1::before { background: var(--gold-deep); }
+  .phase.m23::before { background: var(--blue); }
+  .phase.q2::before { background: var(--violet); }
+  .phase.y1::before { background: var(--ok); }
+
+  .phase-head {
+    display: grid; grid-template-columns: auto auto 1fr auto;
+    gap: 18px; align-items: baseline;
+  }
+  .phase-head .pn {
+    font-family: var(--f-serif); font-style: italic; font-weight: 500;
+    font-size: 44px; color: var(--gold); line-height: 1;
+  }
+  .phase-head .pwhen {
+    font-family: var(--f-mono); font-weight: 700; font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
+    padding: 5px 12px; border-radius: 999px; background: var(--inset);
+  }
+  .phase-head h4 {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 28px; letter-spacing: -0.02em; line-height: 1.1;
+    color: var(--ink);
+  }
+  .phase-head h4 em { font-style: italic; color: var(--gold-deep); }
+  .phase-head .ptime {
+    font-family: var(--f-mono); font-weight: 700; font-size: 12px;
+    letter-spacing: 0.1em; color: var(--gold-deep);
+    padding: 6px 14px; border-radius: 999px;
+    background: rgba(232,162,26,0.10);
+  }
+
+  .phase .goal {
+    margin-top: 22px;
+    font-family: var(--f-serif); font-style: italic; font-size: 19px;
+    color: var(--ink); line-height: 1.4;
+    border-left: 3px solid var(--gold); padding-left: 18px;
+    max-width: 64ch;
+  }
+
+  .builds {
+    margin-top: 24px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .build {
+    background: var(--inset);
+    border-radius: 16px;
+    padding: 20px 22px;
+    display: grid; grid-template-columns: 36px 1fr;
+    gap: 16px;
+  }
+  .build .bn {
+    font-family: var(--f-serif); font-style: italic; font-weight: 500;
+    font-size: 28px; color: var(--gold-deep); line-height: 1;
+  }
+  .build .bt {
+    font-family: var(--f-display); font-weight: 700; font-size: 16px;
+    letter-spacing: -0.012em; color: var(--ink);
+  }
+  .build .bb {
+    font-family: var(--f-serif); font-size: 14.5px; line-height: 1.55;
+    color: var(--ink-2); margin-top: 6px;
+  }
+  .build .bb code { font-family: var(--f-mono); font-size: 12.5px;
+    background: var(--paper); padding: 1px 6px; border-radius: 4px;
+    border: 1px solid var(--border); color: var(--ink); }
+  .build .bb strong { color: var(--ink); font-weight: 600; }
+  .build .bb em { color: var(--gold-deep); font-style: italic; }
+  .build .bmeta {
+    font-family: var(--f-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-deep);
+    margin-top: 10px;
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
+  .build .bmeta .tag {
+    background: var(--paper); padding: 3px 9px; border-radius: 999px;
+    border: 1px solid var(--border); color: var(--ink-2);
+  }
+
+  .ship-checks {
+    margin-top: 22px;
+    background: rgba(47,168,106,0.06);
+    border: 1.5px solid rgba(47,168,106,0.25);
+    border-radius: 14px;
+    padding: 16px 22px;
+  }
+  .ship-checks .label {
+    font-family: var(--f-mono); font-weight: 700; font-size: 10.5px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ok);
+  }
+  .ship-checks ul {
+    margin-top: 8px; padding-left: 22px;
+    font-family: var(--f-serif); font-size: 14.5px; line-height: 1.7;
+    color: var(--ink-2);
+  }
+  .ship-checks ul li::marker { color: var(--ok); }
+
+  /* ============ THE SESSION TIMELINE ============ */
+  .timeline-table {
+    width: 100%; border-collapse: collapse; margin-top: 22px;
+    background: var(--paper);
+    border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden;
+    font-family: var(--f-sans); font-size: 13.5px;
+  }
+  .timeline-table th, .timeline-table td {
+    padding: 9px 14px; border-bottom: 1px solid var(--border);
+    text-align: left; vertical-align: top;
+  }
+  .timeline-table th {
+    background: var(--inset);
+    font-family: var(--f-mono); font-weight: 700; font-size: 10px;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink);
+  }
+  .timeline-table td:first-child {
+    font-family: var(--f-mono); font-weight: 700;
+    color: var(--gold-deep); white-space: nowrap;
+  }
+  .timeline-table td code { font-family: var(--f-mono); font-size: 11.5px;
+    background: var(--inset); padding: 1px 5px; border-radius: 4px; color: var(--ink); }
+  .timeline-table tr.beat td { background: rgba(232,162,26,0.06); font-weight: 700; }
+  .timeline-table tr:last-child td { border-bottom: 0; }
+
+  /* ============ STACK DIAGRAM ============ */
+  .stack {
+    margin-top: 28px;
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 22px;
+    padding: 32px 36px;
+  }
+  .stack .layer {
+    padding: 16px 20px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    display: grid; grid-template-columns: 130px 1fr 200px;
+    gap: 18px; align-items: center;
+  }
+  .stack .layer:last-child { margin-bottom: 0; }
+  .stack .layer .lname {
+    font-family: var(--f-display); font-weight: 700; font-size: 14px;
+    letter-spacing: -0.005em;
+  }
+  .stack .layer .ldesc {
+    font-family: var(--f-serif); font-size: 14.5px; color: var(--ink-2);
+    line-height: 1.5;
+  }
+  .stack .layer .ltech {
+    font-family: var(--f-mono); font-size: 11px; color: var(--ink-3);
+    text-align: right;
+  }
+  .stack .layer.l1 { background: rgba(232,162,26,0.10); color: var(--gold-deep); }
+  .stack .layer.l1 .lname { color: var(--gold-deep); }
+  .stack .layer.l2 { background: rgba(59,123,209,0.08); color: var(--blue); }
+  .stack .layer.l2 .lname { color: var(--blue); }
+  .stack .layer.l3 { background: rgba(122,76,212,0.08); color: var(--violet); }
+  .stack .layer.l3 .lname { color: var(--violet); }
+  .stack .layer.l4 { background: rgba(47,168,106,0.08); color: var(--ok); }
+  .stack .layer.l4 .lname { color: var(--ok); }
+  .stack .layer.l5 { background: var(--inset); }
+  .stack .layer.l5 .lname { color: var(--ink); }
+  .stack .layer.l6 { background: var(--inset); }
+  .stack .layer.l6 .lname { color: var(--ink); }
+
+  /* ============ EVERYTHING ELSE ============ */
+  .block { margin-top: 28px; }
+  .block-label {
+    font-family: var(--f-mono); font-weight: 700; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-deep);
+    margin-bottom: 12px;
+  }
+  .block-label.muted { color: var(--ink-3); }
+  .block p {
+    font-family: var(--f-serif); font-size: 16.5px; line-height: 1.6;
+    color: var(--ink-2); max-width: 78ch;
+  }
+  .block p + p { margin-top: 14px; }
+  .block p strong { color: var(--ink); font-weight: 600; }
+  .block p em { color: var(--gold-deep); font-style: italic; }
+  .block code { font-family: var(--f-mono); font-size: 13.5px;
+    background: var(--inset); padding: 2px 7px; border-radius: 5px;
+    color: var(--ink); border: 1px solid var(--border); }
+  .block a { color: var(--gold-deep); text-decoration: underline; text-underline-offset: 3px; }
+
+  pre.code {
+    margin-top: 16px;
+    background: #1a1813; color: #e2dcc7;
+    padding: 22px 26px; border-radius: 16px;
+    font-family: var(--f-mono); font-size: 13px; line-height: 1.65;
+    overflow-x: auto;
+  }
+  pre.code .c { color: #847e6b; font-style: italic; }
+  pre.code .k { color: #e8a21a; }
+  pre.code .s { color: #9bd6a4; }
+
+  /* ============ TL;DR PHASE STRIP ============ */
+  .phase-strip {
+    margin-top: 40px;
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px;
+  }
+  .phase-strip .ps {
+    background: var(--paper); border: 1.5px solid var(--border);
+    border-radius: 14px; padding: 18px 16px; text-align: center;
+    position: relative;
+  }
+  .phase-strip .ps::before {
+    content: ""; position: absolute; top: 0; left: 16px; right: 16px;
+    height: 3px; border-radius: 0 0 3px 3px;
+  }
+  .phase-strip .ps.now::before { background: var(--gold); }
+  .phase-strip .ps.wk1::before { background: var(--no); }
+  .phase-strip .ps.m1::before  { background: var(--gold-deep); }
+  .phase-strip .ps.m23::before { background: var(--blue); }
+  .phase-strip .ps.q2::before  { background: var(--violet); }
+  .phase-strip .ps.y1::before  { background: var(--ok); }
+  .phase-strip .ps .psn {
+    font-family: var(--f-mono); font-weight: 700; font-size: 10px;
+    letter-spacing: 0.14em; color: var(--ink-3); text-transform: uppercase;
+  }
+  .phase-strip .ps .pst {
+    font-family: var(--f-display); font-weight: 700; font-size: 14px;
+    color: var(--ink); margin-top: 8px; letter-spacing: -0.01em; line-height: 1.2;
+  }
+  .phase-strip .ps .psw {
+    font-family: var(--f-mono); font-size: 10px; color: var(--gold-deep);
+    margin-top: 6px; font-weight: 700; letter-spacing: 0.1em;
+  }
+
+  /* ============ THE OBSESSION LADDER ============ */
+  .ladder {
+    margin-top: 28px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .ladder .lrow {
+    background: var(--paper); border: 1.5px solid var(--border);
+    border-radius: 16px; padding: 20px 24px;
+    display: grid; grid-template-columns: 80px 1fr 1fr; gap: 22px;
+    align-items: baseline;
+  }
+  .ladder .lrow .lt {
+    font-family: var(--f-mono); font-weight: 700; font-size: 12px;
+    letter-spacing: 0.14em; color: var(--gold-deep); text-transform: uppercase;
+  }
+  .ladder .lrow .lh {
+    font-family: var(--f-display); font-weight: 700; font-size: 16px;
+    letter-spacing: -0.012em; color: var(--ink); line-height: 1.25;
+  }
+  .ladder .lrow .lbody {
+    font-family: var(--f-serif); font-size: 14.5px; line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .ladder .lrow .lbody em { color: var(--gold-deep); font-style: italic; }
+  .ladder .lrow .lbody strong { color: var(--ink); font-weight: 600; }
+
+  /* ============ FOOTER ============ */
+  .foot {
+    margin-top: 88px; padding-top: 32px; border-top: 1.5px solid var(--border);
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.12em;
+    color: var(--ink-3); text-transform: uppercase;
+  }
+  .foot .hash { color: var(--gold-deep); }
+
+  /* sources */
+  .sources { margin-top: 18px; font-family: var(--f-serif); font-size: 14px;
+    color: var(--ink-3); line-height: 1.8; }
+  .sources a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; }
+  .sources a:hover { color: var(--gold-deep); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top-chip"><span class="dot"></span><strong>Scorpius v2</strong>&nbsp;·&nbsp;The Master Plan</div>
+
+<h1 class="hero">From <em>11 lessons in a quiz wrapper</em> to a learning platform a child <em>cannot put down.</em></h1>
+
+<p class="lede">
+A phased build plan synthesized from five parallel deep-research passes — Khanmigo / Koji / Synthesis tutor SOTA, the obsession-engineering literature, mastery-learning &amp; knowledge tracing, content production at scale, and 1-2 hour session design. Each phase is shippable. Each phase has a build list, an exit criterion, and a KPI. The end-state isn't <em>more features</em> — it's the architecture below.
+</p>
+
+<!-- ============ THE NORTH STAR ============ -->
+<div class="northstar">
+  <div class="nlbl">The North Star · the one metric we ship for</div>
+  <h2>A 12-year-old in Andijon opens Scorpius after school and <em>looks up 90 minutes later.</em></h2>
+  <p class="nbody">
+    Three numbers determine success. <strong>D1 retention 60%</strong> (Duolingo bar). <strong>Median session 35+ minutes by week 4</strong> (Synthesis Tutor parents report 90-120 min spontaneously). <strong>Concepts mastered per child per month: 12+</strong> (5× current). Every build below ladders to one of these three.
+  </p>
+</div>
+
+<div class="kpi-strip">
+  <div class="kpi">
+    <div class="v">60<em>%</em></div>
+    <div class="k">D1 retention</div>
+    <div class="sub">Duolingo bar; today ~unknown</div>
+  </div>
+  <div class="kpi">
+    <div class="v">35<em>min</em></div>
+    <div class="k">Median session</div>
+    <div class="sub">Wk-4 target; today ≪10 min</div>
+  </div>
+  <div class="kpi">
+    <div class="v">12<em>+</em></div>
+    <div class="k">Concepts / child / mo</div>
+    <div class="sub">Mastery-gated, not viewed</div>
+  </div>
+  <div class="kpi">
+    <div class="v">500</div>
+    <div class="k">Lessons by Y1</div>
+    <div class="sub">From 11 today</div>
+  </div>
+</div>
+
+<!-- ============ PHASE STRIP ============ -->
+<div class="phase-strip">
+  <div class="ps now"><div class="psn">Phase 0</div><div class="pst">Honest baseline</div><div class="psw">Now</div></div>
+  <div class="ps wk1"><div class="psn">Phase 1</div><div class="pst">Demo-killer fixes</div><div class="psw">Week 1–2</div></div>
+  <div class="ps m1"><div class="psn">Phase 2</div><div class="pst">Real mastery loop</div><div class="psw">Month 1</div></div>
+  <div class="ps m23"><div class="psn">Phase 3</div><div class="pst">Humo = Koji-grade</div><div class="psw">Month 2–3</div></div>
+  <div class="ps q2"><div class="psn">Phase 4</div><div class="pst">Content engine</div><div class="psw">Quarter 2</div></div>
+  <div class="ps y1"><div class="psn">Phase 5</div><div class="pst">Network &amp; scale</div><div class="psw">Year 1</div></div>
+</div>
+
+
+<!-- ============ SECTION I — THE 6 PILLARS ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">I</div>
+    <div>
+      <div class="title">The architecture · six pillars</div>
+      <h3>What a next-gen learning platform actually <em>is</em>.</h3>
+      <p class="blurb">Every successful learning app — Khanmigo, Koji, Synthesis, Brilliant, Duolingo, Prodigy — sits on the same six pillars. Today Scorpius has thin versions of three. Building the missing three (and upgrading the weak three) <em>is</em> the master plan.</p>
+    </div>
+  </div>
+
+  <div class="pillars">
+    <div class="pillar">
+      <span class="ptag">Pillar 01 &middot; Pedagogy engine</span>
+      <div class="pname">Mastery, not minutes.</div>
+      <div class="pbody">A <strong>real per-skill mastery model</strong> — BKT + half-life recall — running on every attempt. The next problem is picked at <em>P(correct) ≈ 0.85</em> (Wilson &amp; Shenhav's 85% rule). The constellation only ignites a star when the skill is mastered in <em>mixed-context</em>, not on the same screen it was taught. <strong>Today: hardcoded</strong> <code>"density"</code> in <code>weakest.ts:37</code>, <code>streak = 1</code> in <code>SkyView.tsx:336</code>.</div>
+    </div>
+
+    <div class="pillar">
+      <span class="ptag">Pillar 02 &middot; Koji-grade in-canvas AI tutor</span>
+      <div class="pname">Humo <em>sees the sim and draws on it.</em></div>
+      <div class="pbody">Not a chat-sidebar tutor (Khanmigo). A tutor that has <strong>read access to the live sim state</strong> and <strong>write access to the canvas</strong>: <code>highlight()</code>, <code>annotate()</code>, <code>poseSubProblem()</code>, <code>setSliderTarget()</code>. At page arrival it narrates what changed. On a wrong answer, it never says "wrong" — it says <em>"I got a different answer — walk me through your step."</em> Today: chat-only, generic LLM, no sim awareness.</div>
+    </div>
+
+    <div class="pillar">
+      <span class="ptag">Pillar 03 &middot; Lab simulations as instruments</span>
+      <div class="pname">Sandboxes, not <em>quiz with sliders.</em></div>
+      <div class="pbody">Kill every <code>onComplete?.()</code> win-condition baked into the 13 sims today. Replace with a persistent <strong>Lab Notebook</strong> that records every parameter the student varied. PhET's freedom is the only thing Scorpius is provably behind on — average sim freedom score 2.1/5. Sandbox mode, draggable protractor, time-series graphs on the 3 strongest sims first.</div>
+    </div>
+
+    <div class="pillar">
+      <span class="ptag">Pillar 04 &middot; Obsession architecture</span>
+      <div class="pname">Variable rewards, named peers, <em>cultural metaphors.</em></div>
+      <div class="pbody">Hooked-loop, BJ Fogg, Octalysis — applied for Uzbek 10-14yo. <strong>Mahalla / sinfdosh leaderboards</strong> beat Duolingo's anonymous global league at this market. <strong>Khorezmi-Beruniy-Ulug'bek prestige tiers</strong> beat American fantasy avatars. Streak with <em>repair</em> mechanic (loss aversion without cruelty). Surprise "Beruniy cards" at 1-in-5. No gem-pulling, no gacha, parents are sensitive to qimor.</div>
+    </div>
+
+    <div class="pillar">
+      <span class="ptag">Pillar 05 &middot; The journey has an end</span>
+      <div class="pname">Supernova → Zij catalog → Galaxy.</div>
+      <div class="pbody">Today the <code>"done"</code> card is a flat string. After igniting all stars in a constellation: <strong>nothing happens.</strong> Build the chapter-end cinematic — a star collapses into a named, dated supernova ("Bobur'ning supernovasi · 2026-yil noyabr"). Permanent. The Personal Zij — the student's own catalog modeled on Ulug'bek's 1437 Samarqand zij — accumulates supernovas. Becomes the 5-year-veteran's permanent artifact.</div>
+    </div>
+
+    <div class="pillar">
+      <span class="ptag">Pillar 06 &middot; Content production at scale</span>
+      <div class="pname">11 lessons today → <em>500 lessons</em>.</div>
+      <div class="pbody">A 5-step LLM-assisted pipeline: <strong>(1) curriculum graph entry → (2) LLM card-deck draft (JSON-schema constrained) → (3) automatic checks (python solver + pint units + multi-model voting + pedagogy-arc lint) → (4) Uzbek teacher review (Khanmigo-Writing-Coach pattern) → (5) AB telemetry release.</strong> Target: 1 dev-day per lesson at 90% QC pass. ~$11/lesson all-in, 97% of which is human review, not tokens.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============ SECTION II — HONEST CURRENT STATE ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">II</div>
+    <div>
+      <div class="title">Honest current state · what's actually built</div>
+      <h3>Eight things in place. <em>Seven things that lie.</em></h3>
+      <p class="blurb">An audit grounded in <code>git grep</code>, not pitch slides. The point: every Phase-1 build below addresses a specific lie in this table. If we keep the lies in, no amount of new features convinces a 12-year-old to come back tomorrow.</p>
+    </div>
+  </div>
+
+  <table class="audit">
+    <thead>
+      <tr><th>Area</th><th>Honest state</th><th>Verdict</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>13 sims with real physics</td>
+        <td>Brachistochrone, Brownian, Buoyancy, Eclipse, Prism, Lens, Lever, Pascal, Sound, Circuit, Divisor-grid, Density-buoyancy-tank, sims/index.tsx wires 13 keys. RAF integration, real equations.</td>
+        <td class="ok">strong</td>
+      </tr>
+      <tr>
+        <td>Sim = quiz disguised</td>
+        <td>Every sim fires <code>onComplete?.()</code> after N actions. The "lab" has a hidden win-condition. Average freedom score 2.1/5 vs PhET 4.5/5.</td>
+        <td class="no">structural fail</td>
+      </tr>
+      <tr>
+        <td>12-card lesson DSL</td>
+        <td><code>{intro, explainer, mcq, discover, sequence, sort, numberline, simulation, diagram, story, ask, done}</code> + 3 manifesto types (<code>predict, explore-sandbox, challenge, pattern-discover</code>). Renderer + lock-deck working.</td>
+        <td class="ok">strong</td>
+      </tr>
+      <tr>
+        <td>Personalization "engine"</td>
+        <td><code>lib/emaktab/weakest.ts:37</code> hardcoded returns <code>"density"</code>. <code>SkyView.tsx:336</code>: <code>const streak = 1</code>. Profile captures interests but the LLM never sees a UI hint that it's using them.</td>
+        <td class="no">cosmetic only</td>
+      </tr>
+      <tr>
+        <td>Humo (AI tutor)</td>
+        <td>4 personas, streaming SSE, Firestore-mirrored history. <strong>Generic chat panel</strong> — no read access to sim state, no canvas write primitives, no "got-a-different-answer" Socratic kernel. Khanmigo's <em>weakest</em> mode.</td>
+        <td class="mid">demo-ready, not Koji</td>
+      </tr>
+      <tr>
+        <td>emaktab integration</td>
+        <td>Playwright extractor in <code>scripts/extract-emaktab.ts</code>, weekly snapshot to Firestore, demo runs on cached data. Real but brittle.</td>
+        <td class="mid">demo-ready</td>
+      </tr>
+      <tr>
+        <td>Constellation map</td>
+        <td>Per-subject star layout, ignite-on-completion, locked-state pulse. Visually distinctive. But igniting the <em>last</em> star = nothing happens.</td>
+        <td class="mid">strong start, no payoff</td>
+      </tr>
+      <tr>
+        <td>End-of-journey</td>
+        <td><code>type: "done"</code> = <code>{title, body}</code>. Flat string. No supernova, no Zij catalog, no certificate, no chapter ceremony.</td>
+        <td class="no">void</td>
+      </tr>
+      <tr>
+        <td>Streak / daily loop</td>
+        <td>Hardcoded to 1. No <code>lib/streak.ts</code>. No daily quest. No push notification. No "Bugungi yulduz."</td>
+        <td class="no">absent</td>
+      </tr>
+      <tr>
+        <td>Per-topic mastery</td>
+        <td>Boolean: <code>scorpius:done:{lessonId} = "1"</code> in localStorage. No correct/total counter, no recall half-life, no BKT, no mixed-context check.</td>
+        <td class="no">absent</td>
+      </tr>
+      <tr>
+        <td>Content count</td>
+        <td>11 lessons authored by hand. Need ~500 for Grade 6–11 Math + Physics.</td>
+        <td class="no">2% of target</td>
+      </tr>
+      <tr>
+        <td>Lesson card grammar reads as quiz</td>
+        <td>Progress dot rail + lock pill + A/B/C/D buttons + green/red flash. <em>Visual grammar of standardized testing.</em> Mentor flagged it: "test design but prettier."</td>
+        <td class="no">perception fail</td>
+      </tr>
+      <tr>
+        <td>Cultural fit</td>
+        <td>UZ-Latin strings, gold-on-cream design, Beruniy/Ulug'bek references in copy. Strong foundation. Missing: do'ppi-tile aesthetic, mahalla guild, sinfdosh leaderboard.</td>
+        <td class="mid">half done</td>
+      </tr>
+      <tr>
+        <td>Parent surface</td>
+        <td><code>components/parent/ParentDashboard.tsx</code> renders from Firestore. Real not mocked. But no daily Telegram brief, no concept-mastered weekly digest.</td>
+        <td class="mid">scaffolded</td>
+      </tr>
+      <tr>
+        <td>Voice / audio</td>
+        <td>No voice. No character audio. Synthesis Tutor 7-8yo parents specifically credit warm voice for 90-min sessions. Silent learning apps feel like textbooks.</td>
+        <td class="no">absent</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ============ SECTION III — THE PHASES ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">III</div>
+    <div>
+      <div class="title">The phases · 0 → 5</div>
+      <h3>Each phase is shippable. Each has a <em>kill criterion.</em></h3>
+      <p class="blurb">Build only inside the current phase. Resist building Phase 3 features in Phase 1 — the personalization-receipt fix in Phase 1 is the single highest-ROI dev-day. Do it before anything else. The pitch is allowed to <em>claim</em> the v2 architecture only after Phase 3.</p>
+    </div>
+  </div>
+
+
+  <!-- ============== PHASE 0 ============== -->
+  <div class="phase now">
+    <div class="phase-head">
+      <div class="pn">0</div>
+      <div class="pwhen">Now</div>
+      <h4>Honest baseline · <em>stop lying about what's built.</em></h4>
+      <div class="ptime">2 days</div>
+    </div>
+
+    <div class="goal">Goal: every claim in the pitch matches a piece of working code. If a slide says "personalization" we point at the function. If it says "mastery" we point at the schema. No more demos that rely on hardcoded strings.</div>
+
+    <div class="builds">
+      <div class="build">
+        <div class="bn">0.1</div>
+        <div>
+          <div class="bt">Remove the four lies.</div>
+          <div class="bb">(a) <code>lib/emaktab/weakest.ts:37</code> — route by actual subject of the bad mark, return a real <code>lessonId</code> + reason. (b) <code>SkyView.tsx:336</code> — kill <code>const streak = 1</code>, replace with real <code>lib/streak.ts</code> reading session timestamps. (c) <code>LensSim.tsx:118</code> — already fixed in prior session, verify. (d) Audit every <code>// TODO: hardcoded</code> in the codebase and either delete or implement.</div>
+          <div class="bmeta"><span class="tag">touches: 4 files</span><span class="tag">effort: 1 day</span><span class="tag">impact: trust</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">0.2</div>
+        <div>
+          <div class="bt">Strip <code>onComplete?.()</code> win-conditions from all 13 sims.</div>
+          <div class="bb">Sims currently fire completion after N interactions (e.g. Buoyancy fires after 3 drops). This is structurally a quiz, not a lab. Replace with a <strong>"I'm done" button</strong> the learner taps when they're ready, OR a passive completion timer (60 seconds of any interaction = the deck unlocks). Sims now feel like sandboxes, not quizzes.</div>
+          <div class="bmeta"><span class="tag">touches: 13 files</span><span class="tag">effort: 1 day</span><span class="tag">impact: huge perception</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ship-checks">
+      <div class="label">Phase 0 exit criteria</div>
+      <ul>
+        <li>No file in the codebase contains a hardcoded "<code>density</code>" return outside its own lesson.</li>
+        <li><code>git grep "streak = 1"</code> returns zero results.</li>
+        <li>Opening any sim and tapping nothing for 60s does NOT auto-complete it.</li>
+        <li>Pitch slide 02 ("Biz kimmiz") can be backed by file paths for every claim.</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- ============== PHASE 1 ============== -->
+  <div class="phase wk1">
+    <div class="phase-head">
+      <div class="pn">1</div>
+      <div class="pwhen">Week 1–2</div>
+      <h4>Demo-killer fixes · <em>the four moments that decide the pitch.</em></h4>
+      <div class="ptime">10 dev-days</div>
+    </div>
+
+    <div class="goal">Goal: a 12-year-old in Andijon, opening Scorpius for the first time, hits four moments in their first 15 minutes that make them say "this is for me." Four UI surfaces, each is a concrete build, each shippable independently.</div>
+
+    <div class="builds">
+      <div class="build">
+        <div class="bn">1.1</div>
+        <div>
+          <div class="bt">Build the <em>Burj</em> — Khorezmi's Compass, Beruniy's Astrolabe, Ulug'bek's Quadrant.</div>
+          <div class="bb">A new route at <code>/burj</code>. Every completed lesson plants a star on a culturally-named constellation. <strong>5 stars = a named burj</strong>. Khorezmi's Compass (algebra), Beruniy's Astrolabe (astronomy/physics-geometry), Ulug'bek's Quadrant (mechanics), Ibn Sino's Lens (optics), Forobiy's String (waves), Navoiy's Cycle (periodicity). The data already exists (<code>scorpius:done:{lessonId}</code>) — only the visual layer is missing. <strong>Single biggest perception-fix per dev-day on the entire roadmap.</strong></div>
+          <div class="bmeta"><span class="tag">new: app/burj/page.tsx</span><span class="tag">effort: 1.5 days</span><span class="tag">impact: ⭐⭐⭐⭐⭐</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">1.2</div>
+        <div>
+          <div class="bt">Personalization receipt on the home star.</div>
+          <div class="bb">The "Bugungi yulduz" card on <code>/learn</code> shows a <strong>named reason</strong>: <em>"Kecha fizikada 3 olding — Paskal qonunini birga ko'rib chiqaylik."</em> Or: <em>"Sen Batman'ni yoqtirasan — bu darsda misol Batman tomoshasi."</em> Reads <code>lib/emaktab/weakest.ts</code> for the real reason. Now personalization is a UI claim that's <em>falsifiable on screen</em>, not an invisible backend fact.</div>
+          <div class="bmeta"><span class="tag">touches: SkyView.tsx</span><span class="tag">effort: 1 day</span><span class="tag">impact: ⭐⭐⭐⭐⭐</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">1.3</div>
+        <div>
+          <div class="bt">Lab Notebook — the sim-as-instrument upgrade.</div>
+          <div class="bb">A persistent right-side panel inside every sim. Every reading the student takes (<em>F<sub>buoyancy</sub></em>, <em>τ</em>, <em>V·I</em>, <em>v/u</em>, spectrum spread) appends with a timestamp. <strong>The sim becomes an instrument that records, not a quiz disguised as one.</strong> Notebook persists in Firestore, becomes part of the student's permanent artifact. Apply to the 3 strongest sims first (Buoyancy, Lever, Circuit).</div>
+          <div class="bmeta"><span class="tag">new: LabNotebook.tsx</span><span class="tag">effort: 2 days</span><span class="tag">impact: ⭐⭐⭐⭐</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">1.4</div>
+        <div>
+          <div class="bt">Supernova ceremony — the chapter-end moment.</div>
+          <div class="bb">Detect when every star in <code>SUBJECT_SKIES[subject].stars</code> is ignited. Replace the silent return-to-sky with a fullscreen cinematic: star collapse → named supernova → <em>"Bobur'ning supernovasi · 2026-yil noyabr."</em> 5-second WebGL animation. Persist in <code>users/{uid}/supernovas</code>. Becomes a permanent badge on <code>/learn</code> and the seed for the Zij catalog (Phase 2).</div>
+          <div class="bmeta"><span class="tag">new: SupernovaSeq.tsx</span><span class="tag">effort: 2 days</span><span class="tag">impact: ⭐⭐⭐⭐⭐</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">1.5</div>
+        <div>
+          <div class="bt">Real daily streak + "Bugungi yulduz" + repair mechanic.</div>
+          <div class="bb">Kill <code>streak = 1</code>. Add <code>lib/streak.ts</code> reading <code>users/{uid}/sessions</code>. Surface one "Bugungi yulduz" card at the top of <code>/learn</code> that nominates the next lesson + grants 2× ignition glow if completed before midnight Tashkent time. <strong>Critical: ship the freeze-repair mechanic from day one</strong> — Duolingo learned the hard way that punishment-only streaks produce churn the day they snap. <em>1 free freeze per week, 1 paid repair per month.</em></div>
+          <div class="bmeta"><span class="tag">new: lib/streak.ts</span><span class="tag">effort: 3 days</span><span class="tag">impact: ⭐⭐⭐⭐</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ship-checks">
+      <div class="label">Phase 1 exit criteria</div>
+      <ul>
+        <li>A first-time visitor going through one constellation sees: (a) personalized "Bugungi" reason, (b) sim with Lab Notebook, (c) Supernova ceremony, (d) streak counter that's real.</li>
+        <li>Pitch slide 02 lists "Burj" as a concrete artifact, not a metaphor.</li>
+        <li><code>D1 retention</code> measurable in Firebase Analytics (whether or not it hits 60% yet).</li>
+        <li>Mentor (Muxammadali) re-shown the build returns a verdict of "this is no longer a test with pretty design."</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- ============== PHASE 2 ============== -->
+  <div class="phase m1">
+    <div class="phase-head">
+      <div class="pn">2</div>
+      <div class="pwhen">Month 1</div>
+      <h4>The real mastery loop · <em>BKT + half-life + Mastery Challenges.</em></h4>
+      <div class="ptime">15 dev-days</div>
+    </div>
+
+    <div class="goal">Goal: the star ignites because the child <em>mastered</em> the concept in mixed context, not because they tapped through the cards. The next lesson is picked at P(correct) ≈ 0.85. The forgetting curve is fought, not ignored.</div>
+
+    <div class="builds">
+      <div class="build">
+        <div class="bn">2.1</div>
+        <div>
+          <div class="bt">Atomize the Grade-6 curriculum into ~200 skills.</div>
+          <div class="bb">Take the 54 textbook topics and split each into 3–6 <em>atomic skills</em> — the smallest unit a Grade-6 student could plausibly fail in isolation. Output: a JSON DAG at <code>lib/curriculum/skills.json</code> with prerequisite edges. Each skill carries: <code>{id, domain, unit, prereqs[], stockProblems[], conceptTag}</code>. Skills are tagged with priors <code>P(G)=0.20, P(S)=0.08, P(T)=0.18</code> from the literature.</div>
+          <div class="bmeta"><span class="tag">new: skills.json (200 entries)</span><span class="tag">effort: 4 days (one-time)</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">2.2</div>
+        <div>
+          <div class="bt">BKT + half-life recall — the mastery schema.</div>
+          <div class="bb">Firestore: <code>users/{uid}/mastery/{skillId}</code> with <code>{correct, total, streak, halfLifeDays, lastSeen, nextDue, pL, pT, pG, pS, mastery, level, lastAttempts[10], prereqsOf[]}</code>. On every attempt: BKT update of <code>pL</code>, half-life update (correct/no-hint → ×1.7, correct/hint → ×1.2, wrong → ×0.5, floor 1 day), composite <code>mastery = pL · R(now)</code>, level threshold {0.5/0.8/0.95}. Schedule <code>nextDue = lastSeen + halfLife · log₂(1/0.85)</code>. FIRe-style fractional credits to prereqs (weight 0.4).</div>
+          <div class="bmeta"><span class="tag">new: lib/mastery.ts</span><span class="tag">effort: 3 days</span><span class="tag">impact: load-bearing</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">2.3</div>
+        <div>
+          <div class="bt">Mixed-context Mastery Challenge — Khan's signature surface.</div>
+          <div class="bb">A new card type: <code>mastery-challenge</code>. Renders 4–6 items pulled from <em>different</em> skills the student recently practiced. Same-skill grinding can never grant <code>mastered</code> — only the Challenge can. This is what makes mastery <em>retrieved</em>, not crammed. Triggers every 5 lessons within a constellation, and weekly on dormant skills (the spaced-repetition surface).</div>
+          <div class="bmeta"><span class="tag">new: MasteryChallenge.tsx</span><span class="tag">effort: 3 days</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">2.4</div>
+        <div>
+          <div class="bt">The session scheduler — 55/25/10/10 mix at P(correct) = 0.85.</div>
+          <div class="bb">A new <code>lib/scheduler.ts</code> that, given a user and a target session length, returns a sequence of cards picked by:
+            <em>55% ZPD core</em> (predicted P(correct) ∈ [0.75, 0.90]),
+            <em>25% at-risk review</em> (predicted recall ≤ 0.85, weighted by prereq fan-out),
+            <em>10% exploratory</em> (new topic at the prereq frontier OR mixed-context),
+            <em>10% confidence builder</em> (recently-mastered, P(correct) ≥ 0.95).
+            Hard cap: <em>3 consecutive items per skill</em> to force interleaving. Three wrongs in a row → drop one level on the prereq graph (remediation mode).</div>
+          <div class="bmeta"><span class="tag">new: lib/scheduler.ts</span><span class="tag">effort: 3 days</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">2.5</div>
+        <div>
+          <div class="bt">Per-topic mastery percentage visible on every star.</div>
+          <div class="bb">Render <code>mastery</code> on every <code>StarTile</code>. Constellation total becomes "27% of Burj mastered" instead of "3 of 6 lessons done." <strong>Single highest-density "this app knows me" signal in EdTech</strong> — the number visibly changes as the student practices.</div>
+          <div class="bmeta"><span class="tag">touches: StarTile.tsx</span><span class="tag">effort: 1 day</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">2.6</div>
+        <div>
+          <div class="bt">Personal Zij at <code>/osmonim/zij</code>.</div>
+          <div class="bb">A scrollable, dated catalog of every star + supernova the student has ignited, styled like Ulug'bek's 1437 Samarqand zij. Shareable URL. Auto-backfills every existing user's history. Becomes the "5-year veteran" artifact the moment we ship — and the export anchor for the parent weekly digest.</div>
+          <div class="bmeta"><span class="tag">new: app/osmonim/zij/page.tsx</span><span class="tag">effort: 3 days</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ship-checks">
+      <div class="label">Phase 2 exit criteria</div>
+      <ul>
+        <li>Every interaction with a lesson updates a real <code>users/{uid}/mastery/{skillId}</code> doc.</li>
+        <li>A skill cannot show "mastered" without a passing Mastery Challenge attempt.</li>
+        <li>Open a new browser → first lesson is picked by the scheduler, not hardcoded.</li>
+        <li>A child who hasn't visited in 5 days returns to a session where at least 25% of cards are at-risk reviews of skills they already learned.</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- ============== PHASE 3 ============== -->
+  <div class="phase m23">
+    <div class="phase-head">
+      <div class="pn">3</div>
+      <div class="pwhen">Month 2–3</div>
+      <h4>Humo = Koji-grade · <em>the in-canvas AI tutor.</em></h4>
+      <div class="ptime">25 dev-days</div>
+    </div>
+
+    <div class="goal">Goal: Humo doesn't sit in a chat sidebar. Humo <em>sees</em> the lens, the lever, the circuit. Humo <em>draws on it.</em> On every page arrival, Humo says something specific to what changed since the last card. On a wrong answer, Humo never says "wrong" — it says <em>"I got a different answer, walk me through your step."</em></div>
+
+    <div class="builds">
+      <div class="build">
+        <div class="bn">3.1</div>
+        <div>
+          <div class="bt">Sim state contract — every sim publishes a structured state object.</div>
+          <div class="bb">Add a <code>useSimState(state, schema)</code> hook to every sim component. The hook publishes <code>{simKey, params, observations}</code> to a context provider. <em>LensSim</em> publishes <code>{focalLength, objectDistance, imagePosition, studentMarkedFocal}</code>. <em>CircuitSim</em> publishes <code>{voltage, resistance, current, isClosed}</code>. Humo can now <em>read</em> what the student is looking at.</div>
+          <div class="bmeta"><span class="tag">touches: all sims</span><span class="tag">effort: 4 days</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">3.2</div>
+        <div>
+          <div class="bt">Canvas write primitives — <code>humo.highlight()</code>, <code>humo.annotate()</code>, <code>humo.poseSubProblem()</code>.</div>
+          <div class="bb">A registry of <em>tools Humo can call</em> in the sim canvas. The LLM is instructed (via function-calling / tool-use) to prefer a canvas action over a sentence. When a student gets a lens question wrong, Humo calls <code>highlight("focal-point")</code> + <code>annotate(x, y, "this distance equals f")</code> instead of typing a paragraph. <em>This is the architectural advantage over Khanmigo.</em></div>
+          <div class="bmeta"><span class="tag">new: lib/humo/tools.ts</span><span class="tag">effort: 5 days</span><span class="tag">impact: ⭐⭐⭐⭐⭐</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">3.3</div>
+        <div>
+          <div class="bt">The Humo system prompt — the Khanmigo kernel + Koji canvas + Uzbek voice.</div>
+          <div class="bb">A constrained system prompt with hard rules: <em>(1) never give the final answer, (2) one question per turn, (3) end every reply with a question, (4) on wrong answer say "I got a different answer" not "wrong", (5) after 3 help requests without effort, zoom out and ask which part of the previous hint they missed, (6) reading level no higher than the student's, (7) prefer canvas action over sentence, (8) one variable warm Uzbek voice — kind older sibling, not bouncy American.</em> Injects <code>{currentLesson, currentCardId, cardKind, expectedAnswer, studentLastAttempt, simState, masterySnapshot}</code> per turn.</div>
+          <div class="bmeta"><span class="tag">new: lib/humo/prompt.ts</span><span class="tag">effort: 3 days iteration</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">3.4</div>
+        <div>
+          <div class="bt">Page-arrival narration — Humo says something specific on every new card.</div>
+          <div class="bb">When the deck advances to a new card, fire a low-latency Humo call with <code>{prevSimState, newCardContext}</code> and request a single sentence: <em>"Sen oxirgi safar fokus masofasini 4 sm ga sozlading — endi linzaning kuchi qancha?"</em> This is Koji's killer move. Costs ~$0.001 per card transition with Sonnet. Cache by <code>{cardId, simStateHash}</code> so common transitions are free after first hit.</div>
+          <div class="bmeta"><span class="tag">touches: LessonDeck.tsx</span><span class="tag">effort: 2 days</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">3.5</div>
+        <div>
+          <div class="bt">Mistake-driven branching — the "different answer" move.</div>
+          <div class="bb">When the student submits a wrong MCQ/numeric answer, the renderer does NOT show the red-X. Instead it calls Humo with <code>{question, expected, given}</code> and asks: <em>"Generate a question that leads the student to discover their error WITHOUT announcing it. Start with 'I got a different answer — walk me through how you got X.'"</em> Hint laddering: rung 1 = question, rung 2 = sub-problem, rung 3 = highlight on canvas, rung 4 = explicit nudge. Never the answer.</div>
+          <div class="bmeta"><span class="tag">touches: McqCard, NumericCard</span><span class="tag">effort: 4 days</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">3.6</div>
+        <div>
+          <div class="bt">Voice — Humo speaks Uzbek with optional Russian.</div>
+          <div class="bb">Gemini Live or GPT-Realtime end-to-end speech tokens (warmer than STT→LLM→TTS). Voice-first only on Grade 6 onboarding screens and the "explain back to me" card type. Optional everywhere else. Persona: warm-formal older brother / ustoz, not bubbly American. iOS Safari audio-unlock-on-first-tap (we already handle this in SoundSim).</div>
+          <div class="bmeta"><span class="tag">new: lib/humo/voice.ts</span><span class="tag">effort: 4 days</span><span class="tag">impact: huge for &lt;10yo</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">3.7</div>
+        <div>
+          <div class="bt">Humo character interludes — Ibn Sino / Beruniy / Ulug'bek / Khorezmi mode.</div>
+          <div class="bb">Khanmigo's killer feature is debate-with-Lincoln. Humo's localized version: chat with Ibn Sino about lenses (after the optics lesson), with Beruniy about astronomy (after eclipses), with Khorezmi about algebra. Persona prompts written in collaboration with an Uzbek literature reviewer. <strong>Default to Uzbek historical figures, not Western canon.</strong> Lincoln/Newton available as electives.</div>
+          <div class="bmeta"><span class="tag">touches: lib/personas.ts</span><span class="tag">effort: 3 days</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ship-checks">
+      <div class="label">Phase 3 exit criteria</div>
+      <ul>
+        <li>Humo can highlight a region of a sim and annotate it from a chat-mode response.</li>
+        <li>A wrong MCQ never produces the red-X — it produces a Socratic follow-up question.</li>
+        <li>Humo's reply on card arrival mentions a specific parameter the student changed on the prior card.</li>
+        <li>A Grade-6 student can voice-chat with "Beruniy" in Uzbek about an eclipse.</li>
+        <li>Pitch slide 02 row "Shaxsiy AI o'qituvchi" reads <strong>Humo · UZ · sim-aware</strong> vs Koji · EN · sim-aware (parity), Khanmigo · EN · chat-only (we're ahead).</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- ============== PHASE 4 ============== -->
+  <div class="phase q2">
+    <div class="phase-head">
+      <div class="pn">4</div>
+      <div class="pwhen">Quarter 2</div>
+      <h4>The content engine · <em>from 11 to 500 lessons.</em></h4>
+      <div class="ptime">60 dev-days · 1 dev + 1 Uzbek teacher reviewer</div>
+    </div>
+
+    <div class="goal">Goal: produce 1 new lesson per dev-day with 90% QC pass rate. By end of quarter: Grade-6 fully covered (~70 lessons), Grade-7 math + physics started (~50 more), Grade-11 DTM prep started (~20 algebra/physics). Total 150+ by Q2 close, on the way to 500 by Y1.</div>
+
+    <div class="builds">
+      <div class="build">
+        <div class="bn">4.1</div>
+        <div>
+          <div class="bt">JSON-schema-constrained LLM card-deck draft.</div>
+          <div class="bb">A pipeline that takes <code>{skillId, gradeLevel, prereqsMastered}</code> and emits a <strong>full lesson card-deck JSON</strong> matching the 12-card DSL with a hard schema constraint enforcing the pedagogy arc (<em>hook → teach → sim → consolidate → ask → done</em>). For numeric problems, emits a <code>python_solver</code> field alongside the answer. Uses Sonnet 4.6 + structured outputs. Cost: ~$0.08 / draft.</div>
+          <div class="bmeta"><span class="tag">new: scripts/author-lesson.ts</span><span class="tag">effort: 5 days</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">4.2</div>
+        <div>
+          <div class="bt">Automatic QC — 5 layers before a teacher sees it.</div>
+          <div class="bb">A CI job that runs on every authored deck:
+            <em>(1) Python solver runs and matches stated answer</em>,
+            <em>(2) <code>pint</code> dimensional analysis on every numeric answer</em>,
+            <em>(3) multi-model re-solve — Claude + GPT vote, flag any disagreement</em>,
+            <em>(4) CODATA constant lookup on all named physical constants</em>,
+            <em>(5) pedagogy-arc lint — rejects decks where <code>simulation</code> precedes <code>explainer</code></em>.
+            Catches ~95% of LLM hallucinations before human review.</div>
+          <div class="bmeta"><span class="tag">new: .github/workflows/qc.yml</span><span class="tag">effort: 4 days</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">4.3</div>
+        <div>
+          <div class="bt">Teacher review surface — the Khanmigo Writing Coach pattern.</div>
+          <div class="bb">A new <code>/admin/review</code> route for Uzbek physics + math teachers. Reviewer sees: rendered deck preview, the LLM's chain-of-thought, all auto-check results, side-by-side English translation. Approve / edit / reject with one-click. <strong>Edits feed back as future-shot examples for the authoring LLM</strong> — the corpus improves on its own. Pay teachers per approved lesson, not per hour ($5–8 / lesson).</div>
+          <div class="bmeta"><span class="tag">new: app/admin/review</span><span class="tag">effort: 6 days</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">4.4</div>
+        <div>
+          <div class="bt">12–20 reusable sim components — the multiplier.</div>
+          <div class="bb">The 13 sims today are <em>scenarios</em>. Refactor into <em>parameterized components</em>: <code>&lt;PendulumSim length={1.2} g={9.8} damping={0.02}&gt;</code>, <code>&lt;CircuitSim topology="series" components={[...]}&gt;</code>, <code>&lt;WaveSim wavelength={500} amplitude={0.5}&gt;</code>, <code>&lt;CollisionSim m1={2} v1={3} m2={5} v2={-1} elastic={true}&gt;</code>. Now any new lesson is <em>JSON pointing at a shelf</em>, not new TypeScript. Brilliant ships at scale because their sim shelf has ~60 components.</div>
+          <div class="bmeta"><span class="tag">refactor: sims/</span><span class="tag">effort: 15 days</span><span class="tag">impact: enables 4.5</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">4.5</div>
+        <div>
+          <div class="bt">A/B telemetry release pipeline.</div>
+          <div class="bb">Every newly approved lesson ships to 5% of matched-grade learners. After 100 sessions, compare against the median lesson on <em>{median time-on-card, retry rate, drop-off, sentiment-after}</em>. Auto-promote at +0σ, auto-flag at –1σ. Re-author queue is fed by the threshold rule. Lesson quality compounds.</div>
+          <div class="bmeta"><span class="tag">touches: Firebase Remote Config</span><span class="tag">effort: 4 days</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">4.6</div>
+        <div>
+          <div class="bt">Add 4 missing card types — the SOTA card grammar.</div>
+          <div class="bb">From the audit vs Perseus + Duolingo:
+            <em>(a) <code>numeric-input</code> with units</em> — free-form numeric answer parsed by <code>pint</code>,
+            <em>(b) <code>graph-mark</code></em> — click to place a point on axes (the "leap year searches" pattern from <code>/scrn/</code>),
+            <em>(c) <code>free-body-diagram</code></em> — drag force arrows onto an object,
+            <em>(d) <code>predict-then-show</code></em> — learner sets a slider prediction, sim then runs and reveals truth.
+            Collapse <code>intro</code> + <code>story</code> into a single <code>hook</code> type.</div>
+          <div class="bmeta"><span class="tag">touches: cards.tsx</span><span class="tag">effort: 6 days</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ship-checks">
+      <div class="label">Phase 4 exit criteria</div>
+      <ul>
+        <li>A new lesson takes ≤ 1 dev-day from "skillId X needs a lesson" to "live on 5%".</li>
+        <li>The QC pipeline rejects ≥ 90% of hallucinated problems before a teacher sees them.</li>
+        <li>Total lesson count: 150+.</li>
+        <li>Cost per lesson all-in: ≤ $12.</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- ============== PHASE 5 ============== -->
+  <div class="phase y1">
+    <div class="phase-head">
+      <div class="pn">5</div>
+      <div class="pwhen">Year 1</div>
+      <h4>Network effects · <em>mahalla guilds, sinfdosh leagues, parent Telegram.</em></h4>
+      <div class="ptime">90 dev-days</div>
+    </div>
+
+    <div class="goal">Goal: a Scorpius child is not alone. They are on a mahalla guild, in a sinfdosh league, with a parent who gets a weekly Uzbek-language brief. The platform becomes the place a class agrees to study together. Retention shifts from individual-habit to social-network-of-habits.</div>
+
+    <div class="builds">
+      <div class="build">
+        <div class="bn">5.1</div>
+        <div>
+          <div class="bt">Sinfdosh league — class leaderboard, weekly.</div>
+          <div class="bb">A 6-digit class code (the teacher creates, kids enter). 30-student cohort. Bronze → Silver → Gold → Diamond burj tiers. Weekly cycle with demotion. <strong>Crucially: scoped to the actual class</strong>, not global Duolingo-style. Uzbek classrooms already run on sinfdosh competition — just digitize it. Add a "Bobur'ning sinfi vs 6-B" cross-class weekend tournament for school-wide engagement.</div>
+          <div class="bmeta"><span class="tag">new: lib/league.ts, /sinf</span><span class="tag">effort: 12 days</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">5.2</div>
+        <div>
+          <div class="bt">Mahalla guilds — the geographic team.</div>
+          <div class="bb">Optional opt-in. Auto-suggest based on city + neighborhood. Replaces Duolingo's cold leagues with a culturally native unit (mahalla) kids already understand. Weekly: whose mahalla ignited the most stars. Annual: "Toshkent shahridagi eng yorqin mahalla" award. Parents proud, kids competitive, community engaged.</div>
+          <div class="bmeta"><span class="tag">new: lib/mahalla.ts</span><span class="tag">effort: 8 days</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">5.3</div>
+        <div>
+          <div class="bt">Parent Telegram weekly brief — fully automated.</div>
+          <div class="bb">Every Sunday evening, every parent who opted in gets an Uzbek-language Telegram message: <em>"Bobur shu hafta 4 ta yulduz yondi: Arximed qonuni, Paskal qonuni, linzalar, optik prizma. Kechki ovqatda so'rang: 'kema nega cho'kmaydi?'"</em> Generated by Sonnet at $0.001/message. Becomes the retention weapon — parents pull kids into the app to "ask the question."</div>
+          <div class="bmeta"><span class="tag">new: scripts/parent-digest.ts</span><span class="tag">effort: 6 days</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">5.4</div>
+        <div>
+          <div class="bt">Variable-ratio Beruniy cards — 1 in 5 lessons.</div>
+          <div class="bb">A 30-second cinematic appearing on a random ~20% of lesson completions. Topic-tied: after a buoyancy lesson, a card about how Beruniy measured Earth's radius using two cities. After an optics lesson, Ibn Sino on light. After algebra, Khorezmi at the Bayt al-Hikma in Baghdad. <strong>Variable-ratio = surprise = the engine of return.</strong></div>
+          <div class="bmeta"><span class="tag">new: BeruniyCard.tsx</span><span class="tag">effort: 6 days</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">5.5</div>
+        <div>
+          <div class="bt">B2C launch — 80K so'm freemium + parent paywall.</div>
+          <div class="bb">First 3 days free. Then: 80K so'm / oy unlocks all subjects + Humo AI + parent dashboard + Telegram brief. Yillik: 800K so'm (2 oy sovg'a). Optional 25K so'm "O'quvchi" tier for self-paying Grade 10–11 DTM-prep students (no parent dashboard). Click2Pay + Payme integration.</div>
+          <div class="bmeta"><span class="tag">new: app/obuna</span><span class="tag">effort: 10 days</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">5.6</div>
+        <div>
+          <div class="bt">B2B pilot — 5 maktab × 6 sinf = 30 classroom.</div>
+          <div class="bb">School-wide rollout. Teacher dashboard reads class-level mastery, flags struggling students, suggests warm-up problems for the next lesson. Pay-per-class licensing (200K / sinf / oy). Becomes the wedge into Public Education Ministry conversation Y2.</div>
+          <div class="bmeta"><span class="tag">new: app/o'qituvchi</span><span class="tag">effort: 20 days</span></div>
+        </div>
+      </div>
+
+      <div class="build">
+        <div class="bn">5.7</div>
+        <div>
+          <div class="bt">Mobile app shell (PWA → Capacitor).</div>
+          <div class="bb">Today scorpius.uz is a Next.js web app. To compete with emaktab mobile, wrap with Capacitor for iOS + Android stores. Native push notifications (the daily streak hook), offline-first lesson cache (UZ mobile data plans are shared with siblings), home-screen icon = parent permission = kid loyalty.</div>
+          <div class="bmeta"><span class="tag">new: app shell + push</span><span class="tag">effort: 15 days</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ship-checks">
+      <div class="label">Phase 5 exit criteria</div>
+      <ul>
+        <li>5K paying users.</li>
+        <li>50 maktab pilot — at least 5 fully active.</li>
+        <li>Median session time hits 35+ minutes.</li>
+        <li>Median Scorpius kid is in at least one league + receives at least one Beruniy card per week.</li>
+        <li>Parent Telegram digest open rate ≥ 60%.</li>
+        <li>D30 retention ≥ 23%.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============ SECTION IV — THE 90-MIN SESSION ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">IV</div>
+    <div>
+      <div class="title">The 90-minute session · the actual artifact</div>
+      <h3>What a 12-year-old in Andijon <em>does</em> on a Tuesday after school.</h3>
+      <p class="blurb">The session template synthesizes flow theory, novelty curves, micro-reward cadence, the 85% rule, rest screens, and anti-burnout taper. <em>This is the structure the scheduler in Phase 2 produces.</em> One narrative thread: <em>"Why doesn't a 50,000-ton ship sink, but a coin does?"</em> Three concepts: buoyancy → pressure → density. Anchor: Archimedes' bathtub → modern container ship → hot-air balloon over Samarkand.</p>
+    </div>
+  </div>
+
+  <table class="timeline-table">
+    <thead><tr><th>Min</th><th>Card</th><th>Beat</th><th>Pedagogical role</th></tr></thead>
+    <tbody>
+      <tr><td>0:00</td><td><code>intro</code> auto-resume</td><td>Mascot waves, "Salom Bobur, kecha biz suv haqida gaplashdik. Bugun…"</td><td>Zero choice in first 30s</td></tr>
+      <tr><td>0:30</td><td><code>mcq</code> easy</td><td>"Qaysi biri suvda suzadi?"</td><td>First win, ~95% success</td></tr>
+      <tr><td>2:00</td><td><code>discover</code></td><td>Drag coin into bathtub, watch water rise</td><td>Phenomenon, no terms</td></tr>
+      <tr><td>4:00</td><td><code>story</code></td><td>Archimedes runs through Syracuse</td><td>Teach concept + vocab</td></tr>
+      <tr><td>6:00</td><td><code>simulation</code> BuoyancySim</td><td>Adjust density, watch float depth</td><td>Real physics, manipulable</td></tr>
+      <tr><td>10:00</td><td><code>mcq</code> consolidate</td><td>Predict: will iron ball sink?</td><td>Apply</td></tr>
+      <tr class="beat"><td>12:00</td><td>MINI-ARC 1 CLOSE</td><td>Confetti, +25 XP, mosaic tile lights</td><td>Reward + receipt</td></tr>
+      <tr><td>12:30</td><td>Breather: courtyard</td><td>Wander 60s, talk to NPC</td><td>Rest screen</td></tr>
+      <tr><td>14:00</td><td><code>intro</code> mini-arc 2</td><td>"Why does water push harder deeper?"</td><td>New hook, sky shifts violet</td></tr>
+      <tr><td>15:00</td><td><code>diagram</code> (interactive)</td><td>Tap depths on a pool diagram, haptic</td><td>Novelty: new card type</td></tr>
+      <tr><td>18:00</td><td><code>explainer</code></td><td>Pressure = ρgh, dam-builders</td><td>Teach</td></tr>
+      <tr><td>22:00</td><td><code>simulation</code> PressureSim</td><td>Diver descending, watch gauge</td><td>Manipulate depth slider</td></tr>
+      <tr><td>27:00</td><td><code>mcq</code></td><td>Why are dam walls thicker at bottom?</td><td>Apply</td></tr>
+      <tr class="beat"><td>30:00</td><td>MID-SESSION SET PIECE</td><td>Design a submarine that survives 200m</td><td>Boss-style challenge</td></tr>
+      <tr><td>35:00</td><td>Recap card</td><td>"2/7 ideas, +130 XP"</td><td>Passive reward, 8s</td></tr>
+      <tr><td>36:00</td><td>Choose-your-next</td><td>"Density next? Or jump to levers?"</td><td>Autonomy (Octalysis CD6)</td></tr>
+      <tr><td>38:00</td><td><code>discover</code> density</td><td>Layer oil, water, honey in a jar</td><td>New environment: kitchen</td></tr>
+      <tr><td>41:00</td><td><code>explainer</code></td><td>Density = m/V, Dead Sea swimmers</td><td>Story interlude</td></tr>
+      <tr><td>45:00</td><td><code>simulation</code> DensitySim</td><td>Mix two fluids, predict layering</td><td>New mechanic</td></tr>
+      <tr><td>50:00</td><td><code>ask</code> (Humo voice)</td><td>Mentor: "Why does the balloon rise?"</td><td>Open question, voice mode</td></tr>
+      <tr class="beat"><td>55:00</td><td>MINI-ARC 3 CLOSE</td><td>"3/7 ideas" — new mentor outfit unlocks</td><td>Cosmetic reward (variable)</td></tr>
+      <tr><td>56:00</td><td>Breather: progress map</td><td>Constellation half-filled</td><td>Rest</td></tr>
+      <tr><td>58:00</td><td>Mini-arcs 4–5 (apply)</td><td>Hot-air balloon over Samarkand + iceberg</td><td>Novelty: new biome</td></tr>
+      <tr class="beat"><td>70:00</td><td>ANTI-BURNOUT TAPER</td><td>Difficulty drops to ~88% success</td><td>Soft taper begins</td></tr>
+      <tr><td>72:00</td><td><code>mcq</code> easy review</td><td>Three quick wins</td><td>Easy victory</td></tr>
+      <tr><td>78:00</td><td>Social proof card</td><td>"Bobur'ning sinfi bugun 87 ta yulduz oldi — sen 23 tasini olding"</td><td>Peer salience</td></tr>
+      <tr><td>82:00</td><td><code>story</code> cliffhanger</td><td>"Ertaga: nima uchun samolyot uchadi?"</td><td>Narrative tease</td></tr>
+      <tr class="beat"><td>85:00</td><td>CELEBRATION FINALE</td><td>Confetti, mosaic complete, mentor speech</td><td>20s, no input</td></tr>
+      <tr><td>86:00</td><td>Passport stamp</td><td>Screenshottable artifact, 3 concepts</td><td>Show parent</td></tr>
+      <tr><td>87:00</td><td>"One more?" prompt</td><td>"+1 bonus unlocks rocket sky tomorrow"</td><td>Hook</td></tr>
+      <tr><td>88:00</td><td>Soft exit</td><td>"Unlocks in 8 hours"</td><td>Anticipation &gt; obligation</td></tr>
+    </tbody>
+  </table>
+
+  <div class="block">
+    <p><strong>Total:</strong> 7 mini-arcs · novelty injection every ~8 min · micro-rewards every 2–3 interactions · two breathers · one mid-session set piece · soft taper from min 70 · cliffhanger close. The scheduler from Phase 2.4 produces this template by reading the student's mastery doc + recent session history.</p>
+  </div>
+</div>
+
+
+<!-- ============ SECTION V — THE OBSESSION LADDER ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">V</div>
+    <div>
+      <div class="title">The obsession ladder · time scales of return</div>
+      <h3>Why the child comes back <em>tomorrow</em>, next week, next year.</h3>
+      <p class="blurb">Every successful learning app stacks rewards at four time scales — immediate, daily, weekly, lifelong. Today Scorpius has one. The 5 phases above add the other three, in order. None of these are gamification spice — they're the structural reasons a 5-year veteran exists.</p>
+    </div>
+  </div>
+
+  <div class="ladder">
+    <div class="lrow">
+      <span class="lt">Seconds</span>
+      <div>
+        <div class="lh">Immediate · the dopamine micro-reward</div>
+      </div>
+      <div class="lbody">Every correct answer fires a pentatonic chime, a particle burst, an XP tick. Variable-ratio (~70% small / 20% medium / 10% "wow"). The card lock + ignite lives here. <strong>Today: present, weak.</strong> Phase 1 multiplies it.</div>
+    </div>
+    <div class="lrow">
+      <span class="lt">Days</span>
+      <div>
+        <div class="lh">Daily · the streak + Bugungi yulduz</div>
+      </div>
+      <div class="lbody">A real streak with repair mechanic. One "Bugungi yulduz" nominated lesson with 2× ignition. Push notification at the right hour. <em>Loss aversion does the work.</em> <strong>Today: hardcoded to 1. Phase 1 ships the real version.</strong></div>
+    </div>
+    <div class="lrow">
+      <span class="lt">Weeks</span>
+      <div>
+        <div class="lh">Weekly · sinfdosh league + parent Telegram</div>
+      </div>
+      <div class="lbody">Class leaderboard, mahalla guild, weekly demotion / promotion. Parent gets the Telegram brief every Sunday. Schools light up. <em>Social weight beats the daily by 10×.</em> <strong>Today: absent. Phase 5 ships it.</strong></div>
+    </div>
+    <div class="lrow">
+      <span class="lt">Lifelong</span>
+      <div>
+        <div class="lh">Lifelong · the Zij, the supernovas, the Galaxy</div>
+      </div>
+      <div class="lbody">The Personal Zij is the artifact a 5-year veteran has and a newcomer doesn't. Supernovas are dated and named. Beruniy / Ibn Sino / Ulug'bek tiers visibly change the night sky. <strong>Today: void. Phase 2 ships it.</strong></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============ SECTION VI — TECH STACK ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">VI</div>
+    <div>
+      <div class="title">The stack · six layers</div>
+      <h3>What sits on top of what.</h3>
+      <p class="blurb">Below is the production architecture by end of Phase 3. Read top-down — the data flows from emaktab on the bottom up through mastery → personalization → AI tutor → card renderer → UI surface. The thing the kid sees on screen is layer 1; everything underneath is the engine that makes layer 1 obsessive.</p>
+    </div>
+  </div>
+
+  <div class="stack">
+    <div class="layer l1">
+      <div class="lname">L1 · UI</div>
+      <div class="ldesc">Constellation, Burj, Zij, lesson deck, Humo voice + canvas overlay, parent dashboard, sinfdosh league surface.</div>
+      <div class="ltech">Next.js 16 · Tailwind v4 · Framer Motion · Rive (sims)</div>
+    </div>
+    <div class="layer l2">
+      <div class="lname">L2 · Card grammar</div>
+      <div class="ldesc">16 card types (12 existing + 4 from Phase 4): hook, explainer, mcq, discover, sequence, sort, numeric-input, graph-mark, simulation, free-body-diagram, predict-then-show, mastery-challenge, story, ask, done.</div>
+      <div class="ltech">TypeScript DSL · Zod schemas</div>
+    </div>
+    <div class="layer l3">
+      <div class="lname">L3 · Humo AI tutor</div>
+      <div class="ldesc">Sim-state read + canvas write primitives + Khanmigo Socratic kernel + Uzbek voice + Beruniy / Ibn Sino character modes + page-arrival narration.</div>
+      <div class="ltech">Sonnet 4.6 + tool use · GPT-Realtime voice · Gemini Live · function-calling</div>
+    </div>
+    <div class="layer l4">
+      <div class="lname">L4 · Pedagogy engine</div>
+      <div class="ldesc">BKT per skill + half-life recall model + Mastery Challenge + 55/25/10/10 session scheduler at P(correct)=0.85 + FIRe fractional prereq credits.</div>
+      <div class="ltech">lib/mastery.ts · lib/scheduler.ts · Firestore <code>users/{uid}/mastery</code></div>
+    </div>
+    <div class="layer l5">
+      <div class="lname">L5 · Content engine</div>
+      <div class="ldesc">200-skill curriculum DAG → LLM card-deck author → 5-layer QC → Uzbek teacher review → A/B telemetry release. Targets 1 lesson / dev-day at 90% QC pass.</div>
+      <div class="ltech">Python solver + pint + multi-model voting · GitHub Actions · Firebase Remote Config</div>
+    </div>
+    <div class="layer l6">
+      <div class="lname">L6 · Data spine</div>
+      <div class="ldesc">emaktab Playwright extractor (weekly) → Firestore snapshot. Mahalla + sinfdosh leagues. Streak ledger. Sessions log → BigQuery → telemetry dashboard.</div>
+      <div class="ltech">Playwright · Firestore · BigQuery · Telegram Bot API</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============ SECTION VII — KPIs ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">VII</div>
+    <div>
+      <div class="title">KPIs · what we actually measure</div>
+      <h3>Three numbers <em>per phase.</em></h3>
+      <p class="blurb">No vanity metrics. Each KPI ties to a behavior the next phase requires. If a phase ships but its KPI doesn't move, don't proceed — fix the phase.</p>
+    </div>
+  </div>
+
+  <table class="audit">
+    <thead><tr><th>Phase</th><th>KPI</th><th>Today → Target</th></tr></thead>
+    <tbody>
+      <tr><td>Phase 0</td><td>Hardcoded-claim count in codebase</td><td>7 → 0</td></tr>
+      <tr><td>Phase 0</td><td>Sims with hard <code>onComplete</code> win-conditions</td><td>13 → 0 (Lab Notebook replaces)</td></tr>
+      <tr><td>Phase 1</td><td>D1 retention (Firebase Analytics)</td><td>unknown → ≥ 35%</td></tr>
+      <tr><td>Phase 1</td><td>Median session time</td><td>unknown → ≥ 12 min</td></tr>
+      <tr><td>Phase 1</td><td>Burj completion rate (% users who complete one)</td><td>0 → ≥ 40%</td></tr>
+      <tr><td>Phase 2</td><td>Concepts mastered per active child per month</td><td>~2 → ≥ 8</td></tr>
+      <tr><td>Phase 2</td><td>% of mastery flags from mixed-context Challenge</td><td>0% → ≥ 80%</td></tr>
+      <tr><td>Phase 2</td><td>D7 retention</td><td>unknown → ≥ 30%</td></tr>
+      <tr><td>Phase 3</td><td>Humo turns per session</td><td>~0 → ≥ 6</td></tr>
+      <tr><td>Phase 3</td><td>Wrong-answer recovery rate (Socratic) within 3 turns</td><td>n/a → ≥ 70%</td></tr>
+      <tr><td>Phase 3</td><td>Median session time</td><td>~12 min → ≥ 25 min</td></tr>
+      <tr><td>Phase 4</td><td>Lessons live</td><td>11 → 150+</td></tr>
+      <tr><td>Phase 4</td><td>Lessons per dev-day</td><td>~0.3 → ≥ 1</td></tr>
+      <tr><td>Phase 4</td><td>Auto-QC pass rate</td><td>n/a → ≥ 90%</td></tr>
+      <tr><td>Phase 5</td><td>Paying users</td><td>0 → 5,000</td></tr>
+      <tr><td>Phase 5</td><td>D30 retention</td><td>unknown → ≥ 23%</td></tr>
+      <tr><td>Phase 5</td><td>Median session time</td><td>~25 min → ≥ 35 min</td></tr>
+      <tr><td>Phase 5</td><td>Parent Telegram digest open rate</td><td>0 → ≥ 60%</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ============ SECTION VIII — THE FIRST TWO WEEKS ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">VIII</div>
+    <div>
+      <div class="title">The first two weeks · what to ship Monday</div>
+      <h3>The exact build sequence, in order.</h3>
+      <p class="blurb">Phase 0 + Phase 1 = 12 dev-days. One dev, focused. Below is the calendar. Resist building Phase 2 until <em>every</em> Phase 1 item is live.</p>
+    </div>
+  </div>
+
+  <table class="audit">
+    <thead><tr><th>Day</th><th>Ship</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>Mon (1)</td><td>Phase 0.1 — remove 4 hardcoded lies</td><td>No demo can show the v2 pitch while <code>weakest.ts</code> returns "density"</td></tr>
+      <tr><td>Tue (1)</td><td>Phase 0.2 — strip <code>onComplete</code> win-conditions, add "I'm done" button</td><td>Sims stop reading as quizzes</td></tr>
+      <tr><td>Wed–Thu (1)</td><td>Phase 1.2 — Personalization receipt on home star</td><td>Highest-ROI dev-day on the entire roadmap</td></tr>
+      <tr><td>Fri–Mon (2)</td><td>Phase 1.1 — Burj at <code>/burj</code></td><td>Biggest perception-fix per dev-day, ships before Mastery Challenge</td></tr>
+      <tr><td>Tue–Wed (2)</td><td>Phase 1.4 — Supernova ceremony</td><td>Fills the "what happens at end" void Muxammadali named</td></tr>
+      <tr><td>Thu–Fri (2)</td><td>Phase 1.3 — Lab Notebook on Buoyancy, Lever, Circuit</td><td>The three strongest sims become real instruments</td></tr>
+      <tr><td>Sat–Mon (3)</td><td>Phase 1.5 — Streak + Bugungi yulduz + repair mechanic</td><td>The daily-return engine, with the Duolingo lesson built in</td></tr>
+      <tr><td>Tue (3)</td><td>Polish + demo run with Muxammadali</td><td>Verdict check before Phase 2</td></tr>
+    </tbody>
+  </table>
+
+  <div class="block" style="margin-top: 22px;">
+    <p>If on Day-(3) Tuesday Muxammadali says <em>"it's no longer a test with pretty design"</em> — proceed to Phase 2. If not, fix the gap he names before adding anything new.</p>
+  </div>
+</div>
+
+
+<!-- ============ SECTION IX — WHAT WE EXPLICITLY DO NOT BUILD ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">IX</div>
+    <div>
+      <div class="title">What we do <em>not</em> build · cuts of conscience</div>
+      <h3>Three temptations rejected.</h3>
+      <p class="blurb">Almost everything you can imagine for a learning platform shows up somewhere on the obsession spectrum. These three are off-limits — either because they corrupt the brand, fail culturally, or burn dev-days for no compounding return.</p>
+    </div>
+  </div>
+
+  <table class="audit">
+    <thead><tr><th>Rejected</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Gem-pulling / lockbox / gacha visuals</td>
+        <td>Parents read it as <em>qimor</em>. Multiple jurisdictions now classify minor-targeted variable-rate cosmetic drops with explicit rarity tiers as gambling. Variable-ratio rewards stay (XP, mastery jumps, surprise unlocks) — but no spinning wheels, no "open the chest," no rarity %s.</td>
+      </tr>
+      <tr>
+        <td>Pivot to student-pay first</td>
+        <td>At 80K/oy, realistic payer mix is 85% parent / 5% self-pay. Teen card penetration under 18 is ~3%. Switching messaging to "students pay" collapses LTV from 1.9M to &lt;500K. The student is the user; the parent is the buyer. Both surfaces, one subscription. (Optional 25K student tier as hedge, never the headline.)</td>
+      </tr>
+      <tr>
+        <td>American-fantasy avatars / wizards / dragons</td>
+        <td>Cultural alien. Replace with: scientist-in-the-observatory, alchemist's lab, geometry-pattern quest in Silk Road imagery. If we do avatars at all, do'ppi + Samarqand tile patterns, not robes.</td>
+      </tr>
+      <tr>
+        <td>Streak guilt notifications ("Duo is sad")</td>
+        <td>Tashkent reads it as manipulative. Notification copy must be warm: <em>"Aziz aka, bugun ham birga o'qiymizmi?"</em> not <em>"Your streak is dying."</em></td>
+      </tr>
+      <tr>
+        <td>Generic global leaderboards</td>
+        <td>Western "you vs 50M strangers" is weaker than "your class vs 6-B." Lean named, knowable, mahalla-scoped. Cross-class tournaments beat global by far in this market.</td>
+      </tr>
+      <tr>
+        <td>DKT or transformer KT before Phase 5</td>
+        <td>Cold-start problem dominates at &lt;10K attempts per skill cluster. BKT is interpretable, ships in days, performs within 5% of DKT until you have real volume. Defer the deep model.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ============ SOURCES ============ -->
+<div class="section">
+  <div class="section-head">
+    <div class="num">∞</div>
+    <div>
+      <div class="title">Sources · what was read for this plan</div>
+      <h3>Five parallel research passes, ~30 citations.</h3>
+    </div>
+  </div>
+
+  <div class="block">
+    <p class="block-label muted">AI Tutor SOTA</p>
+    <p class="sources">
+      <a href="https://blog.khanacademy.org/khan-academys-7-step-approach-to-prompt-engineering-for-khanmigo/">Khan Academy · 7-step prompt engineering for Khanmigo</a> ·
+      <a href="https://gist.github.com/peteristhegreat/ec765ef04c94d426d7e416e0d6823983">Khanmigo Internal Thoughts (gist)</a> ·
+      <a href="https://aicompetence.org/ai-socratic-tutors/">Khanmigo Lite Socratic kernel</a> ·
+      <a href="https://brilliant.org/help/features/how-does-koji-work/">How Koji works · Brilliant help</a> ·
+      <a href="https://digg.com/ai/hqutws0i">Koji launch · Digg</a> ·
+      <a href="https://www.synthesis.com/tutor">Synthesis Tutor</a> ·
+      <a href="https://www.unite.ai/synthesis-tutor-review/">Synthesis review · unite.ai</a> ·
+      <a href="https://github.com/microsoft/prompts-for-edu/blob/main/Students/Prompts/Tutor.MD">Microsoft Tutor prompt template</a>
+    </p>
+
+    <p class="block-label muted" style="margin-top: 24px;">Obsession Engineering</p>
+    <p class="sources">
+      <a href="https://www.nirandfar.com/how-to-manufacture-desire/">Nir Eyal · Hooked Model</a> ·
+      <a href="https://amplitude.com/blog/the-hook-model">Hook Model · Amplitude</a> ·
+      <a href="https://www.thebehavioralscientist.com/articles/fogg-behavior-model">Fogg Behavior Model</a> ·
+      <a href="https://yukaichou.com/gamification-examples/octalysis-gamification-framework/">Octalysis · Yu-Kai Chou</a> ·
+      <a href="https://www.deconstructoroffun.com/blog/2025/4/14/duolingo-how-the-15b-app-uses-gaming-principles-to-supercharge-dau-growth">Duolingo gaming principles · Deconstructor of Fun 2025</a> ·
+      <a href="https://www.lennysnewsletter.com/p/how-duolingo-reignited-user-growth">Duolingo growth · Lenny / Jorge Mazal</a> ·
+      <a href="https://blog.duolingo.com/hi-its-duo-the-ai-behind-the-meme/">Duolingo AI notifications</a> ·
+      <a href="https://www.justanotherpm.com/blog/the-psychology-behind-duolingos-streak-feature">Duolingo streak psychology</a> ·
+      <a href="https://en.wikipedia.org/wiki/Prodigy_Math_Game">Prodigy Math · Wikipedia</a> ·
+      <a href="https://screenwiseapp.com/guides/prodigy-math-game">Prodigy mechanics teardown</a> ·
+      <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7882574/">Variable-ratio reward research · NCBI</a>
+    </p>
+
+    <p class="block-label muted" style="margin-top: 24px;">Mastery Learning &amp; Knowledge Tracing</p>
+    <p class="sources">
+      <a href="https://en.wikipedia.org/wiki/Bloom's_2_sigma_problem">Bloom's 2 sigma problem</a> ·
+      <a href="https://www.educationnext.org/two-sigma-tutoring-separating-science-fiction-from-science-fact/">Two-sigma tutoring evidence · Education Next</a> ·
+      <a href="https://support.khanacademy.org/hc/en-us/articles/5548760867853--How-do-Khan-Academy-s-Mastery-levels-work">Khan Academy mastery levels</a> ·
+      <a href="https://www.mathacademy.com/how-our-ai-works">Math Academy · how it works</a> ·
+      <a href="https://www.justinmath.com/how-math-academy-creates-its-knowledge-graph/">Skycak · knowledge graph</a> ·
+      <a href="https://www.justinmath.com/individualized-spaced-repetition-in-hierarchical-knowledge-structures/">Skycak · FIRe spaced repetition</a> ·
+      <a href="https://www.aleks.com/about_aleks/knowledge_space_theory">ALEKS · Knowledge Space Theory</a> ·
+      <a href="https://stanford.edu/~cpiech/bio/papers/deepKnowledgeTracing.pdf">Piech et al. · Deep Knowledge Tracing</a> ·
+      <a href="https://www.nature.com/articles/s41467-019-12552-4">Wilson &amp; Shenhav · The 85% Rule</a> ·
+      <a href="https://research.duolingo.com/papers/settles.acl16.pdf">Duolingo · Half-Life Regression</a> ·
+      <a href="https://github.com/open-spaced-repetition/fsrs4anki/wiki/The-Algorithm">FSRS Algorithm wiki</a>
+    </p>
+
+    <p class="block-label muted" style="margin-top: 24px;">Content Production at Scale</p>
+    <p class="sources">
+      <a href="https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/">Duolingo Birdbrain</a> ·
+      <a href="https://blog.duolingo.com/large-language-model-duolingo-lessons/">Duolingo · LLM lesson generation</a> ·
+      <a href="https://blog.duolingo.com/how-duolingo-experts-work-with-ai/">Duolingo · experts + AI</a> ·
+      <a href="https://github.com/Khan/perseus">Khan/Perseus on GitHub</a> ·
+      <a href="https://khan.github.io/perseus/">Perseus widget docs</a> ·
+      <a href="https://blog.khanacademy.org/meet-khanmigo-writing-coach-helping-learners-become-better-writers/">Khanmigo Writing Coach</a> ·
+      <a href="https://ustwo.com/work/brilliant/">Brilliant · ustwo case study</a> ·
+      <a href="https://rive.app/blog/how-brilliant-org-motivates-learners-with-rive-animations">Brilliant + Rive animations</a> ·
+      <a href="https://arxiv.org/pdf/2410.12608">PROVE · programs-as-verifiers</a> ·
+      <a href="https://www.prompthub.us/blog/program-of-thoughts-prompting-guide">Program of Thoughts prompting</a> ·
+      <a href="https://arxiv.org/pdf/2412.15473">Predicting long-term outcomes from short-term logs</a>
+    </p>
+
+    <p class="block-label muted" style="margin-top: 24px;">Long-Session Design</p>
+    <p class="sources">
+      Csikszentmihalyi · <em>Flow</em> (1990) ·
+      <a href="https://doi.org/10.1521/scpq.18.2.158.21860">Shernoff et al. 2003 · Flow in Schools</a> ·
+      <a href="https://doi.org/10.1038/nrn.2015.26">Schultz 2016 · dopamine review</a> ·
+      <a href="https://doi.org/10.1016/j.tics.2018.05.005">Hyland et al. 2018 · habituation</a> ·
+      <a href="https://naavik.co/deep-dives/prodigy-math">Naavik · Prodigy Math deep dive</a> ·
+      <a href="https://thinkgamedesign.com/flow-theory-game-design/">Flow theory in game design</a>
+    </p>
+  </div>
+</div>
+
+
+<div class="foot">
+  <span><span class="hash">#MilliyAIXakaton</span> · <span class="hash">#Andijon</span> · master plan synthesis</span>
+  <span>scorpius.uz · 2026</span>
+</div>
+
+</div>
+</body>
+</html>

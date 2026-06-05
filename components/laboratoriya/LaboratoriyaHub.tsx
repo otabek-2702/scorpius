@@ -34,6 +34,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
 import { BottomNav } from "@/components/nav/BottomNav";
+import { loadProfile } from "@/lib/profile";
 import {
   CATALOG,
   SUBJECTS,
@@ -819,6 +820,14 @@ export default function LaboratoriyaHub() {
 
   const [tab, setTab] = useState<TabId>("all");
 
+  // Personalise: greet the student by name (SSR-safe — empty on first paint).
+  const [name, setName] = useState("");
+  useEffect(() => {
+    const p = loadProfile();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is unavailable during SSR; read post-mount
+    if (p?.name) setName(p.name);
+  }, []);
+
   // Filter the catalog by the active tab, then split by card kind.
   const { labs, experiments, soons } = useMemo(() => {
     const visible = CATALOG.filter((e) => tab === "all" || e.subject === tab);
@@ -848,6 +857,11 @@ export default function LaboratoriyaHub() {
 
         {/* ---- serif display header + Uzbek hook ---- */}
         <header className="rise-in mt-5">
+          {name && (
+            <p className="mb-1.5 text-[14px] font-semibold text-antares-700">
+              Salom, {name.split(" ")[0]}! 👋
+            </p>
+          )}
           <h1 className="font-serif text-[2.4rem] font-medium leading-[1.02] tracking-[-0.022em] text-void-100 sm:text-[3rem]">
             Laboratoriya
           </h1>
