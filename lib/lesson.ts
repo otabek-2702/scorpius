@@ -71,6 +71,14 @@ export type Card =
       correctIndex: number;
       explain: string;
       hint: string;
+      /** Optional live visualization of the phenomenon the question is about.
+       *  Registry key — see components/learn/sims/index.tsx. When set (and the
+       *  key resolves), MCQCard renders the sim COMPACTLY above the options as
+       *  the "phenomenon you're predicting about" (phenomenon → predict →
+       *  reveal). Purely additive — text-only MCQs omit it. */
+      sim?: string;
+      /** Optional sim-specific config payload (the renderer decides the shape). */
+      simConfig?: Record<string, unknown>;
     }
   | {
       type: "discover";
@@ -422,6 +430,7 @@ export const brounLesson: Lesson = {
         "To'g'ri — sut molekulalari suv molekulalari bilan to'qnashib, butun idish bo'ylab yoyiladi. Bu — diffuziya.",
       hint:
         "Molekulalar bir-biri bilan to'xtovsiz to'qnashadi. Bu to'qnashuvlar sut zarralarini hamma tomonga itaradi.",
+      sim: "brownian",
     },
     {
       type: "explainer",
@@ -458,6 +467,7 @@ export const brounLesson: Lesson = {
         "To'g'ri — gazda molekulalar bir-biridan uzoq turadi va eng tez harakat qiladi, shuning uchun atir hidi xonaga eng tez tarqaladi.",
       hint:
         "Molekulalar qaerda erkin va tez harakat qiladi? Qaerda zich joylashgan va sekin?",
+      sim: "brownian",
     },
     {
       type: "ask",
@@ -503,6 +513,7 @@ export const arximedLesson: Lesson = {
         "To'g'ri — har qanday jism suvga tushirilganda, o'zining hajmiga teng suvni siqib chiqaradi. Aynan shu kashfiyot Arximed qonunining asosi.",
       hint:
         "Toshning hajmiga e'tibor bering. U joy egallaganda, suvga nima bo'lishi kerak?",
+      sim: "density-buoyancy-tank",
     },
     {
       type: "story",
@@ -540,6 +551,7 @@ export const arximedLesson: Lesson = {
         "To'g'ri — kemaning bo'sh ichi havo bilan to'la. Kema + havo birgalikda juda katta hajmni egallaydi, lekin og'irligi nisbatan kichik. Shuning uchun o'rtacha zichlik suvdan past — suzadi.",
       hint:
         "Kemaning ichi bo'shmi yoki to'lami? Bo'sh joy nima bilan to'lgan?",
+      sim: "density-buoyancy-tank",
     },
     {
       type: "sort",
@@ -653,6 +665,7 @@ export const tutilishLesson: Lesson = {
         "To'g'ri — Quyosh tutilishi yangi oy davrida, Oy Yer va Quyosh o'rtasiga turg'un chiziq bo'ylab kelganda yuz beradi. Oy soyasi Yerga tushadi.",
       hint:
         "Tutilish — bir jism boshqasini to'sib qo'yishi. Quyoshni nima to'sa?",
+      sim: "eclipse",
     },
     {
       type: "simulation",
@@ -690,6 +703,7 @@ export const tutilishLesson: Lesson = {
         "To'g'ri — Oy tutilishi to'liq oy davrida, Yer Quyosh va Oy o'rtasiga to'g'ri kelganda yuz beradi. Yer soyasi Oyga tushadi. Atmosferadan o'tgan qizil yorug'lik Oyni qizg'ish-misli ko'rinishga keltiradi — \"qonli oy\".",
       hint:
         "Oy tutilishida soya kim tomonidan tushiriladi? Quyosh tutilishida-chi?",
+      sim: "eclipse",
     },
     {
       type: "sequence",
@@ -743,6 +757,7 @@ export const kamalakLesson: Lesson = {
         "To'g'ri — havoda osilgan suv tomchilari kichik prizma vazifasini bajaradi. Oq nur ichkariga kirib, har bir rang turli burchakda sinadi va qaytadi. Shuning uchun ranglar ajraladi.",
       hint:
         "Kamalakni qachon ko'rasiz — quruq kunmi yoki yomg'irdan keyin?",
+      sim: "prism",
     },
     {
       type: "simulation",
@@ -797,6 +812,7 @@ export const kamalakLesson: Lesson = {
         "To'g'ri — binafsha eng qisqa to'lqin uzunligiga ega va shisha ichida eng katta burchak bilan sinadi. Shuning uchun spektrda u eng pastda turadi.",
       hint:
         "Qisqa to'lqin qattiqroq siniadi. Spektrda eng qisqa to'lqin qaysi rang?",
+      sim: "prism",
     },
     {
       type: "ask",
@@ -842,6 +858,7 @@ export const richagLesson: Lesson = {
         "To'g'ri — 5 · 0,4 = 2,0 N·m. Bu momentni 2 kg tosh 1,0 m masofadan beradi: 2 · 1,0 = 2,0 N·m. Yengilroq tosh tayanchdan uzoqroq turishi kerak.",
       hint:
         "Moment = og'irlik · yelka. Ikki tomonning momentlari teng bo'lganda — muvozanat.",
+      sim: "richag",
     },
     {
       type: "simulation",
@@ -924,6 +941,7 @@ export const paskalLesson: Lesson = {
         "To'g'ri — Paskal qonuni: bosim hamma joyda bir xil. F₁/A₁ = F₂/A₂. Yuza 20 marta katta bo'lsa, kuch ham 20 marta ko'p: 100 · 20 = 2000 N. Bu — 200 kg ni ko'tara oladi.",
       hint:
         "Bosim P = F/A. Yuza qancha katta bo'lsa, shuncha katta kuch chiqadi.",
+      sim: "paskal",
     },
     {
       type: "simulation",
@@ -1037,6 +1055,7 @@ export const tovushLesson: Lesson = {
         "To'g'ri — bolaning tovush boylamlari kichik va tez tebranadi (yuqori frekvensiya). Katta odamniki uzun va sekin (past frekvensiya). Ikkalasi ham baland yoki sokin gapirishi mumkin — bu amplituda.",
       hint:
         "Bolaning tovush boylamlari kichik. Kichik narsa tezroq tebranadi.",
+      sim: "tovush",
     },
     {
       type: "sort",
@@ -1099,6 +1118,7 @@ export const linzaLesson: Lesson = {
         "To'g'ri — lupada buyum fokusdan yaqinroq turganda, hosil bo'lgan tasvir virtual. Ya'ni nurlar haqiqatda kesishmaydi — ular kesishadi degan tuyg'u beradi. Shuning uchun rasmni ekranga tushirib bo'lmaydi, lekin ko'z uni \"ko'radi\".",
       hint:
         "Lupada qachon kattalashishni ko'rasiz — buyum lupaga juda yaqin bo'lganda yoki uzoqda?",
+      sim: "linza",
     },
     {
       type: "simulation",
@@ -1136,6 +1156,7 @@ export const linzaLesson: Lesson = {
         "To'g'ri — ko'zda gavhar haqiqiy, teskari, kichik tasvirni retsina ustida hosil qiladi. Miya keyin bu tasvirni \"to'g'rilab\" ko'rsatadi. Shuning uchun yiqilgan bola dunyoni oyog'i bilan ko'rmaydi — miya o'zi qaytaradi.",
       hint:
         "Ko'zning ichida tasvirni qabul qiluvchi ekran — retsina bor. Tasvir qaerda hosil bo'ladi?",
+      sim: "linza",
     },
     {
       type: "sort",
@@ -1235,6 +1256,7 @@ export const zanjirLesson: Lesson = {
         "Ohm qonunidan: R = V / I = 6 / 1,5 = 4 Ω. Ya'ni har 4 Ohm qarshilikka 1 V kuchlanish 0,25 A tokni hosil qiladi.",
       hint:
         "I = V/R. R ni topish uchun formulani aylantiring: R = V/I.",
+      sim: "zanjir",
     },
     {
       type: "sort",
