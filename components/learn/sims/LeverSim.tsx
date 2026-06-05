@@ -196,7 +196,6 @@ export function LeverSim({ onComplete }: Props) {
       frame = requestAnimationFrame(step);
     };
     frame = requestAnimationFrame(step);
-    void unusedHints();
     return () => cancelAnimationFrame(frame);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -498,6 +497,3 @@ export function LeverSim({ onComplete }: Props) {
 function clamp(n: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, n));
 }
-
-// Suppress noisy unused-warning during dev; harmless at runtime.
-function unusedHints() { void 0; }

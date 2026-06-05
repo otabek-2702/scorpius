@@ -153,6 +153,26 @@ export function PascalSim({ onComplete }: Props) {
     setLeftPistonY(LEFT_REST_Y);
   }
 
+  // Changing the area ratio rescales the volume relationship between the two
+  // cylinders. If the small piston was pushed deep at a high ratio, the same
+  // leftPistonY can drive the big piston (and the car) far above the cylinder
+  // mouth at a low ratio — flying off-canvas with a nonsense lift readout.
+  // Re-clamp leftPistonY against the NEW ratio so the right piston stays in
+  // bounds (rightY >= CYL_TOP_Y + 8), mirroring the drag-time guard.
+  function handleRatioChange(nextRatio: number) {
+    setRatio(nextRatio);
+    const rW = LEFT_CYL_W_BASE * Math.sqrt(nextRatio);
+    const a1 = leftW * leftW;
+    const a2 = rW * rW;
+    const refVol = (CYL_BOTTOM_Y - LEFT_REST_Y) * a1 + (CYL_BOTTOM_Y - RIGHT_REST_Y) * a2;
+    // Deepest leftY for which rightY >= CYL_TOP_Y + 8.
+    const maxLeftY =
+      CYL_BOTTOM_Y - (refVol - (CYL_BOTTOM_Y - (CYL_TOP_Y + 8)) * a2) / a1;
+    setLeftPistonY((prev) =>
+      clamp(prev, CYL_TOP_Y + 8, Math.min(CYL_BOTTOM_Y - 20, maxLeftY)),
+    );
+  }
+
   // ---- Render --------------------------------------------------------------
   return (
     <div className="flex w-full flex-col gap-3">
@@ -446,7 +466,7 @@ export function PascalSim({ onComplete }: Props) {
           max={20}
           step={1}
           value={ratio}
-          onChange={(e) => setRatio(Number(e.target.value))}
+          onChange={(e) => handleRatioChange(Number(e.target.value))}
           className="mt-2 w-full accent-antares-500"
         />
         <div className="mt-1 flex justify-between text-[10px] text-void-300">

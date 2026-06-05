@@ -316,13 +316,17 @@ const WATER: ProductStructure = {
   count: 2,
 };
 
-// Ammonia NH₃ — trigonal pyramidal, H-N-H 107.3°, N-H 1.01 Å
+// Ammonia NH₃ — trigonal pyramidal, H-N-H 107.3°, N-H 1.01 Å.
+// H positions derived from the real bond angle (NOT a perfect 109.5° tetrahedron):
+// each N-H makes the angle θ with the C₃ (−y) axis such that the H-N-H angle is
+// exactly 107.3° at length 1.01 Å. (The old 0.94/-0.33/0.814 layout was a
+// tetrahedral 109.6°, contradicting the geometryUz caption.)
 const AMMONIA: ProductStructure = {
   atoms: [
     { el: "N", x: 0, y: 0, z: 0 },
-    { el: "H", x: 0.94, y: -0.33, z: 0 },
-    { el: "H", x: -0.47, y: -0.33, z: 0.814 },
-    { el: "H", x: -0.47, y: -0.33, z: -0.814 },
+    { el: "H", x: 0.939, y: -0.371, z: 0 },
+    { el: "H", x: -0.47, y: -0.371, z: 0.813 },
+    { el: "H", x: -0.47, y: -0.371, z: -0.813 },
   ],
   bonds: [
     { a: 0, b: 1, order: 1 },
