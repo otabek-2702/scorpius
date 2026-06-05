@@ -1,59 +1,45 @@
 // components/laboratoriya/LaboratoriyaHub.tsx
 /**
- * LaboratoriyaHub — the premium landing for Scorpius' virtual laboratory.
+ * LaboratoriyaHub — the premium MULTI-SUBJECT landing for Scorpius' virtual lab.
  *
- * A warm-light app section (matching app/page.tsx + SkyView.tsx) framing a grid
- * of large lab cards. Each card previews the *dark cinematic stage* aesthetic of
- * the sim it links to via a tiny, genuinely-live SVG mini-stage:
+ * A warm-light app section (matching app/page.tsx + SkyView.tsx) framing the
+ * full catalog of labs across Fizika · Kimyo · Biologiya · Matematika. A
+ * segmented subject-tab pill (mirroring SkyView's SubjectToggle) filters what
+ * shows: "Hammasi" reveals everything, each subject shows only its own cards.
  *
- *   • Fizika  — two balls run a REAL 1-D elastic collision (momentum + energy
- *               conserved) with a live momentum arrow. Teal accent.
- *   • Kimyo   — two hydrogen atoms + one oxygen drift together and bond into an
- *               H₂O molecule (CPK colours), then gently breathe. Violet accent.
+ * Card kinds (data-driven from labsCatalog.ts):
+ *   • "lab"        — a big card whose thumbnail is a genuinely-LIVE dark-stage
+ *                    mini-sim:
+ *                      – Fizika    real 1-D elastic collision (teal)
+ *                      – Kimyo     H+H+O assembling into H₂O (violet)
+ *                      – Biologiya a B-DNA double helix, rigid uniform rotation
+ *                        about its axis, complementary base-pair rungs (emerald)
+ *   • "experiment" — a compact quick-tajriba tile → /laboratoriya/tajriba/<key>
+ *   • "soon"       — a tasteful dashed "Tez orada" placeholder
  *
- * Architecture law (AGENTS.md): motion is driven by ONE requestAnimationFrame
- * loop integrating a tiny model on the clock — never CSS keyframes faking
- * physics. prefers-reduced-motion → the previews snap to a settled state. The
- * full sims (with their own SimModel + model.md) live in the fizika/ + kimyo/
- * folders owned by other agents; these are lightweight, decorative previews of
- * what waits inside, deliberately self-contained so the hub needs no props.
+ * Architecture law (AGENTS.md): every preview's motion is driven by ONE
+ * requestAnimationFrame loop (useStageClock) integrating/evaluating a tiny model
+ * on the clock — never CSS keyframes faking physics. prefers-reduced-motion →
+ * the clock freezes and previews snap to a settled frame. The full sims (with
+ * their own SimModel + model.md) live in the fizika/ + kimyo/ folders + the
+ * biologiya/ route owned by other agents; these are lightweight, self-contained
+ * previews. Preview geometry/equations are documented in labsHub.model.md.
  *
- * The cards are data-driven (LABS[]) so more drop in later with one entry.
+ * Renders NO back link (the hub IS the root) but DOES own <BottomNav /> and the
+ * shrink-0 + pb-36 page shell — do not regress the bottom-nav spacing.
  */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  Atom,
-  CircleDot,
-  Droplets,
-  Eclipse,
-  FlaskConical,
-  type LucideIcon,
-  Orbit,
-  Spline,
-  Sparkles,
-  Triangle,
-} from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { BottomNav } from "@/components/nav/BottomNav";
-
-/** Quick experiments — the project's existing interactive sims, surfaced as
- *  standalone lab cards via /laboratoriya/tajriba/[key]. */
-const QUICK: {
-  key: string;
-  title: string;
-  sub: string;
-  icon: LucideIcon;
-  accent: string;
-  soft: string;
-}[] = [
-  { key: "density-buoyancy-tank", title: "Zichlik va suzish", sub: "Suvga tashlab koʻr", icon: Droplets, accent: "#3b7bd1", soft: "rgba(59,123,209,0.12)" },
-  { key: "prism", title: "Prizma", sub: "Kamalak hosil qil", icon: Triangle, accent: "#a855f7", soft: "rgba(168,85,247,0.12)" },
-  { key: "eclipse", title: "Tutilish", sub: "Quyosh–Oy–Yer", icon: Eclipse, accent: "#e8a21a", soft: "rgba(232,162,26,0.14)" },
-  { key: "brownian", title: "Broun harakati", sub: "Zarralar raqsi", icon: Atom, accent: "#2dd4bf", soft: "rgba(45,212,191,0.14)" },
-  { key: "brachistochrone", title: "Eng tez yoʻl", sub: "Brakistoxrona", icon: Spline, accent: "#e8a21a", soft: "rgba(232,162,26,0.14)" },
-];
+import {
+  CATALOG,
+  SUBJECTS,
+  type CatalogEntry,
+  type TabId,
+} from "./labsCatalog";
 
 /* ============================================================
    Shared stage clock — ONE rAF loop drives every live preview.
@@ -413,69 +399,290 @@ function ChemistryPreview({ t, reduced }: { t: number; reduced: boolean }) {
 }
 
 /* ============================================================
-   Lab card model — data-driven so new labs drop in with one entry.
+   BIOLOGY preview — a B-DNA double helix (emerald). NEW.
+
+   Two antiparallel sugar–phosphate backbones twist around a shared vertical
+   axis; base-pair rungs join them. Parametric, honest projection:
+     θ(y,t) = k·y + ω·t
+     strand A x = cx + R·cos θ ;  strand B x = cx + R·cos(θ + Δ)
+   Depth is sin θ — the strand nearer the viewer is brighter and drawn on top,
+   so the weave reads correctly. ω is constant ⇒ rigid uniform rotation about
+   the axis (closed-form pose each frame, no integration). Rungs carry the four
+   complementary base colours (A·T / G·C), deterministic from the sample index
+   so the sequence never flickers. Reduced-motion freezes the clock → a crisp
+   static helix. Full equations + constants in labsHub.model.md.
    ============================================================ */
-type LabId = "fizika" | "kimyo";
+const DNA_VB_W = 260;
+const DNA_VB_H = 150;
 
-interface LabDef {
-  id: LabId;
-  href: string;
-  title: string;
-  hook: string;
-  tag: string;
-  /** CSS accent colour for this lab's stage + chrome. */
-  accent: string;
-  accentSoft: string;
-  Icon: typeof CircleDot;
-  AltIcon: typeof Orbit;
-}
-
-const LABS: LabDef[] = [
-  {
-    id: "fizika",
-    href: "/laboratoriya/fizika",
-    title: "Fizika",
-    hook: "Ikki shar toʻqnashadi — impuls va energiya jonli.",
-    tag: "Mexanika",
-    accent: "#2dd4bf",
-    accentSoft: "rgba(45,212,191,0.14)",
-    Icon: CircleDot,
-    AltIcon: Orbit,
-  },
-  {
-    id: "kimyo",
-    href: "/laboratoriya/kimyo",
-    title: "Kimyo",
-    hook: "Elementlarni torting, reaksiyani koʻring — H₂O hosil boʻladi.",
-    tag: "Reaksiyalar",
-    accent: "#a855f7",
-    accentSoft: "rgba(168,85,247,0.14)",
-    Icon: FlaskConical,
-    AltIcon: Atom,
-  },
+/** Four CPK-ish base colours; complementary pairs share a hue family. */
+const BASE_COLORS = [
+  { a: "#34d399", b: "#10b981" }, // A · T
+  { a: "#6ee7b7", b: "#059669" }, // T · A
+  { a: "#a7f3d0", b: "#34d399" }, // G · C
+  { a: "#5eead4", b: "#14b8a6" }, // C · G
 ];
 
-function LabCard({ lab, t, reduced }: { lab: LabDef; t: number; reduced: boolean }) {
-  const { Icon, AltIcon } = lab;
+/** Deterministic base index from a strand position (stable across frames). */
+function baseAt(i: number): number {
+  // golden-ratio hash → spread but fixed sequence
+  return Math.floor((((i * 0.6180339887) % 1) * 4 + 4) % 4);
+}
+
+function DnaPreview({ t, reduced }: { t: number; reduced: boolean }) {
+  const cx = DNA_VB_W / 2;
+  const top = 12;
+  const bottom = DNA_VB_H - 12;
+  const H = bottom - top;
+
+  const R = 30; // helix radius (px)
+  const turns = 2.4; // visible full turns over the height
+  const k = (turns * 2 * Math.PI) / H; // spatial twist rate (rad per px of axis)
+  const omega = 0.9; // rad/s rotation speed
+  const delta = 0.62 * Math.PI; // inter-strand phase offset (B-DNA groove)
+  const N = 22; // sampled rungs
+
+  // a tiny vertical breathing for cinematic life (disabled when reduced)
+  const sway = reduced ? 0 : Math.sin(t * 1.05) * 2;
+  const phase = reduced ? 0 : omega * t;
+
+  type Node = {
+    i: number;
+    y: number;
+    ax: number;
+    bx: number;
+    aDepth: number; // sin θ for strand A (+1 front … -1 back)
+    bDepth: number;
+  };
+
+  const nodes: Node[] = [];
+  for (let i = 0; i < N; i++) {
+    const f = i / (N - 1);
+    const y = top + f * H + sway;
+    const theta = k * (f * H) + phase;
+    nodes.push({
+      i,
+      y,
+      ax: cx + R * Math.cos(theta),
+      bx: cx + R * Math.cos(theta + delta),
+      aDepth: Math.sin(theta),
+      bDepth: Math.sin(theta + delta),
+    });
+  }
+
+  // Draw rungs back-to-front: a rung's depth is the average of its endpoints.
+  // Sorting ascending means the deepest (most negative) paints first → correct weave.
+  const rungOrder = nodes
+    .map((n) => ({ n, depth: (n.aDepth + n.bDepth) / 2 }))
+    .sort((p, q) => p.depth - q.depth);
+
+  // Build the two backbone polylines (smooth curves through the sampled x's).
+  const aPath = nodes.map((n) => `${n.ax.toFixed(2)},${n.y.toFixed(2)}`).join(" ");
+  const bPath = nodes.map((n) => `${n.bx.toFixed(2)},${n.y.toFixed(2)}`).join(" ");
+
+  // node radius scales subtly with depth (closer = bigger) for parallax
+  const nodeR = (depth: number) => 2.4 + (depth + 1) * 1.1;
+
+  return (
+    <svg
+      viewBox={`0 0 ${DNA_VB_W} ${DNA_VB_H}`}
+      className="block h-full w-full"
+      role="img"
+      aria-label="DNK qoʻsh spirali — komplementar asoslar bilan bogʻlangan ikki zanjir"
+    >
+      <defs>
+        <linearGradient id="lab-stage-dna" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#0b0f14" />
+          <stop offset="100%" stopColor="#0d1a16" />
+        </linearGradient>
+        <linearGradient id="lab-dna-backbone" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#a7f3d0" />
+          <stop offset="100%" stopColor="#059669" />
+        </linearGradient>
+        <filter id="lab-glow-emerald" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="2.4" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      <rect x={0} y={0} width={DNA_VB_W} height={DNA_VB_H} fill="url(#lab-stage-dna)" />
+
+      {/* faint emerald stage lines for depth */}
+      {[0.25, 0.5, 0.75].map((g) => (
+        <line
+          key={g}
+          x1={0}
+          y1={DNA_VB_H * g}
+          x2={DNA_VB_W}
+          y2={DNA_VB_H * g}
+          stroke="#34d399"
+          strokeOpacity={0.05}
+          strokeWidth={1}
+        />
+      ))}
+
+      {/* base-pair rungs, painted back→front for a correct over/under weave */}
+      {rungOrder.map(({ n, depth }) => {
+        const color = BASE_COLORS[baseAt(n.i)];
+        const front = depth > 0;
+        return (
+          <line
+            key={`rung-${n.i}`}
+            x1={n.ax}
+            y1={n.y}
+            x2={n.bx}
+            y2={n.y}
+            stroke={color.a}
+            strokeWidth={front ? 2.6 : 1.8}
+            strokeLinecap="round"
+            opacity={0.32 + (depth + 1) * 0.3}
+          />
+        );
+      })}
+
+      {/* the two sugar–phosphate backbones */}
+      <polyline
+        points={aPath}
+        fill="none"
+        stroke="url(#lab-dna-backbone)"
+        strokeWidth={3.2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        opacity={0.92}
+        filter="url(#lab-glow-emerald)"
+      />
+      <polyline
+        points={bPath}
+        fill="none"
+        stroke="url(#lab-dna-backbone)"
+        strokeWidth={3.2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        opacity={0.7}
+      />
+
+      {/* backbone nodes — sized by depth so the helix reads 3-D */}
+      {nodes.map((n) => {
+        const cA = BASE_COLORS[baseAt(n.i)];
+        return (
+          <g key={`node-${n.i}`}>
+            <circle cx={n.ax} cy={n.y} r={nodeR(n.aDepth)} fill={cA.a} opacity={0.5 + (n.aDepth + 1) * 0.22} />
+            <circle cx={n.bx} cy={n.y} r={nodeR(n.bDepth)} fill={cA.b} opacity={0.5 + (n.bDepth + 1) * 0.22} />
+          </g>
+        );
+      })}
+
+      {/* caption chips */}
+      <text x={14} y={24} fontSize={11} fontWeight={700} fill="#34d399" fontFamily="var(--font-geist-mono)">
+        A·T  G·C
+      </text>
+      <text x={DNA_VB_W - 14} y={24} fontSize={9.5} textAnchor="end" fill="#86d8b9">
+        qoʻsh spiral
+      </text>
+    </svg>
+  );
+}
+
+/** Map a preview kind to its renderer. */
+function StagePreview({
+  preview,
+  t,
+  reduced,
+}: {
+  preview: CatalogEntry["preview"];
+  t: number;
+  reduced: boolean;
+}) {
+  if (preview === "collision") return <PhysicsPreview t={t} reduced={reduced} />;
+  if (preview === "molecule") return <ChemistryPreview t={t} reduced={reduced} />;
+  if (preview === "dna") return <DnaPreview t={t} reduced={reduced} />;
+  return null;
+}
+
+/* ============================================================
+   Subject tab bar — segmented pill, mirrors SkyView's SubjectToggle.
+   ============================================================ */
+const TABS: { id: TabId; label: string; accent?: string }[] = [
+  { id: "all", label: "Hammasi" },
+  ...SUBJECTS.map((s) => ({ id: s.id as TabId, label: s.label, accent: s.accent })),
+];
+
+function SubjectTabs({
+  current,
+  onPick,
+}: {
+  current: TabId;
+  onPick: (id: TabId) => void;
+}) {
+  return (
+    <div
+      role="tablist"
+      aria-label="Fan boʻyicha saralash"
+      className="inline-flex flex-wrap justify-center gap-1 rounded-full border border-void-500 bg-void-800 p-1"
+    >
+      {TABS.map((tab) => {
+        const active = tab.id === current;
+        return (
+          <button
+            key={tab.id}
+            type="button"
+            role="tab"
+            aria-selected={active}
+            onClick={() => onPick(tab.id)}
+            className={
+              "rounded-full px-3.5 py-1.5 text-[12px] font-semibold transition active:scale-95 " +
+              (active
+                ? "text-void-950"
+                : "text-void-300 hover:text-void-100")
+            }
+            style={
+              active
+                ? {
+                    backgroundColor: tab.accent ?? "var(--color-antares-500)",
+                    boxShadow: `0 2px 12px -4px ${tab.accent ?? "rgba(232,162,26,0.5)"}`,
+                  }
+                : undefined
+            }
+          >
+            {tab.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ============================================================
+   Big "lab" card — cinematic live mini-stage + body.
+   ============================================================ */
+function LabCard({
+  entry,
+  t,
+  reduced,
+}: {
+  entry: CatalogEntry;
+  t: number;
+  reduced: boolean;
+}) {
+  const Icon = entry.icon;
   return (
     <Link
-      href={lab.href}
+      href={entry.href}
       className="group block overflow-hidden rounded-[22px] border border-void-500 bg-void-800 shadow-[0_2px_18px_-8px_rgba(20,18,14,0.12)] transition-all duration-200 hover:-translate-y-1 hover:border-void-600 hover:shadow-[0_14px_34px_-12px_rgba(20,18,14,0.22)] active:scale-[0.985]"
     >
       {/* ---- cinematic near-black mini-stage thumbnail ---- */}
       <div className="relative aspect-[260/150] w-full overflow-hidden bg-[#0b0f14]">
-        {lab.id === "fizika" ? (
-          <PhysicsPreview t={t} reduced={reduced} />
-        ) : (
-          <ChemistryPreview t={t} reduced={reduced} />
-        )}
-        {/* corner glow + alt icon to mark the discipline */}
+        <StagePreview preview={entry.preview} t={t} reduced={reduced} />
+        {/* corner glow + icon to mark the discipline */}
         <div
           aria-hidden
           className="pointer-events-none absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full"
-          style={{ backgroundColor: lab.accentSoft, color: lab.accent }}
+          style={{ backgroundColor: entry.soft, color: entry.accent }}
         >
-          <AltIcon className="h-4 w-4" />
+          <Icon className="h-4 w-4" />
         </div>
         {/* subtle gradient lip so the dark stage meets the light card cleanly */}
         <div
@@ -490,29 +697,105 @@ function LabCard({ lab, t, reduced }: { lab: LabDef; t: number; reduced: boolean
         <div className="flex items-center gap-2.5">
           <span
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full"
-            style={{ backgroundColor: lab.accentSoft, color: lab.accent }}
+            style={{ backgroundColor: entry.soft, color: entry.accent }}
           >
             <Icon className="h-[18px] w-[18px]" />
           </span>
           <div className="min-w-0 flex-1">
-            <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.16em] text-void-300">
-              {lab.tag}
-            </span>
+            {entry.tag && (
+              <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.16em] text-void-300">
+                {entry.tag}
+              </span>
+            )}
             <h2 className="font-serif text-[1.35rem] font-medium leading-none text-antares-700">
-              {lab.title}
+              {entry.title}
             </h2>
           </div>
           <span
             aria-hidden
-            className="font-mono text-[18px] text-void-300 transition-transform group-hover:translate-x-1"
-            style={{ color: lab.accent }}
+            className="font-mono text-[18px] transition-transform group-hover:translate-x-1"
+            style={{ color: entry.accent }}
           >
             →
           </span>
         </div>
-        <p className="mt-2.5 text-[13px] leading-[1.45] text-void-200">{lab.hook}</p>
+        <p className="mt-2.5 text-[13px] leading-[1.45] text-void-200">{entry.hook}</p>
       </div>
     </Link>
+  );
+}
+
+/* ============================================================
+   Compact quick-experiment tile.
+   ============================================================ */
+function ExperimentCard({ entry }: { entry: CatalogEntry }) {
+  const Icon = entry.icon;
+  return (
+    <Link
+      href={entry.href}
+      className="group flex flex-col gap-2 rounded-[16px] border border-void-500 bg-void-900 p-3.5 transition hover:-translate-y-0.5 hover:border-void-400 hover:shadow-[0_10px_30px_-14px_rgba(20,18,14,0.25)] active:scale-[0.98]"
+    >
+      <span
+        className="grid h-10 w-10 place-items-center rounded-full"
+        style={{ backgroundColor: entry.soft, color: entry.accent }}
+      >
+        <Icon className="h-[18px] w-[18px]" />
+      </span>
+      <div>
+        <div className="text-[13.5px] font-semibold leading-tight text-void-100">
+          {entry.title}
+        </div>
+        <div className="mt-0.5 text-[11px] leading-tight text-void-300">{entry.hook}</div>
+      </div>
+    </Link>
+  );
+}
+
+/* ============================================================
+   "Tez orada" placeholder card.
+   ============================================================ */
+function SoonCard({ entry }: { entry: CatalogEntry }) {
+  const Icon = entry.icon;
+  return (
+    <div className="flex flex-col gap-2 rounded-[16px] border border-dashed border-void-500 bg-void-700/40 p-3.5">
+      <span
+        className="grid h-10 w-10 place-items-center rounded-full opacity-70"
+        style={{ backgroundColor: entry.soft, color: entry.accent }}
+      >
+        <Icon className="h-[18px] w-[18px]" />
+      </span>
+      <div>
+        <div className="flex items-center gap-1.5">
+          <span className="text-[13.5px] font-semibold leading-tight text-void-200">
+            {entry.title}
+          </span>
+        </div>
+        <div className="mt-0.5 text-[11px] leading-tight text-void-300">{entry.hook}</div>
+      </div>
+      <span className="mt-0.5 inline-flex w-fit items-center rounded-full bg-void-700 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-void-300">
+        Tez orada
+      </span>
+    </div>
+  );
+}
+
+/* ============================================================
+   Empty-subject state — when a tab has only "soon" content (or nothing).
+   ============================================================ */
+function EmptyState({ label }: { label: string }) {
+  return (
+    <div className="rise-in mt-8 flex flex-col items-center justify-center rounded-[22px] border border-dashed border-void-500 bg-void-700/40 px-6 py-12 text-center">
+      <span className="grid h-12 w-12 place-items-center rounded-full bg-void-700 text-void-300">
+        <Sparkles className="h-5 w-5" />
+      </span>
+      <p className="mt-4 font-serif text-[1.25rem] font-medium text-void-100">
+        {label} — tez orada
+      </p>
+      <p className="mt-1.5 max-w-[24rem] text-[13px] leading-[1.5] text-void-300">
+        Bu fan boʻyicha interaktiv laboratoriyalar tayyorlanmoqda. Tez orada
+        qaytib koʻring.
+      </p>
+    </div>
   );
 }
 
@@ -534,94 +817,109 @@ export default function LaboratoriyaHub() {
   }, []);
   const t = useStageClock(reduced);
 
+  const [tab, setTab] = useState<TabId>("all");
+
+  // Filter the catalog by the active tab, then split by card kind.
+  const { labs, experiments, soons } = useMemo(() => {
+    const visible = CATALOG.filter((e) => tab === "all" || e.subject === tab);
+    return {
+      labs: visible.filter((e) => e.kind === "lab"),
+      experiments: visible.filter((e) => e.kind === "experiment"),
+      soons: visible.filter((e) => e.kind === "soon"),
+    };
+  }, [tab]);
+
+  const hasContent = labs.length > 0 || experiments.length > 0;
+  const activeLabel = TABS.find((x) => x.id === tab)?.label ?? "";
+
   return (
-    <main className="relative flex min-h-dvh flex-col px-5 pb-32 pt-6">
-      <div className="mx-auto flex w-full max-w-[1100px] flex-1 flex-col">
-      {/* ---- top crumb ---- */}
-      <div className="flex items-center justify-between gap-3">
-        <span className="inline-flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-void-300">
-          <Sparkles className="h-3.5 w-3.5 text-antares-500" />
-          Laboratoriya
-        </span>
-        <span className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-void-300">
-          Scorpius · 2026
-        </span>
-      </div>
-
-      {/* ---- serif display header + Uzbek hook ---- */}
-      <header className="rise-in mt-5">
-        <h1 className="font-serif text-[2.4rem] font-medium leading-[1.02] tracking-[-0.022em] text-void-100 sm:text-[3rem]">
-          Laboratoriya
-        </h1>
-        <p className="mt-3 max-w-[36rem] text-[1.02rem] leading-[1.5] text-void-200">
-          Elementlarni qoʻshing, toʻqnashuvlarni oʻrnating —{" "}
-          <span className="font-medium text-void-100">fizika va kimyo jonli.</span>
-        </p>
-      </header>
-
-      {/* ---- responsive grid of large lab cards ---- */}
-      <div className="rise-in mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {LABS.map((lab) => (
-          <LabCard key={lab.id} lab={lab} t={t} reduced={reduced} />
-        ))}
-      </div>
-
-      {/* ---- quick experiments: the existing interactive sim library ---- */}
-      <section className="rise-in mt-9">
-        <div className="flex items-baseline justify-between gap-3">
-          <h2 className="font-serif text-[1.5rem] font-medium leading-none text-void-100">
-            Tezkor tajribalar
-          </h2>
-          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-void-300">
-            Sinov maydoni
+    <main className="relative flex min-h-dvh shrink-0 flex-col px-5 pb-36 pt-6">
+      <div className="mx-auto flex w-full max-w-[1100px] flex-col">
+        {/* ---- top crumb ---- */}
+        <div className="flex items-center justify-between gap-3">
+          <span className="inline-flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-void-300">
+            <Sparkles className="h-3.5 w-3.5 text-antares-500" />
+            Laboratoriya
+          </span>
+          <span className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-void-300">
+            Scorpius · 2026
           </span>
         </div>
-        <p className="mt-2 text-[13px] leading-[1.5] text-void-300">
-          Tayyor interaktiv tajribalar — bosing va oʻynang.
-        </p>
-        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {QUICK.map((q) => {
-            const Icon = q.icon;
-            return (
-              <Link
-                key={q.key}
-                href={`/laboratoriya/tajriba/${q.key}`}
-                className="group flex flex-col gap-2 rounded-[16px] border border-void-500 bg-void-900 p-3.5 transition hover:-translate-y-0.5 hover:border-void-400 hover:shadow-[0_10px_30px_-14px_rgba(20,18,14,0.25)] active:scale-[0.98]"
-              >
-                <span
-                  className="grid h-10 w-10 place-items-center rounded-full"
-                  style={{ backgroundColor: q.soft, color: q.accent }}
-                >
-                  <Icon className="h-[18px] w-[18px]" />
-                </span>
-                <div>
-                  <div className="text-[13.5px] font-semibold leading-tight text-void-100">
-                    {q.title}
-                  </div>
-                  <div className="mt-0.5 text-[11px] leading-tight text-void-300">
-                    {q.sub}
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+
+        {/* ---- serif display header + Uzbek hook ---- */}
+        <header className="rise-in mt-5">
+          <h1 className="font-serif text-[2.4rem] font-medium leading-[1.02] tracking-[-0.022em] text-void-100 sm:text-[3rem]">
+            Laboratoriya
+          </h1>
+          <p className="mt-3 max-w-[36rem] text-[1.02rem] leading-[1.5] text-void-200">
+            Toʻqnashuvlardan tortib DNK qoʻsh spiraligacha —{" "}
+            <span className="font-medium text-void-100">toʻrt fan jonli.</span>
+          </p>
+        </header>
+
+        {/* ---- subject tab bar (segmented pill) ---- */}
+        <div className="rise-in mt-5 flex justify-center sm:justify-start">
+          <SubjectTabs current={tab} onPick={setTab} />
         </div>
-      </section>
 
-      {/* ---- "coming soon" lane — signals the grid is built to grow ---- */}
-      <div className="mt-4 flex items-center justify-center gap-2 rounded-[18px] border border-dashed border-void-500 bg-void-700/50 px-4 py-3 text-center">
-        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-void-300">
-          Tez orada
-        </span>
-        <span className="text-[12.5px] text-void-300">
-          · Elektr zanjirlari · Optika · Termodinamika
-        </span>
-      </div>
+        {/* ---- big lab cards (filtered) ---- */}
+        {labs.length > 0 && (
+          <div className="rise-in mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {labs.map((entry) => (
+              <LabCard key={entry.id} entry={entry} t={t} reduced={reduced} />
+            ))}
+          </div>
+        )}
 
-      <p className="mt-5 text-center text-[12px] leading-[1.5] text-void-300">
-        Har bir laboratoriya — haqiqiy fizika tenglamalari ustida ishlaydi.
-        <br className="hidden sm:block" /> Oʻzgartiring, sinab koʻring, oʻzingiz kashf eting.
-      </p>
+        {/* ---- quick experiments (filtered) ---- */}
+        {experiments.length > 0 && (
+          <section className="rise-in mt-9">
+            <div className="flex items-baseline justify-between gap-3">
+              <h2 className="font-serif text-[1.5rem] font-medium leading-none text-void-100">
+                Tezkor tajribalar
+              </h2>
+              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-void-300">
+                Sinov maydoni
+              </span>
+            </div>
+            <p className="mt-2 text-[13px] leading-[1.5] text-void-300">
+              Tayyor interaktiv tajribalar — bosing va oʻynang.
+            </p>
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+              {experiments.map((entry) => (
+                <ExperimentCard key={entry.id} entry={entry} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ---- "Tez orada" cards (filtered) ---- */}
+        {soons.length > 0 && (
+          <section className="rise-in mt-9">
+            <div className="flex items-baseline justify-between gap-3">
+              <h2 className="font-serif text-[1.5rem] font-medium leading-none text-void-100">
+                Tez orada
+              </h2>
+              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-void-300">
+                Tayyorlanmoqda
+              </span>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {soons.map((entry) => (
+                <SoonCard key={entry.id} entry={entry} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ---- empty subject (no labs, no experiments) ---- */}
+        {!hasContent && <EmptyState label={activeLabel} />}
+
+        <p className="mt-9 text-center text-[12px] leading-[1.5] text-void-300">
+          Har bir laboratoriya — haqiqiy fan tenglamalari ustida ishlaydi.
+          <br className="hidden sm:block" /> Oʻzgartiring, sinab koʻring, oʻzingiz
+          kashf eting.
+        </p>
       </div>
 
       <BottomNav />

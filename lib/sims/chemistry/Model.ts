@@ -22,6 +22,7 @@ import {
   REACTION_BY_ID,
   matchReaction,
   type Reaction,
+  type ReactionType,
   type ProductStructure,
 } from "./data";
 
@@ -80,27 +81,66 @@ function seeded(n: number): number {
 }
 
 /**
- * Build scene atoms for a reaction: each product-geometry slot gets a scattered
- * start ring around the chamber and a curl offset. Ionic atoms carry their ion
- * sign. Returns atoms + bonds (covalent only).
+ * Build scene atoms for a reaction: each geometry slot gets a scattered start
+ * (the "loose atoms" pose) and an assembled target (the molecule pose). Ionic
+ * atoms carry their ion sign. Returns atoms + bonds (covalent only).
+ *
+ * The SCATTER pattern depends on the pedagogical TYPE so each reaction reads
+ * differently even with the same easing core:
+ *   synthesis / combustion / neutralization → atoms scatter on a wide ring and
+ *     converge to the molecule (start = scattered, target = assembled).
+ *   decomposition → atoms scatter into DISTINCT fragment clusters that fly
+ *     OUTWARD (the molecule splits; see `splitAtoms` for the fragment seeds).
+ *   single-displacement → the incoming element drops from ABOVE onto its slot
+ *     while the displaced atom is pushed sideways (handled by the view's
+ *     ejected-atom cue; the scene still assembles the product geometry).
+ *   double-displacement (precipitate) → scatter ring, but the product SINKS to
+ *     the chamber floor after assembling (the view applies the sink offset).
  */
-function buildScene(structure: ProductStructure, kind: Reaction["kind"]): {
+function buildScene(
+  structure: ProductStructure,
+  kind: Reaction["kind"],
+  type: ReactionType,
+): {
   atoms: SceneAtom[];
   bonds: SceneBond[];
 } {
   const n = structure.atoms.length;
+  const ringMul = kind === "ionic" ? 7.5 : type === "decomposition" ? 6.5 : 5.5;
   const atoms: SceneAtom[] = structure.atoms.map((pa, i) => {
-    // Scatter on a ring, radius scaled so even the big lattice starts spread out.
-    const ang = (i / n) * Math.PI * 2 + seeded(i) * 0.6;
-    const ringR = (kind === "ionic" ? 7.5 : 5.5) + Math.abs(seeded(i * 3)) * 1.5;
     const info = ATOMS[pa.el];
-    const ion = kind === "ionic" ? (info?.ionCharge ?? 0) > 0 ? 1 : -1 : 0;
+    const ion = kind === "ionic" ? ((info?.ionCharge ?? 0) > 0 ? 1 : -1) : 0;
+
+    // scatter angle + radius (deterministic, seeded)
+    let ang = (i / n) * Math.PI * 2 + seeded(i) * 0.6;
+    let ringR = ringMul + Math.abs(seeded(i * 3)) * 1.5;
+    let sx: number, sy: number, sz: number;
+
+    if (type === "single-displacement") {
+      // the incoming element arrives from straight above so the "kick-out" reads
+      sx = pa.x * 0.4 + seeded(i) * 0.5;
+      sy = 6.5 + Math.abs(seeded(i * 5)) * 1.5; // high above the slot
+      sz = seeded(i * 7) * 0.8;
+    } else if (type === "decomposition") {
+      // fragments fly outward radially from the molecule centre
+      const fr = 1 + (i % 2);
+      ang = (i / n) * Math.PI * 2;
+      ringR = ringMul * fr * 0.55;
+      sx = Math.cos(ang) * ringR;
+      sy = Math.sin(ang) * ringR * 0.8;
+      sz = seeded(i * 7) * 1.4;
+    } else {
+      sx = Math.cos(ang) * ringR;
+      sy = Math.sin(ang) * ringR * 0.7;
+      sz = seeded(i * 7) * (kind === "ionic" ? 2.5 : 1.2);
+    }
+
     return {
       id: i,
       el: pa.el,
-      sx: Math.cos(ang) * ringR,
-      sy: Math.sin(ang) * ringR * 0.7,
-      sz: seeded(i * 7) * (kind === "ionic" ? 2.5 : 1.2),
+      sx,
+      sy,
+      sz,
       tx: pa.x,
       ty: pa.y,
       tz: pa.z,
@@ -140,6 +180,12 @@ export class ChemistryModel implements SimModel {
   private sceneBonds: SceneBond[] = [];
   private nextTrayId = 1;
   private flashFired = false;
+  /**
+   * Decomposition plays the assembly IN REVERSE — the molecule starts whole and
+   * the fragments fly apart as `progress` advances. When `reverse` is true the
+   * pose lerp runs target→start and bonds break instead of forming.
+   */
+  private reverse = false;
 
   // ----- tray editing -------------------------------------------------------
 
@@ -171,6 +217,7 @@ export class ChemistryModel implements SimModel {
     this.scene = [];
     this.sceneBonds = [];
     this.flashFired = false;
+    this.reverse = false;
   }
 
   /** Load the exact reactant atoms for a featured reaction (the chip picker). */
@@ -225,9 +272,10 @@ export class ChemistryModel implements SimModel {
   react(): void {
     const r = this.matched.value;
     if (!r || this.phase.value !== "armed") return;
-    const { atoms, bonds } = buildScene(r.structure, r.kind);
+    const { atoms, bonds } = buildScene(r.structure, r.kind, r.reactionType);
     this.scene = atoms;
     this.sceneBonds = bonds;
+    this.reverse = r.reactionType === "decomposition";
     this.flashFired = false;
     this.progress.value = 0;
     this.flash.value = 0;
@@ -293,12 +341,22 @@ export class ChemistryModel implements SimModel {
    */
   poses(): { id: number; el: string; x: number; y: number; z: number; r: number; ion: number; slot: number }[] {
     const u = this.progress.value;
+    // Decomposition plays in reverse: the molecule (target) splits into the
+    // scattered fragments (start). We drive `e` from 0 (assembled) → 1 (apart)
+    // but interpolate target→start, so the SAME eased core reads as a split.
     const e = easeInOutCubic(u);
     const bump = Math.sin(Math.PI * e); // 0 at ends, 1 in the middle
     return this.scene.map((a) => {
-      const x = a.sx + (a.tx - a.sx) * e;
-      const y = a.sy + (a.ty - a.sy) * e + a.curl * bump;
-      const z = a.sz + (a.tz - a.sz) * e + a.curl * 0.5 * bump;
+      // forward: start→target ; reverse: target→start
+      const fromX = this.reverse ? a.tx : a.sx;
+      const fromY = this.reverse ? a.ty : a.sy;
+      const fromZ = this.reverse ? a.tz : a.sz;
+      const toX = this.reverse ? a.sx : a.tx;
+      const toY = this.reverse ? a.sy : a.ty;
+      const toZ = this.reverse ? a.sz : a.tz;
+      const x = fromX + (toX - fromX) * e;
+      const y = fromY + (toY - fromY) * e + a.curl * bump;
+      const z = fromZ + (toZ - fromZ) * e + a.curl * 0.5 * bump;
       const info = ATOMS[a.el];
       let radius = info?.r ?? 1.5;
       // ionic: cation shrinks, anion grows as the lattice packs in
@@ -308,11 +366,27 @@ export class ChemistryModel implements SimModel {
     });
   }
 
-  /** Scene bonds with a 0..1 grow factor (atoms arrive first, then bond). */
+  /**
+   * Scene bonds with a 0..1 grow factor. Synthesis: atoms arrive first, then
+   * bond grows in over the last 45 %. Decomposition: bonds start whole and
+   * BREAK in the first 45 % (grow 1→0) as the fragments pull apart.
+   */
   bonds(): { a: number; b: number; order: number; grow: number }[] {
     const u = this.progress.value;
-    const grow = Math.max(0, Math.min(1, (u - 0.55) / 0.45));
+    const grow = this.reverse
+      ? Math.max(0, Math.min(1, 1 - u / 0.45))
+      : Math.max(0, Math.min(1, (u - 0.55) / 0.45));
     return this.sceneBonds.map((b) => ({ ...b, grow }));
+  }
+
+  /** Is the active assembly running in reverse (a decomposition split)? */
+  isReverse(): boolean {
+    return this.reverse;
+  }
+
+  /** The active reaction's pedagogical type (drives view-side animation cues). */
+  reactionType(): ReactionType | null {
+    return this.matched.value?.reactionType ?? null;
   }
 
   /** Is the active reaction ionic (lattice render path)? */

@@ -38,8 +38,8 @@ export default function LabShell({
   const accentColor = accent ?? "var(--color-antares-500)";
 
   return (
-    <main className="relative flex min-h-dvh flex-col px-5 pb-32 pt-6">
-      <div className="mx-auto flex w-full max-w-[1240px] flex-1 flex-col">
+    <main className="relative flex min-h-dvh shrink-0 flex-col px-5 pb-36 pt-6">
+      <div className="mx-auto flex w-full max-w-[1240px] flex-col">
       {/* ---- top bar: back chevron to the hub + crumb ---- */}
       <div className="flex items-center justify-between gap-3">
         <Link

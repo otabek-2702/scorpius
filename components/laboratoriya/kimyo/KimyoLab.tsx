@@ -46,16 +46,41 @@ import {
   Maximize2,
   Minimize2,
   Gauge,
+  Atom as AtomIcon,
+  FlaskConical,
+  Grid3x3,
 } from "lucide-react";
 import { useProperty } from "@/lib/sim/observable/useProperty";
 import { ChemistryModel, FEATURED } from "@/lib/sims/chemistry/Model";
-import { ATOMS, PALETTE, balanceOf } from "@/lib/sims/chemistry/data";
+import {
+  ATOMS,
+  PALETTE,
+  balanceOf,
+  atomStructure,
+  massNumber,
+  shellConfig,
+  REACTION_TYPE_UZ,
+  REACTION_TYPE_ORDER,
+  type ReactionType,
+} from "@/lib/sims/chemistry/data";
+import { PT_BY_SYM, CATEGORY_UZ } from "@/lib/sims/chemistry/periodic";
 import ChemistryHand from "./ChemistryHand";
 import ChemistryLib from "./ChemistryLib";
+import AtomViewer from "./AtomViewer";
+import PeriodicTable from "./PeriodicTable";
 
 /** Variant A (hand), B (3Dmol), or both side-by-side (lg+ only). */
 type Variant = "hand" | "lib" | "both";
 type SpeedKey = "slow" | "normal" | "fast";
+/** The three lab modes: reaction stage · Bohr atom viewer · periodic table. */
+type Mode = "reaction" | "atoms" | "table";
+
+const VALID_MODES: Mode[] = ["reaction", "atoms", "table"];
+/** Curated elements that drive real reactions — the "lab core" for quick pick. */
+const CORE_ELEMENTS = [
+  "H", "He", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al",
+  "Si", "P", "S", "Cl", "Ar", "K", "Ca", "Fe", "Cu",
+];
 
 const SPEEDS: Record<SpeedKey, number> = { slow: 0.5, normal: 1, fast: 2 };
 const SPEED_LABEL: Record<SpeedKey, string> = {
@@ -273,6 +298,8 @@ interface PersistedState {
   reaction: string | null;
   variant: Variant;
   speed: SpeedKey;
+  mode: Mode;
+  element: string;
 }
 
 function readInitialState(): PersistedState {
@@ -280,12 +307,16 @@ function readInitialState(): PersistedState {
     reaction: null,
     variant: "hand",
     speed: "normal",
+    mode: "reaction",
+    element: "Na",
   };
   if (typeof window === "undefined") return fallback;
 
   let variant: Variant = fallback.variant;
   let speed: SpeedKey = fallback.speed;
   let reaction: string | null = null;
+  let mode: Mode = fallback.mode;
+  let element: string = fallback.element;
 
   // localStorage first (durable), then URL (shareable) overrides
   try {
@@ -295,6 +326,8 @@ function readInitialState(): PersistedState {
       if (j.variant && VALID_VARIANTS.includes(j.variant)) variant = j.variant;
       if (j.speed && VALID_SPEEDS.includes(j.speed)) speed = j.speed;
       if (typeof j.reaction === "string") reaction = j.reaction;
+      if (j.mode && VALID_MODES.includes(j.mode)) mode = j.mode;
+      if (typeof j.element === "string" && PT_BY_SYM[j.element]) element = j.element;
     }
   } catch {
     /* ignore */
@@ -305,9 +338,13 @@ function readInitialState(): PersistedState {
     const qv = q.get("variant");
     const qs = q.get("speed");
     const qr = q.get("r");
+    const qm = q.get("mode");
+    const qe = q.get("el");
     if (qv && VALID_VARIANTS.includes(qv as Variant)) variant = qv as Variant;
     if (qs && VALID_SPEEDS.includes(qs as SpeedKey)) speed = qs as SpeedKey;
     if (qr) reaction = qr;
+    if (qm && VALID_MODES.includes(qm as Mode)) mode = qm as Mode;
+    if (qe && PT_BY_SYM[qe]) element = qe;
   } catch {
     /* ignore */
   }
@@ -317,7 +354,7 @@ function readInitialState(): PersistedState {
   // validate reaction id against the known set
   if (reaction && !FEATURED.some((r) => r.id === reaction)) reaction = null;
 
-  return { reaction, variant, speed };
+  return { reaction, variant, speed, mode, element };
 }
 
 /* ============================================================ */
@@ -333,6 +370,10 @@ export default function KimyoLab() {
   const [dragEl, setDragEl] = useState<string | null>(null);
   const [hoverChamber, setHoverChamber] = useState(false);
   const [canBoth, setCanBoth] = useState(false); // lg+ gate for compare mode
+  const [mode, setMode] = useState<Mode>(initial.mode);
+  const [selectedEl, setSelectedEl] = useState<string>(initial.element);
+  // reaction-type filter for the picker (null = show all types)
+  const [typeFilter, setTypeFilter] = useState<ReactionType | null>(null);
 
   const stageRef = useRef<HTMLDivElement | null>(null);
   const { muted, toggleMute, play } = useLabAudio(reduced);
@@ -395,13 +436,15 @@ export default function KimyoLab() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [model]);
 
-  // ---- persist variant + speed + reaction to URL + localStorage ------------
+  // ---- persist variant + speed + reaction + mode + element -----------------
   useEffect(() => {
     if (typeof window === "undefined") return;
     const state: PersistedState = {
       reaction: activeId ?? null,
       variant,
       speed,
+      mode,
+      element: selectedEl,
     };
     try {
       window.localStorage.setItem(LS_KEY, JSON.stringify(state));
@@ -412,13 +455,15 @@ export default function KimyoLab() {
       const url = new URL(window.location.href);
       url.searchParams.set("variant", variant);
       url.searchParams.set("speed", speed);
+      url.searchParams.set("mode", mode);
+      url.searchParams.set("el", selectedEl);
       if (activeId) url.searchParams.set("r", activeId);
       else url.searchParams.delete("r");
       window.history.replaceState(null, "", url.toString());
     } catch {
       /* ignore */
     }
-  }, [variant, speed, activeId]);
+  }, [variant, speed, activeId, mode, selectedEl]);
 
   // ---- SFX wiring: watch model transitions via prev-value refs -------------
   const prevPhase = useRef(phase);
@@ -480,7 +525,32 @@ export default function KimyoLab() {
     : 0;
   const energyFrac = phase === "product" ? 1 : progress;
 
+  // dropping a dragged element always lands it in the reaction chamber; if we
+  // dragged from the periodic table / atoms tab, hop to the reaction mode first.
+  const handleDropElement = (el: string) => {
+    if (mode !== "reaction") setMode("reaction");
+    model.addAtom(el);
+  };
+
   return (
+    <div className="flex w-full flex-col gap-3">
+      {/* ===== MODE TABS — Reaksiya · Atomlar · Davriy jadval ===== */}
+      <div
+        className="flex gap-1 self-start rounded-full border border-void-600 bg-void-800 p-1"
+        role="tablist"
+        aria-label="Laboratoriya rejimi"
+      >
+        <ModeTab active={mode === "reaction"} onClick={() => { setMode("reaction"); play("ui"); }}>
+          <FlaskConical className="h-4 w-4" /> Reaksiya
+        </ModeTab>
+        <ModeTab active={mode === "atoms"} onClick={() => { setMode("atoms"); play("ui"); }}>
+          <AtomIcon className="h-4 w-4" /> Atomlar
+        </ModeTab>
+        <ModeTab active={mode === "table"} onClick={() => { setMode("table"); play("ui"); }}>
+          <Grid3x3 className="h-4 w-4" /> Davriy jadval
+        </ModeTab>
+      </div>
+
     <div className="flex w-full flex-col gap-3 lg:grid lg:grid-cols-[minmax(0,1.55fr)_minmax(340px,1fr)] lg:items-start lg:gap-6">
       {/* ============================================================
        *  LEFT COLUMN — sticky cinematic chamber + transport + readout
@@ -506,7 +576,7 @@ export default function KimyoLab() {
           onDrop={(e) => {
             e.preventDefault();
             setHoverChamber(false);
-            if (dragEl) model.addAtom(dragEl);
+            if (dragEl) handleDropElement(dragEl);
             setDragEl(null);
           }}
         >
@@ -534,23 +604,46 @@ export default function KimyoLab() {
             </StageBtn>
           </div>
 
-          {/* ---- the render surface(s) ----
+          {/* ---- ATOMS mode: the Bohr-model atom viewer ---- */}
+          {mode === "atoms" && (
+            <AtomViewer sym={selectedEl} clock={clock} reduced={reduced} />
+          )}
+
+          {/* ---- TABLE mode: the periodic-table picker ---- */}
+          {mode === "table" && (
+            <div className="w-full p-2.5 sm:p-3">
+              <PeriodicTable
+                selected={selectedEl}
+                onSelect={(s) => {
+                  setSelectedEl(s);
+                  play("ui");
+                }}
+                onDragElement={(s) => setDragEl(s)}
+                onDragEnd={() => setDragEl(null)}
+              />
+            </div>
+          )}
+
+          {/* ---- the reaction render surface(s) ----
               The 3Dmol viewer leaks its WebGL context + global listeners on
               teardown (no dispose()), so we construct it AT MOST ONCE per visit:
-              the ChemistryLib instance stays MOUNTED across hand⇄lib⇄both and is
-              only visually hidden when the active variant excludes the library
-              view (`hidden` class). To keep its WebGL context alive across
-              toggles the element must hold a STABLE position in the tree, so we
-              always render the same wrapper chain (a relative cell with an
-              optional label overlay) regardless of variant — never re-parenting
-              it. The hand SVG/canvas is cheap, so it mounts conditionally.
-              Exactly ONE ChemistryLib element exists at all times, incl. "Ikkalasi". */}
+              the ChemistryLib instance stays MOUNTED across hand⇄lib⇄both AND
+              across mode switches, and is only visually hidden when the active
+              variant/mode excludes the library view (`hidden` class). To keep its
+              WebGL context alive across toggles the element must hold a STABLE
+              position in the tree, so we always render the same wrapper chain
+              regardless of variant/mode — never re-parenting it. The hand
+              SVG/canvas is cheap, so it mounts conditionally. Exactly ONE
+              ChemistryLib element exists at all times. */}
           {(() => {
+            const reactionMode = mode === "reaction";
             const both = variant === "both" && canBoth;
-            const showLib = variant === "lib" || both;
-            const showHand = variant === "hand" || both;
+            const showLib = reactionMode && (variant === "lib" || both);
+            const showHand = reactionMode && (variant === "hand" || both);
             return (
-              <div className={both ? "grid w-full grid-cols-2 gap-px bg-white/5" : "w-full"}>
+              <div
+                className={`${reactionMode ? "" : "hidden"} ${both ? "grid w-full grid-cols-2 gap-px bg-white/5" : "w-full"}`}
+              >
                 {/* hand cell — cheap to mount/unmount, so only when shown.
                     Stable key so React never confuses it with the lib cell. */}
                 {showHand && (
@@ -561,7 +654,7 @@ export default function KimyoLab() {
 
                 {/* lib cell — ALWAYS mounted (single 3Dmol viewer); only the
                     visibility + label change, so the viewer is never re-parented.
-                    A stable key pins its identity across variant changes. */}
+                    A stable key pins its identity across variant + mode changes. */}
                 <SurfaceCell
                   key="lib"
                   label={both ? "📦 3Dmol kutubxona" : undefined}
@@ -577,13 +670,27 @@ export default function KimyoLab() {
           {hoverChamber && (
             <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
               <span className="rounded-full bg-antares-500/90 px-4 py-1.5 text-[13px] font-semibold text-void-950">
-                Shu yerga tashlang
+                {mode === "reaction" ? "Shu yerga tashlang" : "Reaksiya kamerasiga qoʻshiladi"}
               </span>
             </div>
           )}
         </div>
 
-        {/* ===== transport controls (run / clear) ===== */}
+        {/* atom/table modes: the selected element's structure card under the stage */}
+        {mode !== "reaction" && (
+          <ElementCard
+            sym={selectedEl}
+            onAddToChamber={() => {
+              handleDropElement(selectedEl);
+              play("tick");
+            }}
+            onViewAtom={mode === "table" ? () => { setMode("atoms"); play("ui"); } : undefined}
+          />
+        )}
+
+        {/* ===== transport controls (run / clear) — reaction mode only ===== */}
+        {mode === "reaction" && (
+        <>
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -695,6 +802,8 @@ export default function KimyoLab() {
           </div>
         ) : (
           <ChamberContents gathered={gathered} />
+        )}
+        </>
         )}
       </div>
 
