@@ -16,6 +16,8 @@ import { PascalSim } from "./PascalSim";
 import { SoundSim } from "./SoundSim";
 import { LensSim } from "./LensSim";
 import { CircuitSim } from "./CircuitSim";
+import { FractionBarSim } from "./FractionBarSim";
+import { LcmGcdSim } from "./LcmGcdSim";
 
 /** Props every sim component receives from SimulationCard. */
 export interface SimProps {
@@ -38,4 +40,6 @@ export const SIM_REGISTRY: Record<string, ComponentType<SimProps>> = {
   tovush: SoundSim,
   linza: LensSim,
   zanjir: CircuitSim,
+  kasr: FractionBarSim,
+  "ekub-ekuk": LcmGcdSim,
 };

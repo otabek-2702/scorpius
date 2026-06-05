@@ -154,6 +154,10 @@ function McqCard({
   const letters = ["A", "B", "C", "D"];
   const lastWrongPick = wrong.length > 0 ? wrong[wrong.length - 1] : null;
 
+  // Optional live phenomenon preview. Resolved defensively — an unknown key
+  // simply renders no visual (the MCQ stays text-only) rather than crashing.
+  const PhenomenonSim = card.sim ? SIM_REGISTRY[card.sim] : undefined;
+
   useEffect(() => {
     if (solved) onComplete?.();
   }, [solved, onComplete]);
@@ -172,6 +176,27 @@ function McqCard({
       <h3 className="mt-4 text-[1.55rem] font-semibold leading-snug text-void-100">
         {card.question}
       </h3>
+
+      {/* Live phenomenon — the thing the learner is predicting about. A COMPACT,
+       *  NON-INTERACTIVE preview: we cap the height and clip the sim's own
+       *  controls/explainer (pointer-events-none) so the question + all options
+       *  always fit one phone screen. The card slot is a fixed h-dvh, so a full
+       *  lab sim here would shove the question off the top; the full interactive
+       *  version lives in /laboratoriya. Honors prefers-reduced-motion via each
+       *  sim's own rAF guard. Renders nothing if the key didn't resolve. */}
+      {PhenomenonSim && (
+        <div className="mt-3 rounded-[16px] border border-void-500 bg-void-900/40 p-2">
+          <div className="mb-1.5 flex items-center gap-1.5 px-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-antares-500" />
+            <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-void-300">
+              Hodisa · jonli
+            </span>
+          </div>
+          <div className="pointer-events-none mx-auto h-[150px] max-w-[340px] overflow-hidden rounded-[12px] sm:h-[180px]">
+            <PhenomenonSim config={card.simConfig} />
+          </div>
+        </div>
+      )}
 
       <div className="mt-5 flex flex-col gap-3">
         {card.options.map((option, i) => {

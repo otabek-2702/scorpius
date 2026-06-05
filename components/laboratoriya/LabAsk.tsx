@@ -47,6 +47,25 @@ const PERSONA_ORDER: PersonaId[] = [
   "elon",
 ];
 
+/** Short label for the compact persona chip + composer placeholder. A plain
+ *  displayName.split(" ")[0] collides for the scholar honorific "Abu" (both
+ *  Beruniy and Ibn Sino would read "Abu"), so we keep a distinctive token per
+ *  persona. Falls back to the first word for any future persona. */
+const SHORT_LABEL: Record<PersonaId, string> = {
+  scorpius: "Scorpius",
+  xorazmiy: "Al-Xorazmiy",
+  beruniy: "Beruniy",
+  "ibn-sino": "Ibn Sino",
+  ulugbek: "Ulug'bek",
+  newton: "Newton",
+  einstein: "Einstein",
+  elon: "Elon",
+};
+
+function shortLabel(id: PersonaId): string {
+  return SHORT_LABEL[id] ?? PERSONAS[id].displayName.split(" ")[0];
+}
+
 interface Turn {
   role: "user" | "persona";
   text: string;
@@ -248,7 +267,7 @@ export default function LabAsk({
                     style={active ? { borderColor: p.accentColor, backgroundColor: `${p.accentColor}1a` } : undefined}
                   >
                     <span className="text-[14px]">{p.emoji}</span>
-                    {p.displayName.split(" ")[0]}
+                    {shortLabel(id)}
                   </button>
                 );
               })}
@@ -337,7 +356,7 @@ export default function LabAsk({
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder={`${persona.displayName.split(" ")[0]}dan soʻrang…`}
+                placeholder={`${shortLabel(personaId)}dan soʻrang…`}
                 className="min-w-0 flex-1 rounded-full border border-void-500 bg-void-800 px-4 py-2.5 text-[14px] text-void-100 outline-none transition focus:border-void-400"
                 aria-label="Savolingiz"
               />

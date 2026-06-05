@@ -232,7 +232,6 @@ export function seedPhase(index: number): number {
 export function yearLabelUz(orbitDays: number): string {
   if (orbitDays < 365) return `${Math.round(orbitDays)} kun`;
   const yrs = orbitDays / EARTH_ORBIT_DAYS;
-  if (yrs < 2) return `${yrs.toFixed(1)} Yer yili`;
   return `${yrs.toFixed(1)} Yer yili`;
 }
 

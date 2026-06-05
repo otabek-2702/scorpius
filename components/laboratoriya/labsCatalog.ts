@@ -52,7 +52,7 @@ export interface SubjectMeta {
   soft: string;
 }
 
-/** Tab order: Hammasi (all) first, then the four subjects. */
+/** Tab order: Hammasi (all) first, then the five subjects. */
 export const SUBJECTS: SubjectMeta[] = [
   { id: "fizika", label: "Fizika", accent: "#2dd4bf", soft: "rgba(45,212,191,0.14)" },
   { id: "kimyo", label: "Kimyo", accent: "#a855f7", soft: "rgba(168,85,247,0.14)" },

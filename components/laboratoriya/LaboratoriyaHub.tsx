@@ -3,7 +3,7 @@
  * LaboratoriyaHub — the premium MULTI-SUBJECT landing for Scorpius' virtual lab.
  *
  * A warm-light app section (matching app/page.tsx + SkyView.tsx) framing the
- * full catalog of labs across Fizika · Kimyo · Biologiya · Matematika. A
+ * full catalog of labs across Fizika · Kimyo · Biologiya · Matematika · Astronomiya. A
  * segmented subject-tab pill (mirroring SkyView's SubjectToggle) filters what
  * shows: "Hammasi" reveals everything, each subject shows only its own cards.
  *
@@ -867,7 +867,7 @@ export default function LaboratoriyaHub() {
           </h1>
           <p className="mt-3 max-w-[36rem] text-[1.02rem] leading-[1.5] text-void-200">
             Toʻqnashuvlardan tortib DNK qoʻsh spiraligacha —{" "}
-            <span className="font-medium text-void-100">toʻrt fan jonli.</span>
+            <span className="font-medium text-void-100">besh fan jonli.</span>
           </p>
         </header>
 

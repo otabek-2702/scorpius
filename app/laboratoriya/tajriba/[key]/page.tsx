@@ -57,6 +57,11 @@ const TAJRIBA: Record<
     subtitle: "Tok, kuchlanish va qarshilik",
     accent: "#6366f1",
   },
+  "divisor-grid": {
+    title: "Boʻluvchilar toʻri",
+    subtitle: "Boʻluvchilar, tub sonlar va EKUB/EKUK panjarasi",
+    accent: "#3b7bd1",
+  },
 };
 
 export function generateStaticParams() {

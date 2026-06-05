@@ -20,7 +20,7 @@
  */
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, type ThreeEvent } from "@react-three/fiber";
 import { OrbitControls, Stars, Line, Html } from "@react-three/drei";
 import * as THREE from "three";
@@ -79,6 +79,10 @@ function Sun({ onSelect }: { onSelect: (id: string | null) => void }) {
   // a soft radial-gradient sprite texture, generated once on the client
   const glowTex = useMemo(() => makeGlowTexture(), []);
   const coreRef = useRef<THREE.Mesh>(null);
+
+  // free the GPU texture on unmount (route change / StrictMode double-mount)
+  // so repeated visits don't leak CanvasTextures into the WebGL context.
+  useEffect(() => () => glowTex.dispose(), [glowTex]);
 
   // very slow shimmer of the core (purely visual, frozen-safe: guarded outside)
   return (

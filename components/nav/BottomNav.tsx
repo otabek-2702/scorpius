@@ -26,14 +26,14 @@ export function BottomNav() {
             <Link
               key={tab.href}
               href={tab.href}
-              className="flex flex-1 flex-col items-center gap-1 py-2.5 transition-colors"
+              className="flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 py-2.5 transition-colors"
             >
               <Icon className={active ? "h-5 w-5 text-antares-500" : "h-5 w-5 text-void-300"} />
               <span
                 className={
                   active
-                    ? "text-[11px] font-semibold text-void-100"
-                    : "text-[11px] font-medium text-void-300"
+                    ? "whitespace-nowrap text-[10.5px] font-semibold tracking-tight text-void-100"
+                    : "whitespace-nowrap text-[10.5px] font-medium tracking-tight text-void-300"
                 }
               >
                 {tab.label}
