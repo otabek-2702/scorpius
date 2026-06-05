@@ -20,7 +20,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useProperty } from "@/lib/sim/observable/useProperty";
 import type { ChemistryModel } from "@/lib/sims/chemistry/Model";
-import { ATOMS } from "@/lib/sims/chemistry/data";
+import { ATOMS, type ReactionType } from "@/lib/sims/chemistry/data";
 
 // ---- SVG viewport + Å→px mapping -------------------------------------------
 const VBW = 520;
@@ -84,7 +84,7 @@ export default function ChemistryHand({ model, clock }: Props) {
     };
   }, []);
 
-  // ---- energy bloom: painted on a canvas over the SVG ----------------------
+  // ---- energy bloom + combustion flame: painted on a canvas over the SVG ---
   useEffect(() => {
     const cv = canvasRef.current;
     if (!cv) return;
@@ -93,10 +93,30 @@ export default function ChemistryHand({ model, clock }: Props) {
     const w = cv.width;
     const h = cv.height;
     ctx.clearRect(0, 0, w, h);
-    if (flash <= 0.01 || !matched) return;
+    if (!matched) return;
 
     const cx = (CX / VBW) * w;
     const cy = (CY / VBH) * h;
+    const scale = w / VBW;
+
+    // ---- COMBUSTION FLAME — animated tongues licking up around the molecule.
+    // Lives during assembling + a short tail in product; driven by clock so it
+    // flickers. Painted with `lighter` blend for a glowing core.
+    if (matched.flame && (phase === "assembling" || phase === "product")) {
+      // intensity: ramps in once atoms make contact (~0.35) during the burn,
+      // then settles to a steady flame once the product has formed.
+      const intensity =
+        phase === "product"
+          ? 0.6
+          : Math.max(0, Math.min(1, (progress - 0.35) / 0.45));
+      if (intensity > 0.02) drawFlame(ctx, cx, cy, scale, clock / 1000, intensity);
+    }
+
+    if (flash <= 0.01) {
+      ctx.globalCompositeOperation = "source-over";
+      return;
+    }
+
     const exo = matched.exo;
     const slow = !!matched.slow;
     // bloom radius grows as flash decays from its peak; map flash→radius
@@ -138,12 +158,26 @@ export default function ChemistryHand({ model, clock }: Props) {
       }
     }
     ctx.globalCompositeOperation = "source-over";
-  }, [flash, matched, clock, sizeTick]);
+  }, [flash, matched, clock, sizeTick, phase, progress]);
 
   const pre = phase === "idle" || phase === "armed";
-  const poses = pre ? trayPoses(tray, clock) : scenePoses(model);
+  const rawPoses = pre ? trayPoses(tray, clock) : scenePoses(model);
   const bonds = pre ? [] : model.bonds();
   const ionic = model.isIonic();
+  const rType = matched?.reactionType ?? null;
+  const isCombustion = !!matched?.flame;
+  const precipitate = matched?.precipitate ?? null;
+
+  // ---- precipitate SINK: a double-displacement solid drops to the chamber
+  // floor as it finishes assembling. Pure presentation (the model owns the true
+  // geometry); we add a downward Å offset that ramps in over the last 40 %.
+  const sinkA = precipitate
+    ? -Math.max(0, (progress - 0.6) / 0.4) * 4.2
+    : 0;
+  const poses = sinkA
+    ? rawPoses.map((p) => ({ ...p, y: p.y + sinkA }))
+    : rawPoses;
+
   // slot → pose lookup so bonds don't recompute poses per-edge
   const bySlot = new Map<number, Pose>();
   if (!pre) for (const p of poses) bySlot.set(p.slot, p);
@@ -265,12 +299,31 @@ export default function ChemistryHand({ model, clock }: Props) {
           </g>
         )}
 
-        {/* ionic lattice frame hint once product */}
-        {ionic && phase === "product" && (
+        {/* ionic lattice frame hint once product (covalent precipitates skip it) */}
+        {ionic && phase === "product" && !precipitate && (
           <text x={CX} y={VBH - 14} textAnchor="middle" fontSize={11} fontWeight={600} fill="#a855f7">
             ion panjarasi — bu molekula emas, cheksiz kristall
           </text>
         )}
+
+        {/* type-specific caption for the NEW reaction types (synthesis keeps its
+            own hints above); helps the learner name what they are watching. */}
+        {(phase === "assembling" || phase === "product") &&
+          rType &&
+          rType !== "synthesis" && (
+            <text
+              x={CX}
+              y={VBH - 14}
+              textAnchor="middle"
+              fontSize={11}
+              fontWeight={600}
+              fill={typeCaptionColor(rType)}
+            >
+              {phase === "product"
+                ? typeCaptionDone(rType, precipitate)
+                : typeCaptionLive(rType, precipitate)}
+            </text>
+          )}
 
         {/* empty-state hint */}
         {phase === "idle" && tray.length === 0 && (
@@ -505,4 +558,90 @@ function hexA(hex: string, a: number): string {
 function pseudo(n: number): number {
   const s = Math.sin(n * 91.7 + 13.3) * 43758.5453;
   return s - Math.floor(s);
+}
+
+// ----- type-specific stage captions (Uzbek) ----------------------------------
+
+function typeCaptionColor(t: ReactionType): string {
+  switch (t) {
+    case "decomposition": return "#7db8ff";
+    case "single-displacement": return "#f4b63e";
+    case "double-displacement": return "#cbd5e1";
+    case "combustion": return "#ff9e4a";
+    case "neutralization": return "#9fe0c0";
+    default: return "#8aa0b5";
+  }
+}
+function typeCaptionLive(t: ReactionType, precipitate: string | null): string {
+  switch (t) {
+    case "decomposition": return "bitta molekula boʻlaklarga ajralmoqda…";
+    case "single-displacement": return "element oʻrnini egallamoqda — biri siqib chiqarilmoqda…";
+    case "double-displacement": return precipitate ? `${precipitate} choʻkmasi hosil boʻlmoqda…` : "juftliklar almashmoqda…";
+    case "combustion": return "yonmoqda — alanga ⊙";
+    case "neutralization": return "H⁺ va OH⁻ birikib suv hosil qilmoqda…";
+    default: return "";
+  }
+}
+function typeCaptionDone(t: ReactionType, precipitate: string | null): string {
+  switch (t) {
+    case "decomposition": return "ajraldi → koʻp mahsulot";
+    case "single-displacement": return "oʻrin oldi — biri eritmaga oʻtdi";
+    case "double-displacement": return precipitate ? `${precipitate} ↓ choʻkma tushdi` : "almashindi";
+    case "combustion": return "yonib boʻldi → CO₂ + H₂O";
+    case "neutralization": return "neytrallandi → tuz + suv";
+    default: return "";
+  }
+}
+
+/**
+ * Combustion flame — a cluster of flickering teardrop tongues licking upward
+ * from the molecule centre. Deterministic per-tongue phase, modulated by the
+ * model clock `t` (s). `intensity` 0..1 scales height + count + opacity. Drawn
+ * with the `lighter` blend already set by the caller for a glowing additive
+ * look (hot white core → orange → translucent red tips).
+ */
+function drawFlame(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  scale: number,
+  t: number,
+  intensity: number,
+): void {
+  ctx.save();
+  ctx.globalCompositeOperation = "lighter";
+  const tongues = Math.round(7 + intensity * 8);
+  const baseH = (44 + intensity * 70) * scale;
+  for (let i = 0; i < tongues; i++) {
+    const sp = pseudo(i * 5.1);
+    const flick = 0.7 + 0.3 * Math.sin(t * (6 + sp * 5) + i * 2.1);
+    const spread = (i / (tongues - 1) - 0.5) * 2; // -1..1
+    const x = cx + spread * 34 * scale * (0.6 + 0.4 * pseudo(i * 2.3));
+    const h = baseH * flick * (0.55 + 0.55 * (1 - Math.abs(spread)));
+    const w = (8 + sp * 7) * scale;
+    const topY = cy - h;
+    // teardrop: rounded base, pointed tip
+    const grad = ctx.createLinearGradient(x, cy + 8 * scale, x, topY);
+    grad.addColorStop(0, hexA("#7a1a00", intensity * 0.0));
+    grad.addColorStop(0.18, hexA("#ff5a18", intensity * 0.5));
+    grad.addColorStop(0.55, hexA("#ffaa33", intensity * 0.55));
+    grad.addColorStop(0.85, hexA("#fff0c0", intensity * 0.5));
+    grad.addColorStop(1, hexA("#ffffff", intensity * 0.2));
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(x, topY);
+    ctx.quadraticCurveTo(x - w, cy - h * 0.35, x - w * 0.5, cy + 6 * scale);
+    ctx.quadraticCurveTo(x, cy + 12 * scale, x + w * 0.5, cy + 6 * scale);
+    ctx.quadraticCurveTo(x + w, cy - h * 0.35, x, topY);
+    ctx.fill();
+  }
+  // bright hot core at the base
+  const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, 34 * scale);
+  core.addColorStop(0, hexA("#fff6dc", intensity * 0.6));
+  core.addColorStop(1, hexA("#ff8a2a", 0));
+  ctx.fillStyle = core;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 34 * scale, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
 }
