@@ -535,8 +535,8 @@ export default function LaboratoriyaHub() {
   const t = useStageClock(reduced);
 
   return (
-    <main className="relative flex min-h-dvh flex-col px-5 pb-32 pt-6">
-      <div className="mx-auto flex w-full max-w-[1100px] flex-1 flex-col">
+    <main className="relative flex min-h-dvh shrink-0 flex-col px-5 pb-36 pt-6">
+      <div className="mx-auto flex w-full max-w-[1100px] flex-col">
       {/* ---- top crumb ---- */}
       <div className="flex items-center justify-between gap-3">
         <span className="inline-flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-void-300">
