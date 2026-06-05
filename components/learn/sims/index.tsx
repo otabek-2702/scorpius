@@ -11,6 +11,11 @@ import { BuoyancySim } from "./BuoyancySim";
 import { EclipseSim } from "./EclipseSim";
 import { PrismSim } from "./PrismSim";
 import { DivisorGridSim } from "./DivisorGridSim";
+import { LeverSim } from "./LeverSim";
+import { PascalSim } from "./PascalSim";
+import { SoundSim } from "./SoundSim";
+import { LensSim } from "./LensSim";
+import { CircuitSim } from "./CircuitSim";
 
 /** Props every sim component receives from SimulationCard. */
 export interface SimProps {
@@ -28,4 +33,9 @@ export const SIM_REGISTRY: Record<string, ComponentType<SimProps>> = {
   eclipse: EclipseSim,
   prism: PrismSim,
   "divisor-grid": DivisorGridSim,
+  richag: LeverSim,
+  paskal: PascalSim,
+  tovush: SoundSim,
+  linza: LensSim,
+  zanjir: CircuitSim,
 };

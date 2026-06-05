@@ -54,6 +54,31 @@ export function LessonDeck({ lesson }: { lesson: Lesson }) {
       next.add(index);
       return next;
     });
+
+    // Record mastery attempts for the lesson's skills. We log a `correct`
+    // attempt per skill (the card is locked until correct, so any completion
+    // is by definition a successful retrieval). FIRe fractional credits to
+    // prereqs are handled inside recordAttempt itself.
+    if (lesson.id) {
+      void Promise.all([
+        import("@/lib/skills"),
+        import("@/lib/mastery"),
+      ]).then(([{ getLessonSkills }, { recordAttempt }]) => {
+        const cardType = lesson.cards[index]?.type;
+        // Only graded-card completions feed mastery — explainer/intro/diagram
+        // don't measure anything.
+        const graded = cardType === "mcq" || cardType === "discover"
+          || cardType === "sequence" || cardType === "sort"
+          || cardType === "numberline" || cardType === "predict"
+          || cardType === "challenge" || cardType === "pattern-discover"
+          || cardType === "compare-and-decide";
+        if (!graded) return;
+        for (const skillId of getLessonSkills(lesson.id!)) {
+          recordAttempt({ skillId, correct: true });
+        }
+      });
+    }
+
     // Auto-scroll one card forward so the user advances naturally — but never
     // skip past a card they haven't seen. The new card may take a tick to
     // render (its existence depends on the frontier), so we wait.
@@ -65,7 +90,7 @@ export function LessonDeck({ lesson }: { lesson: Lesson }) {
         lastScrolledRef.current = index + 1;
       }
     }, 750);
-  }, []);
+  }, [lesson.id, lesson.cards]);
 
   // Track which card is in view via IntersectionObserver — re-bind whenever the
   // rendered card set changes (newly unlocked cards need observers too).
@@ -99,6 +124,38 @@ export function LessonDeck({ lesson }: { lesson: Lesson }) {
       // Best-effort cloud mirror — same lesson id keyed under users/{uid}/completions.
       void ensureAnonymousUser().then((uid) => {
         if (uid && lesson.id) void syncCompletion(uid, lesson.id);
+      });
+      // Tick the streak engine — idempotent within a single local day, so
+      // finishing a 2nd lesson today doesn't double-count.
+      void import("@/lib/streak").then(({ recordCompletion }) => {
+        recordCompletion();
+      });
+
+      // Supernova check — if this lesson completes a full constellation, queue
+      // the ceremony to play on the next SkyView visit. We do this lazily
+      // because LessonDeck doesn't import the sky module statically.
+      void Promise.all([
+        import("@/lib/sky"),
+        import("@/lib/supernova"),
+      ]).then(([{ SUBJECT_SKIES }, { hasSupernova, queueSupernova }]) => {
+        for (const subjectId of Object.keys(SUBJECT_SKIES) as Array<keyof typeof SUBJECT_SKIES>) {
+          const sky = SUBJECT_SKIES[subjectId];
+          const stars = sky.stars.filter((s) => s.lessonId);
+          if (stars.length === 0) continue;
+          const allLit = stars.every((s) => {
+            if (!s.lessonId) return false;
+            try {
+              return Boolean(localStorage.getItem("scorpius:done:" + s.lessonId));
+            } catch {
+              return false;
+            }
+          });
+          if (!allLit) continue;
+          const supernovaId = `${subjectId}-${sky.unitTitle.replace(/\s+/g, "-").toLowerCase()}`;
+          if (!hasSupernova(supernovaId)) {
+            queueSupernova(supernovaId);
+          }
+        }
       });
     }
   }, [active, lesson]);
@@ -151,6 +208,7 @@ export function LessonDeck({ lesson }: { lesson: Lesson }) {
               <LessonCardView
                 card={card}
                 subjectLabel={lesson.subjectLabel}
+                lessonId={lesson.id}
                 onComplete={() => markComplete(i)}
                 imageState={
                   card.type === "diagram" && card.prompt

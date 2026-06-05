@@ -55,6 +55,36 @@ export const SIM_CATALOG: SimCatalogEntry[] = [
     summaryUz:
       "Sonning boʻluvchilari, tub sonlar va EKUB/EKUK panjarali koʻrinishda (matematika).",
   },
+  {
+    key: "richag",
+    titleUz: "Richag",
+    summaryUz:
+      "Richag — kuch, yelka va muvozanat; moment va oddiy mexanizmlar (fizika).",
+  },
+  {
+    key: "paskal",
+    titleUz: "Paskal qonuni",
+    summaryUz:
+      "Suyuqlikdagi bosim har tomonga teng uzatiladi — Paskal qonuni, gidravlika (fizika).",
+  },
+  {
+    key: "tovush",
+    titleUz: "Tovush toʻlqini",
+    summaryUz:
+      "Tovush toʻlqini — chastota, amplituda, balandlik va tovush kuchi (fizika).",
+  },
+  {
+    key: "linza",
+    titleUz: "Linza",
+    summaryUz:
+      "Linza — yorugʻlik sinishi, fokus masofasi va tasvir hosil boʻlishi; optika (fizika).",
+  },
+  {
+    key: "zanjir",
+    titleUz: "Elektr zanjiri",
+    summaryUz:
+      "Elektr zanjiri — tok, kuchlanish, qarshilik va Om qonuni (fizika).",
+  },
 ];
 
 export const SIM_CATALOG_KEYS = SIM_CATALOG.map((c) => c.key);

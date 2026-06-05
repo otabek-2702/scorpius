@@ -261,7 +261,7 @@ export function HumoView({ initialPersonaId }: Props) {
   const hasUserMsg = useMemo(() => messages.some((m) => m.role === "user"), [messages]);
 
   return (
-    <main className="flex h-dvh flex-col bg-void-950">
+    <main className="flex h-dvh flex-col bg-void-950 pb-[calc(60px+env(safe-area-inset-bottom))]">
       <PersonaHeader persona={persona} onSwitch={() => setPickerOpen(true)} />
       <MessageList persona={persona} messages={messages} />
       <MessageInput

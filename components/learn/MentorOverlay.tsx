@@ -10,6 +10,11 @@ const VOICE_ID_BY_PERSONA: Record<PersonaId, string | undefined> = {
   einstein: process.env.NEXT_PUBLIC_ELEVENLABS_EINSTEIN_VOICE_ID,
   scorpius: undefined,
   elon: undefined,
+  // Phase 3.7 — scholar personas. Voice IDs land in a later phase; until then
+  // they speak with text only (no audio overlay).
+  beruniy: undefined,
+  "ibn-sino": undefined,
+  ulugbek: undefined,
 };
 
 const PORTRAIT_BY_PERSONA: Record<PersonaId, string> = {
@@ -18,6 +23,12 @@ const PORTRAIT_BY_PERSONA: Record<PersonaId, string> = {
   xorazmiy: "/personas/xorazmiy.png",
   einstein: "/personas/einstein.png",
   elon: "/personas/elon.png",
+  // Portrait pipeline ships static images via scripts/generate-persona-portraits.ts.
+  // Until those run for the new scholars, MentorOverlay just won't show their
+  // portrait — the fallback handler in the component skips the <img>.
+  beruniy: "/personas/beruniy.png",
+  "ibn-sino": "/personas/ibn-sino.png",
+  ulugbek: "/personas/ulugbek.png",
 };
 
 export function MentorOverlay({ personaId, voiceText }: { personaId: PersonaId; voiceText?: string }) {

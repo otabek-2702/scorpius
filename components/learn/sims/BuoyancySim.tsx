@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLabNotebook } from "@/lib/labNotebook";
+import { useSimIdentity, useSimState } from "@/lib/simState";
 
 /**
  * Arximed qonuni — buoyancy lab.
@@ -93,6 +95,9 @@ const DRAG_COEF = 3.5; // viscous damping; bigger → settles faster
 let nextId = 1;
 
 export function BuoyancySim({ onComplete }: Props) {
+  const { recordEntry } = useLabNotebook();
+  const { publish: publishSimState } = useSimState();
+  useSimIdentity("buoyancy", "Arximed laboratoriyasi");
   const [fluidIdx, setFluidIdx] = useState(2); // start in water
   const [bodies, setBodies] = useState<Body[]>([]);
   // Set of object def keys that have been splashed in.
@@ -252,6 +257,43 @@ export function BuoyancySim({ onComplete }: Props) {
       } else {
         body.dragging = false;
         droppedKindsRef.current.add(body.defKey);
+
+        // Push a Lab Notebook entry — the *measurement* the student just took.
+        // Compute the predicted submerged fraction = ρ_obj / ρ_fluid, then
+        // the buoyant force F = ρ_fluid · V · g (in physical units, not px).
+        const fluidDef = FLUIDS[fluidIdx];
+        const objDef = OBJECTS.find((o) => o.key === body.defKey);
+        if (objDef && fluidDef.density > 0) {
+          const ratio = objDef.density / fluidDef.density;
+          const willFloat = ratio < 1;
+          const submergedPct = Math.min(1, ratio) * 100;
+          // Visual block size in px → assume ~5 cm per 30 px → V ~ (size/600)^3 m³
+          const sideM = objDef.size / 600;
+          const volumeM3 = sideM * sideM * sideM;
+          const fBuoyN = fluidDef.density * volumeM3 * 9.81;
+          recordEntry({
+            label: "F",
+            value: `${fBuoyN.toFixed(2)} N`,
+            context: `${objDef.label} · ${fluidDef.label} · ${
+              willFloat ? `suzadi (${submergedPct.toFixed(0)}% botgan)` : "cho'kadi"
+            }`,
+          });
+          // Publish to SimState so Humo can reference what just happened.
+          publishSimState({
+            params: {
+              suyuqlik: fluidDef.label,
+              "suyuqlik zichligi": `${fluidDef.density} kg/m³`,
+            },
+            observations: {
+              "oxirgi jism": objDef.label,
+              "F_ko'tarish": `${fBuoyN.toFixed(2)} N`,
+              "natija": willFloat
+                ? `suzadi · ${submergedPct.toFixed(0)}% botgan`
+                : "cho'kadi",
+            },
+          });
+        }
+
         if (
           !completedRef.current &&
           droppedKindsRef.current.size >= 3

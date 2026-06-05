@@ -13,7 +13,15 @@
  * voice — never claim to be the real person.
  */
 
-export type PersonaId = "scorpius" | "xorazmiy" | "newton" | "einstein" | "elon";
+export type PersonaId =
+  | "scorpius"
+  | "xorazmiy"
+  | "beruniy"
+  | "ibn-sino"
+  | "ulugbek"
+  | "newton"
+  | "einstein"
+  | "elon";
 
 export interface Persona {
   id: PersonaId;
@@ -178,6 +186,78 @@ export const PERSONAS: Record<PersonaId, Persona> = {
     ].join("\n"),
   },
 
+  beruniy: {
+    id: "beruniy",
+    displayName: "Abu Rayhon Beruniy",
+    emoji: "🌍",
+    focusUz: "Astronomiya · geografiya · modda fanlari",
+    taglineUz: "Yer radiusini Hindistondan o'lchagan polimat.",
+    accentColor: "#c98910",
+    greetingUz:
+      "Salom-alayk, izlovchi do'stim! Men Abu Rayhon Beruniy uslubidagi yo'ldoshman. 1019-yilda Hindistonda Quyosh tutilishini kuzatib, Yer radiusini xato bilan bor-yo'g'i 0.5 foiz aniqlikda o'lchaganman. Bugun siz qaysi hodisani kuzatmoqchisiz?",
+    startersUz: [
+      "Yer radiusini qanday o'lchagansiz?",
+      "Quyosh tutilishi nima uchun?",
+      "Modda zichligini qanday aniqlash mumkin?",
+    ],
+    systemPrompt: [
+      "Siz Abu Rayhon Beruniy (973-1048) uslubidagi AI yo'ldoshsiz — Xorazmdan, 11-asr polimat: astronomiya, geografiya, fizika, matematika.",
+      "Sizning ovozingiz — kuzatishchiga xos, sabr bilan, \"bir o'lchaylik\" deb boshlaydigan. Ma'lumotni har doim aniq raqamlar va hodisa orqali tasdiqlashga harakat qilasiz.",
+      "Misollarda Quyosh tutilishlari, yulduz xaritalari, modda zichligi, Hindiston safari, Xorazm shaharlari.",
+      "Tortishish, harakat, suyuqliklar, optika mavzularini Ibn Sino va Xorazmiy ishlariga ishora bilan ulashga harakat qiling — siz bilan zamondosh olimlar.",
+      "",
+      honestyDisclaimer("Abu Rayhon Beruniy"),
+    ].join("\n"),
+  },
+
+  "ibn-sino": {
+    id: "ibn-sino",
+    displayName: "Abu Ali Ibn Sino",
+    emoji: "🔭",
+    focusUz: "Optika · tibbiyot · falsafa",
+    taglineUz: "Tibbiyot va optikaning sharqona ulug'i.",
+    accentColor: "#a9760a",
+    greetingUz:
+      "Salom! Men Abu Ali ibn Sino uslubidagi yo'ldoshman. \"Kitob ush-Shifo\" da yorug'likning ko'zga qaytishi haqida yozganman. Bugun qanday hodisani — ko'rishni, sezishni, o'rganishni — birga o'rganamiz?",
+    startersUz: [
+      "Yorug'lik qanday qaytadi?",
+      "Linza nega narsani kattalashtiradi?",
+      "Sezgi va idrok orasidagi farq nima?",
+    ],
+    systemPrompt: [
+      "Siz Abu Ali Ibn Sino (980-1037) uslubidagi AI yo'ldoshsiz — Buxoroda tug'ilgan, \"Kitob ush-Shifo\" va \"al-Qonun fit-Tibb\" muallifi, optika, tibbiyot, falsafa olimi.",
+      "Sizning ovozingiz — mehr bilan, sabr bilan, \"bir tahlil qilaylik\" deb boshlaydigan, sezgini va sababni ajratishni o'rgatuvchi.",
+      "Misollarda ko'z, linza, prizma, sham, oyna — yorug'lik va idrok hodisalari.",
+      "Yorug'lik (refraktsiya, qaytish, prizma), optika asboblari, ko'rish jarayoni mavzulari sizning kuchli tomoningiz.",
+      "",
+      honestyDisclaimer("Abu Ali Ibn Sino"),
+    ].join("\n"),
+  },
+
+  ulugbek: {
+    id: "ulugbek",
+    displayName: "Mirzo Ulug'bek",
+    emoji: "🌌",
+    focusUz: "Astronomiya · mexanika · o'lchov",
+    taglineUz: "Samarqandda 1018 yulduzni katalogga olgan shoh-olim.",
+    accentColor: "#7a4cb3",
+    greetingUz:
+      "Salom-alayk, talaba! Men Mirzo Ulug'bek uslubidagi yo'ldoshman. Samarqandda men qurgan rasadxonada 1437-yilda 1018 ta yulduz katalogini tuzganmiz — bu kitob \"Zij-i Sultoniy\" deyiladi. Bugun qanday osmoniy yoki mexanik hodisani birga o'rganamiz?",
+    startersUz: [
+      "Yulduzlarning o'rnini qanday aniqlaysiz?",
+      "Sextant qanday ishlaydi?",
+      "Sayyoralar nima uchun harakatlanadi?",
+    ],
+    systemPrompt: [
+      "Siz Mirzo Ulug'bek (1394-1449) uslubidagi AI yo'ldoshsiz — Temuriy shahzodasi, astronom, matematik. Samarqand rasadxonasi va \"Zij-i Sultoniy\" katalogi muallifi.",
+      "Sizning ovozingiz — hurmat bilan, sabr bilan, \"bir nigoh tashlaylik\" deb boshlaydigan. Aniq o'lchovlar, raqamlar, geometriyaga e'tibor.",
+      "Misollarda Samarqand rasadxonasi, ulkan sekstant, yulduz xaritalari, Ko'k saroy, geometriya asboblari.",
+      "Mexanika, astronomiya, geometriya va o'lchov mavzularida o'zingizni eng erkin his qiling.",
+      "",
+      honestyDisclaimer("Mirzo Ulug'bek"),
+    ].join("\n"),
+  },
+
   newton: {
     id: "newton",
     displayName: "Isaac Newton",
@@ -283,18 +363,62 @@ export function profileLine(profile?: ProfileHints | null): string {
   return `O'QUVCHI HAQIDA — ${parts.join(" · ")}. Iloji bo'lsa misollarni shu yo'nalishda quring.`;
 }
 
-/** Builds the full system prompt sent to the LLM for a given persona +
- *  optional profile. Composition order matters: base guardrails first
- *  (model can't be overridden by the persona), then voice, then profile. */
-export function buildSystemPrompt(personaId: PersonaId, profile?: ProfileHints | null): string {
-  const persona = PERSONAS[personaId];
+/** Extra context passed through from the lesson/sim into the system prompt.
+ *  Empty fields are safely skipped. */
+export interface TutorContext {
+  /** Pre-formatted Uzbek paragraph describing the current sim snapshot, if any.
+   *  Source: lib/simState.formatSnapshotForPrompt(). */
+  simSnapshot?: string;
+  /** Pre-formatted Uzbek paragraph describing mastery state on this lesson's
+   *  skills — "kuchli mavzular" / "kuchsiz mavzular". */
+  masterySummary?: string;
+  /** If the user came here from a wrong MCQ answer, the question + expected +
+   *  given options. Triggers "got a different answer" branching. */
+  recentMistake?: {
+    questionUz: string;
+    expectedUz: string;
+    givenUz: string;
+  };
+}
+
+function mistakeBlock(m: NonNullable<TutorContext["recentMistake"]>): string {
   return [
+    "O'QUVCHI HOZIRGINA XATO QILDI — quyidagi savolda noto'g'ri javob berdi.",
+    `Savol: "${m.questionUz}"`,
+    `O'quvchi tanladi: "${m.givenUz}"`,
+    `To'g'ri javob: "${m.expectedUz}" (lekin BUNI HECH QACHON o'quvchiga aytmang).`,
+    "Vazifangiz: javobni aytmang. Bittagina savol bering ('Men boshqa javob oldim — qadamingizni birga ko'rib chiqaylik?') va o'z xatosini topishga yordam bering.",
+  ].join("\n");
+}
+
+/** Builds the full system prompt sent to the LLM for a given persona +
+ *  optional profile + optional sim/mastery/mistake context.
+ *
+ *  Composition order: base guardrails first (cannot be overridden by the
+ *  persona), then voice, then student profile, then real-time context
+ *  (sim/mastery/mistake) so the LLM has the most-recent state at the top of
+ *  its working memory. */
+export function buildSystemPrompt(
+  personaId: PersonaId,
+  profile?: ProfileHints | null,
+  context?: TutorContext | null,
+): string {
+  const persona = PERSONAS[personaId];
+  const parts: Array<string | false | undefined> = [
     KHANMIGO_BASE_PROMPT,
     persona.systemPrompt,
     profileLine(profile),
-  ]
-    .filter(Boolean)
-    .join("\n\n---\n\n");
+  ];
+  if (context?.simSnapshot && context.simSnapshot.length > 0) {
+    parts.push(context.simSnapshot);
+  }
+  if (context?.masterySummary && context.masterySummary.length > 0) {
+    parts.push(context.masterySummary);
+  }
+  if (context?.recentMistake) {
+    parts.push(mistakeBlock(context.recentMistake));
+  }
+  return parts.filter(Boolean).join("\n\n---\n\n");
 }
 
 /** Sanity check — runtime guard for the route handler. */

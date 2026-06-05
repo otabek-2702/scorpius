@@ -48,12 +48,19 @@ next-env.d.ts
 !/data/curriculum/
 !/data/curriculum/**/
 !/data/curriculum/**/*.json
+# emaktab snapshot — generated per-user via /api/emaktab/connect or the CLI
+# script. Contains real schoolId/personId; never commit.
+/data/emaktab-export.json
 *.serviceaccount.json
 
 .vercel
 
 # playwright mcp artifacts
 .playwright-mcp/
+
+# claude-code per-machine agent memory (project-scoped agent defs in
+# .claude/agents/ DO ship; per-machine notes in agent-memory/ do not)
+.claude/agent-memory/
 
 # share-zip + zip staging (rebuilt on demand, never committed)
 /Scorpius-Checkpoint-2.zip
@@ -93,3 +100,9 @@ next-env.d.ts
 
 # internal strategy docs that must NEVER be served publicly
 /public/emaktab-call-card.html
+
+# Large presentation binaries — kept local, not committed
+docs/**/*.pptx
+docs/**/*.pdf
+docs/*.pptx
+docs/*.pdf

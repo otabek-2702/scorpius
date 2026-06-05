@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scorpius · Checkpoint 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box }
+  :root {
+    --bg: #fbf9f3;
+    --surface: #fffefa;
+    --ink: #1a1813;
+    --soft: #6b675f;
+    --mute: #9b958a;
+    --border: #ede9dc;
+    --border-soft: #f3efe2;
+    --gold: #e8a21a;
+    --gold-deep: #c98910;
+    --gold-pale: #faecc3;
+    --ok: #2d8a4e;
+    --ok-bg: #e6f3ec;
+    --next: #c98910;
+    --next-bg: #fbeec9;
+    --block: #8a2d2d;
+    --block-bg: #f6dcdc;
+    --shadow: 0 1px 2px rgba(20,18,14,.04), 0 6px 24px -8px rgba(20,18,14,.06);
+  }
+  html, body { background: var(--bg); color: var(--ink); margin: 0; padding: 0 }
+  body {
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.55;
+    letter-spacing: -0.006em;
+    font-feature-settings: 'cv11','ss01','ss03','cv02';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 36px 32px 64px }
+
+  h1, h2, h3, h4 {
+    font-family: 'Inter Tight', 'Inter', sans-serif;
+    color: var(--ink);
+    letter-spacing: -0.022em;
+    margin: 0;
+  }
+  h1 { font-size: 28pt; line-height: 1.05; font-weight: 700; letter-spacing: -0.032em }
+  h2 { font-size: 14pt; line-height: 1.2; font-weight: 700; margin: 22px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border) }
+  h2 .n { color: var(--gold-deep); margin-right: 8px; font-weight: 600; font-variant-numeric: tabular-nums }
+  h3 { font-size: 11.5pt; font-weight: 600; margin: 14px 0 6px }
+  p { margin: 0 0 8px }
+  ul { margin: 4px 0 8px 0; padding-left: 18px }
+  li { margin: 3px 0 }
+  strong { color: var(--ink); font-weight: 600 }
+  em { color: var(--soft); font-style: italic }
+  code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-size: 9.4pt; color: var(--ink) }
+  a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 2px; text-decoration-thickness: 1.5px }
+
+  /* HEADER */
+  header.hero { display: flex; align-items: center; gap: 14px; padding-bottom: 18px; border-bottom: 1px solid var(--border); margin-bottom: 18px }
+  header.hero svg { flex-shrink: 0 }
+  header.hero .meta { display: flex; flex-direction: column; gap: 2px }
+  header.hero .eyebrow { font-size: 9.5pt; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-deep) }
+  header.hero h1 { font-size: 22pt }
+  header.hero .sub { color: var(--soft); font-size: 10pt; margin-top: 2px }
+
+  .lede {
+    font-size: 11pt;
+    line-height: 1.55;
+    color: var(--soft);
+    margin: 14px 0 18px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border-left: 3px solid var(--gold);
+    border-radius: 4px;
+  }
+
+  /* STATS */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 12px 0 20px }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px }
+  .stat .n { font-family: 'Inter Tight', sans-serif; font-size: 22pt; line-height: 1; font-weight: 800; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; color: var(--ink) }
+  .stat .label { font-size: 8.5pt; color: var(--soft); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; margin-top: 6px }
+  .stat .sub { font-size: 8.5pt; color: var(--mute); margin-top: 4px; line-height: 1.4 }
+
+  /* QUICK STATUS LINE */
+  .status-bar { display: flex; gap: 16px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; font-size: 9.5pt; color: var(--soft); flex-wrap: wrap }
+  .status-bar strong { color: var(--ink) }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 9.4pt }
+  th, td { border: 1px solid var(--border); padding: 6px 8px; text-align: left; vertical-align: top }
+  th { background: var(--border-soft); color: var(--ink); font-weight: 600; font-size: 8.8pt; text-transform: uppercase; letter-spacing: 0.04em }
+  td code { font-size: 8.6pt; color: var(--gold-deep) }
+  tr, table { break-inside: avoid }
+
+  /* CHIPS */
+  .chip { display: inline-block; padding: 1px 8px; border-radius: 99px; font-size: 8pt; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.6 }
+  .chip.ok { background: var(--ok-bg); color: var(--ok) }
+  .chip.next { background: var(--next-bg); color: var(--gold-deep) }
+  .chip.block { background: var(--block-bg); color: var(--block) }
+
+  /* DONE / NEXT LIST */
+  .done-list, .cut-list { margin: 4px 0 8px; padding: 0; list-style: none }
+  .done-list li, .cut-list li { padding: 6px 0; border-bottom: 1px dashed var(--border-soft); display: grid; grid-template-columns: 60px 1fr; gap: 10px; align-items: baseline }
+  .done-list li:last-child, .cut-list li:last-child { border-bottom: 0 }
+  .done-list .what { font-weight: 500 }
+  .done-list .path { display: block; font-family: 'JetBrains Mono', monospace; font-size: 8.6pt; color: var(--gold-deep); margin-top: 2px }
+  .cut-list li { font-size: 9.4pt; color: var(--soft) }
+
+  /* PAGE BREAKS */
+  .page-break { break-before: page }
+  @media print {
+    body { background: white }
+    .wrap { padding: 0; max-width: none }
+    a { color: var(--ink) }
+  }
+  @page { size: A4; margin: 14mm 16mm }
+
+  /* FOOTER */
+  .foot { margin-top: 22px; padding-top: 12px; border-top: 1px solid var(--border); color: var(--mute); font-size: 8.5pt; display: flex; justify-content: space-between; align-items: center }
+  .foot .mark-line { display: inline-flex; align-items: center; gap: 6px }
+  .foot .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold) }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ─────────── PAGE 1 ─────────── -->
+  <header class="hero">
+    <svg width="56" height="36" viewBox="0 0 200 90" fill="none" aria-hidden="true">
+      <polyline points="20,30 45,27 70,33 95,46 118,59 139,69 154,58 162,40"
+        stroke="#9b958a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="20" cy="30" r="2.6" fill="#b8b0a0"/>
+      <circle cx="45" cy="27" r="2.6" fill="#b8b0a0"/>
+      <circle cx="70" cy="33" r="2.6" fill="#b8b0a0"/>
+      <circle cx="118" cy="59" r="2.6" fill="#b8b0a0"/>
+      <circle cx="139" cy="69" r="2.6" fill="#b8b0a0"/>
+      <circle cx="154" cy="58" r="2.6" fill="#b8b0a0"/>
+      <circle cx="162" cy="40" r="2.6" fill="#b8b0a0"/>
+      <circle cx="95" cy="46" r="9" fill="#e8a21a" opacity="0.18"/>
+      <circle cx="95" cy="46" r="4.5" fill="#e8a21a"/>
+    </svg>
+    <div class="meta">
+      <div class="eyebrow">Scorpius · Checkpoint 2</div>
+      <h1>Build state — Day 1, 17:30</h1>
+      <div class="sub">Build with AI: EdTech Hackathon · 23&ndash;24 May 2026 · New Uzbekistan University</div>
+    </div>
+  </header>
+
+  <p class="lede">
+    Scorpius is an AI tutor that turns <strong>emaktab.uz</strong> grades into personal lessons &mdash; one swipeable
+    card at a time, grounded in the Uzbek textbook, taught beyond it. <strong>The model is an engine; the car is ours.</strong>
+  </p>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="n tab-num">7</div>
+      <div class="label">Surfaces shipped</div>
+      <div class="sub">landing · onboarding · sky · lesson · homework · parent · ask</div>
+    </div>
+    <div class="stat">
+      <div class="n tab-num">12</div>
+      <div class="label">Card types</div>
+      <div class="sub">intro · explainer · mcq · discover · sequence · sort · numberline · simulation · diagram · story · ask · done</div>
+    </div>
+    <div class="stat">
+      <div class="n tab-num">3</div>
+      <div class="label">AI models wired</div>
+      <div class="sub">Gemini 2.5 Flash · OpenAI gpt-5-mini · gpt-image-1</div>
+    </div>
+    <div class="stat">
+      <div class="n tab-num">30</div>
+      <div class="label">Commits</div>
+      <div class="sub">M0 scaffold &rarr; M1 deck &rarr; sims &rarr; AI diagrams &mdash; clean main, no WIP</div>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <span><strong>Repo:</strong> <code>D:\GDG</code> &mdash; branch <code>main</code> clean</span>
+    <span><strong>Local URL:</strong> <code>http://localhost:3000</code> (Turbopack dev)</span>
+    <span><strong>Live URL:</strong> Vercel deploy pending &mdash; tracked in §6</span>
+  </div>
+
+  <h2><span class="n">§1</span>What's running end-to-end <em>today</em></h2>
+  <ul class="done-list">
+    <li>
+      <span><span class="chip ok">Done</span></span>
+      <span>
+        <span class="what">Vertical-swipe lesson deck with answer-lock gating</span> &mdash; cards that require an answer cannot be scrolled past
+        <span class="path">components/learn/LessonDeck.tsx &middot; components/learn/cards.tsx</span>
+      </span>
+    </li>
+    <li>
+      <span><span class="chip ok">Done</span></span>
+      <span>
+        <span class="what">Typed Card DSL &mdash; 12 card types, validated by TypeScript discriminated union</span>
+        <span class="path">lib/lesson.ts:2-96</span>
+      </span>
+    </li>
+    <li>
+      <span><span class="chip ok">Done</span></span>
+      <span>
+        <span class="what">Demo lesson &mdash; Grade-6 math, &ldquo;bo'luvchi va karralisi&rdquo;, 7 cards fully cached</span>
+        <span class="path">demoLesson in lib/lesson.ts:110</span>
+      </span>
+    </li>
+    <li>
+      <span><span class="chip ok">Done</span></span>
+      <span>
+        <span class="what">Bonus lesson + working physics simulation &mdash; Brachistochrone (cycloid race, SVG, energy conservation)</span>
+        <span class="path">brachistochroneLesson + components/learn/sims/BrachistochroneSim.tsx</span>
+      </span>
+    </li>
+    <li>
+      <span><span class="chip ok">Done</span></span>
+      <span>
+        <span class="what">Constellation home &mdash; the brand metaphor as the lesson browser; stars ignite on completion</span>
+        <span class="path">components/sky/SkyView.tsx</span>
+      </span>
+    </li>
+    <li>
+      <span><span class="chip ok">Done</span></span>
+      <span>
+        <span class="what">Onboarding &mdash; 8-step profile (name, grade, age, parent phone, interests, fav/hard subject, goal)</span>
+        <span class="path">components/onboarding/OnboardingFlow.tsx</span>
+      </span>
+    </li>
+    <li>
+      <span><span class="chip ok">Done</span></span>
+      <span>
+        <span class="what">Homework &mdash; Socratic walkthrough (math GCDN), never gives the answer outright</span>
+        <span class="path">components/homework/HomeworkFlow.tsx</span>
+      </span>
+    </li>
+    <li>
+      <span><span class="chip ok">Done</span></span>
+      <span>
+        <span class="what">Parent surface (lit stub) &mdash; ready for the brief generator (§7)</span>
+        <span class="path">components/parent/ParentDashboard.tsx</span>
+      </span>
+    </li>
+    <li>
+      <span><span class="chip ok">Done</span></span>
+      <span>
+        <span class="what">emaktab full-year ingestion &mdash; Playwright walks the diary; profile + grades + homework</span>
+        <span class="path">scripts/extract-emaktab.ts &middot; lib/emaktab/normalize.ts</span>
+      </span>
+    </li>
+    <li>
+      <span><span class="chip ok">Done</span></span>
+      <span>
+        <span class="what">Curriculum extraction pipeline &mdash; PDF &rarr; PNG &rarr; vision model &rarr; Firestore</span>
+        <span class="path">scripts/extract-curriculum.ts</span>
+      </span>
+    </li>
+    <li>
+      <span><span class="chip ok">Done</span></span>
+      <span>
+        <span class="what">AI diagrams in lessons &mdash; <code>gpt-image-1</code> on demand, SHA-cached so 2nd hit is instant</span>
+        <span class="path">app/api/generate-image/route.ts &middot; lib/ai/image.ts</span>
+      </span>
+    </li>
+    <li>
+      <span><span class="chip ok">Done</span></span>
+      <span>
+        <span class="what">&ldquo;Ask Scorpius&rdquo; live tutor &mdash; Uzbek Socratic, 2&ndash;4 sentence replies, refuses to spoil answers</span>
+        <span class="path">app/api/ask/route.ts</span>
+      </span>
+    </li>
+  </ul>
+
+  <h3>What we explicitly cut (proves we know our scope)</h3>
+  <ul class="cut-list">
+    <li><em>Live emaktab scrape during the demo</em> &mdash; cached pre-pulled; no stage network dependency. <strong>Phase 1.x.</strong></li>
+    <li><em>All grades 1&ndash;12</em> &mdash; Grade 6 only for the hackathon corpus. <strong>Phase 1.x.</strong></li>
+    <li><em>Native Android</em> &mdash; web is mobile-first responsive; WebView APK is a Phase-1 wrapper. <strong>Roadmap.</strong></li>
+    <li><em>Visible <code>P(mastered)</code> BKT bar</em> &mdash; designed in <code>ARCHITECTURE.md §4</code>; UI uses lit/dim star today. <strong>Next 24h (§7).</strong></li>
+    <li><em>Payments, dashboards, spaced repetition</em> &mdash; explicit Phase-2 items. <strong>Not built. Not claimed.</strong></li>
+  </ul>
+
+  <!-- ─────────── PAGE 2 ─────────── -->
+  <div class="page-break"></div>
+
+  <h2><span class="n">§2</span>AI usage &mdash; every call, named</h2>
+  <table>
+    <thead>
+      <tr><th style="width:25%">Capability</th><th style="width:22%">Model</th><th style="width:23%">Wrapper</th><th style="width:20%">Where used</th><th>Caching</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tutor answers (Uzbek Socratic)</td>
+        <td>Gemini 2.5 Flash</td>
+        <td><code>lib/ai/gemini.ts</code> via <code>LanguageModel</code></td>
+        <td><code>/api/ask</code> &rarr; <code>ask</code> card</td>
+        <td>live (low cost)</td>
+      </tr>
+      <tr>
+        <td>Tutor fallback</td>
+        <td>OpenAI <code>gpt-5-mini</code></td>
+        <td><code>lib/ai/openai.ts</code></td>
+        <td>same route, swap by env</td>
+        <td>live</td>
+      </tr>
+      <tr>
+        <td>Diagram generation</td>
+        <td>OpenAI <code>gpt-image-1</code></td>
+        <td><code>lib/ai/image.ts</code></td>
+        <td><code>/api/generate-image</code> &rarr; <code>&lt;DiagramCard&gt;</code></td>
+        <td>SHA256(prompt+size+quality) &rarr; Firestore <code>images/{hash}</code></td>
+      </tr>
+      <tr>
+        <td>Curriculum extraction (vision)</td>
+        <td>OpenAI <code>gpt-5.1</code></td>
+        <td><code>scripts/extract-curriculum.ts</code></td>
+        <td>offline pipeline</td>
+        <td>Firestore <code>curriculum/{grade}/{subject}/{lessonId}</code></td>
+      </tr>
+      <tr>
+        <td>Health probe</td>
+        <td>Gemini 2.5 Flash</td>
+        <td>adapter</td>
+        <td><code>GET /api/health</code></td>
+        <td>&mdash;</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    <strong>Pitch line.</strong> Every language call flows through one <code>LanguageModel</code> interface
+    (<code>lib/ai/model.ts</code>). Swap Gemini &harr; OpenAI by flipping an env var. The product is
+    <em>not</em> a model wrapper &mdash; the agents, the Card DSL, the Curriculum RAG, the emaktab
+    data signal, and the Firestore image cache are ours.
+  </p>
+
+  <h2><span class="n">§3</span>Tech stack &mdash; exact versions</h2>
+  <table>
+    <thead><tr><th style="width:32%">Package</th><th style="width:18%">Version</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td>next</td><td>16.2.6</td><td>App Router, Turbopack, async <code>searchParams</code></td></tr>
+      <tr><td>react / react-dom</td><td>19.2.4</td><td>UI &mdash; hooks-only, no third-party state lib</td></tr>
+      <tr><td>tailwindcss</td><td>4.x</td><td><code>@theme</code> tokens in <code>app/globals.css</code></td></tr>
+      <tr><td>firebase / firebase-admin</td><td>12 / 13</td><td>Firestore caching (admin SDK in server code)</td></tr>
+      <tr><td>@google/genai</td><td>2.6.0</td><td>Gemini 2.5 Flash adapter</td></tr>
+      <tr><td>lucide-react</td><td>1.16.0</td><td>icon set (light, tree-shakeable)</td></tr>
+      <tr><td>playwright</td><td>1.60.0</td><td>emaktab scraper &mdash; <strong>dev-only</strong>, not bundled</td></tr>
+      <tr><td>pdf-to-img</td><td>6.1.0</td><td>curriculum extraction renderer &mdash; <strong>dev-only</strong></td></tr>
+      <tr><td>tsx</td><td>4.22.3</td><td>script runner with <code>--env-file</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="n">§4</span>Repo status</h2>
+  <ul>
+    <li><strong>Branch:</strong> <code>main</code>, clean working tree (<code>git status</code> &rarr; nothing to commit).</li>
+    <li><strong>Commits:</strong> 30 total. Most recent: <code>aad4647 &mdash; feat: AI diagrams &mdash; gpt-image-1, server cache, shimmer</code>.</li>
+    <li><strong>Convention:</strong> conventional commits, one feature per commit, no force-push, no <code>--no-verify</code>.</li>
+    <li><strong>Docs:</strong> <code>docs/PROJECT-PLAN.md</code> · <code>ARCHITECTURE.md</code> · <code>UX-DESIGN.md</code> · <code>HACKATHON-PLAN.md</code> · <code>LEARN-MODE.md</code> · <code>EMAKTAB-DATA.md</code> · this brief.</li>
+    <li><strong>Secrets posture:</strong> <code>.env.local</code> gitignored; <code>data/</code> gitignored; emaktab credentials never logged.</li>
+    <li><strong>Deploy:</strong> local-dev verified end-to-end; production Vercel deploy is a tracked item in §7.</li>
+  </ul>
+
+  <!-- ─────────── PAGE 3 ─────────── -->
+  <div class="page-break"></div>
+
+  <h2><span class="n">§5</span>Architecture &mdash; the moat in one diagram</h2>
+  <table>
+    <thead><tr><th style="width:18%">Layer</th><th style="width:32%">What it is</th><th>Owned by us?</th></tr></thead>
+    <tbody>
+      <tr><td>emaktab data signal</td><td>Playwright pulls grades + full-year diary + homework; normalized to typed JSON</td><td><strong>Yes</strong> &mdash; <code>scripts/extract-emaktab.ts</code></td></tr>
+      <tr><td>Curriculum RAG</td><td>Textbook PDFs &rarr; vision &rarr; <code>{title, explanation, examples, problems}</code> in Firestore</td><td><strong>Yes</strong> &mdash; <code>scripts/extract-curriculum.ts</code></td></tr>
+      <tr><td>Card DSL</td><td>12 typed card variants, validated at compile time</td><td><strong>Yes</strong> &mdash; <code>lib/lesson.ts</code></td></tr>
+      <tr><td>Lesson Curator</td><td>Decides card order, locks gating, ignites stars on completion</td><td><strong>Yes</strong> &mdash; <code>components/learn/LessonDeck.tsx</code></td></tr>
+      <tr><td>Model adapter</td><td>Single interface, multiple backends, env-driven selection</td><td><strong>Yes</strong> &mdash; <code>lib/ai/</code></td></tr>
+      <tr><td>Image cache</td><td>Hash-keyed Firestore store &mdash; first call generates, all later calls are instant</td><td><strong>Yes</strong> &mdash; <code>lib/ai/image.ts</code></td></tr>
+      <tr><td>LLM</td><td>Gemini / OpenAI &mdash; the engine</td><td>No (swappable)</td></tr>
+    </tbody>
+  </table>
+  <p><em>Remove the LLM and replace it with any frontier model. Scorpius still works.</em></p>
+
+  <h2><span class="n">§6</span>Demo plan &mdash; 5 minutes, scripted, no live network</h2>
+  <table>
+    <thead><tr><th style="width:13%">Time</th><th style="width:30%">Beat</th><th style="width:22%">Surface</th><th>What proves it</th></tr></thead>
+    <tbody>
+      <tr><td>0:00&ndash;0:45</td><td>Hook &mdash; landing, one Uzbek sentence</td><td><code>/</code></td><td>the metaphor lands in one screen</td></tr>
+      <tr><td>0:45&ndash;1:30</td><td>Onboarding flash &mdash; profile captured, sky lights</td><td><code>/onboarding</code></td><td>personalization signal collected</td></tr>
+      <tr><td>1:30&ndash;2:30</td><td>Real Grade-6 lesson &mdash; swipe 5 cards: discover &middot; sequence &middot; numberline &middot; ask</td><td><code>/learn/lesson</code></td><td>the deck <em>locks</em> until the question is answered</td></tr>
+      <tr><td>2:30&ndash;3:30</td><td><strong>The eureka moment</strong> &mdash; open Brachistochrone, race the balls, hear the Newton overnight story</td><td><code>/learn/lesson?topic=brachistochrone</code></td><td>off-syllabus depth &mdash; engineer judges nod</td></tr>
+      <tr><td>3:30&ndash;4:15</td><td>AI diagram &mdash; first load generates, refresh loads instant from cache</td><td>diagram card</td><td>&ldquo;every student pays once, every student after is free&rdquo;</td></tr>
+      <tr><td>4:15&ndash;5:00</td><td>Close &mdash; what's ours, what's next (voice in 24h), company shape</td><td>verbal / slide</td><td>the pitch</td></tr>
+    </tbody>
+  </table>
+  <p>
+    <strong>Fallbacks.</strong> Every lesson is fully cached &mdash; the deck runs without network. If <code>/api/ask</code> is slow, the demo skips the Ask card. If a diagram generation fails, the lesson continues; cached diagrams in Firestore are the safety net.
+  </p>
+
+  <h2><span class="n">§7</span>Blockers, risks, and the next 24h</h2>
+  <table>
+    <thead><tr><th style="width:14%">Status</th><th style="width:36%">Item</th><th>Mitigation / next move</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="chip block">Blocker</span></td>
+        <td>None &mdash; demo runs end-to-end on cached data</td>
+        <td>verified by local <code>npm run dev</code> walkthrough</td>
+      </tr>
+      <tr>
+        <td><span class="chip next">Next 24h</span></td>
+        <td>ElevenLabs voice narration &mdash; <code>voice?: string</code> fields already exist on intro/story/explainer cards</td>
+        <td>add <code>lib/ai/voice.ts</code>, <code>/api/voice</code>, Firestore cache key <code>voices/{sha}</code></td>
+      </tr>
+      <tr>
+        <td><span class="chip next">Next 24h</span></td>
+        <td>Second simulation &mdash; Refraction (Snell's law) + lesson + sky surface star</td>
+        <td>mirror Brachistochrone exactly &mdash; one new component in <code>components/learn/sims/</code></td>
+      </tr>
+      <tr>
+        <td><span class="chip next">Next 24h</span></td>
+        <td>Production Vercel deploy &mdash; env vars need pushing</td>
+        <td><code>vercel --prod</code> after adding <code>OPENAI_API_KEY</code>, Gemini key, Firebase admin creds</td>
+      </tr>
+      <tr>
+        <td><span class="chip next">Next 24h</span></td>
+        <td>Parent brief generator &mdash; route that summarises last 7 days of cached emaktab</td>
+        <td>one API route, model adapter, Uzbek tone &mdash; <code>app/api/parent-brief/route.ts</code></td>
+      </tr>
+      <tr>
+        <td><span class="chip next">Next 24h</span></td>
+        <td>Visible <code>P(mastered)</code> on lesson rail (BKT bar)</td>
+        <td>formula spelled out in <code>ARCHITECTURE.md §4</code>; pure-math, no LLM</td>
+      </tr>
+      <tr>
+        <td><span class="chip next">Pitch</span></td>
+        <td>One small real-student test before the final pitch &mdash; 5-15 kids, quotable</td>
+        <td>Telegram channel or learning-centre &mdash; per <code>PROJECT-PLAN.md §7</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="foot">
+    <span class="mark-line"><span class="dot"></span> <strong>Definition of done for Checkpoint 2:</strong> a judge can use the app, every claim points to a file, every gap is named.</span>
+    <span>Scorpius &middot; 2026-05-23 &middot; <code>docs/CHECKPOINT-2.html</code></span>
+  </div>
+
+</div>
+</body>
+</html>

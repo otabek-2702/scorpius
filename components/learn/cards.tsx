@@ -6,6 +6,10 @@ import { Check, ChevronUp, Lightbulb, Loader2, Sparkles, Star } from "lucide-rea
 import type { Card } from "@/lib/lesson";
 import { loadProfile } from "@/lib/profile";
 import { SIM_REGISTRY } from "./sims";
+import { LabNotebookProvider } from "@/lib/labNotebook";
+import { LabNotebookPanel } from "./LabNotebook";
+import { SimStateProvider, formatSnapshotForPrompt, useSimState } from "@/lib/simState";
+import { HumoHelpSheet } from "./HumoHelpSheet";
 import type { ImageState } from "./useLessonImagePrefetch";
 import { PredictCard } from "./cards/PredictCard";
 import { ExploreSandboxCard } from "./cards/ExploreSandboxCard";
@@ -20,7 +24,8 @@ export function cardRequiresCompletion(type: Card["type"]): boolean {
     type === "mcq" || type === "discover" || type === "sequence" ||
     type === "sort" || type === "numberline" || type === "simulation" ||
     type === "predict" || type === "explore-sandbox" || type === "challenge" ||
-    type === "pattern-discover" || type === "compare-and-decide" || type === "build"
+    type === "pattern-discover" || type === "compare-and-decide" || type === "build" ||
+    type === "mastery-challenge"
   );
 }
 
@@ -144,8 +149,10 @@ function McqCard({
 }) {
   const [picked, setPicked] = useState<number | null>(null);
   const [wrong, setWrong] = useState<number[]>([]);
+  const [humoOpen, setHumoOpen] = useState(false);
   const solved = picked !== null && picked === card.correctIndex;
   const letters = ["A", "B", "C", "D"];
+  const lastWrongPick = wrong.length > 0 ? wrong[wrong.length - 1] : null;
 
   useEffect(() => {
     if (solved) onComplete?.();
@@ -214,6 +221,36 @@ function McqCard({
           <p className="text-sm leading-relaxed text-void-200">{card.hint}</p>
         </div>
       )}
+
+      {/* Phase 3.5 — mistake-driven branching. Surfaces once the student has
+       *  picked any wrong answer. Humo opens with the question + chosen
+       *  option as TutorContext.recentMistake — the system prompt switches
+       *  into "got a different answer" mode. */}
+      {!solved && wrong.length > 0 && lastWrongPick !== null && (
+        <button
+          type="button"
+          onClick={() => setHumoOpen(true)}
+          className="mt-3 inline-flex h-[42px] w-full items-center justify-center gap-2 rounded-full border border-antares-500/45 bg-void-800 text-[13px] font-semibold text-antares-700 transition hover:border-antares-500/75 active:scale-[0.97]"
+        >
+          <Sparkles className="h-3.5 w-3.5" />
+          Humo&apos;dan so&apos;rash
+        </button>
+      )}
+
+      <HumoHelpSheet
+        open={humoOpen}
+        onClose={() => setHumoOpen(false)}
+        context={{
+          recentMistake: lastWrongPick !== null
+            ? {
+                questionUz: card.question,
+                expectedUz: card.options[card.correctIndex],
+                givenUz: card.options[lastWrongPick],
+              }
+            : undefined,
+        }}
+        openingPromptUz="Bu savol bilan qiynalayapman. Yordam bering — boshqacha o'ylab ko'rishimga yordam bering."
+      />
     </CardShell>
   );
 }
@@ -637,11 +674,39 @@ function AskCard({ card }: { card: Extract<Card, { type: "ask" }> }) {
   );
 }
 
-/** A "simulation" card hosts an interactive component from SIM_REGISTRY. The
- *  sim fires its own onComplete callback when the user has meaningfully
- *  interacted (raced the balls / built the circuit / etc.) — the deck unlocks
- *  the next card from that signal. */
+/** A "simulation" card hosts an interactive component from SIM_REGISTRY.
+ *
+ *  Phase 0.2 refactor: the sim is treated as a SANDBOX, not a quiz.
+ *  - The deck does NOT auto-advance when the sim internally fires `onComplete`.
+ *    (Sims still emit it for telemetry / reveal-text gating, but it never
+ *    unlocks the deck.)
+ *  - Instead, a learner-controlled "Davom etishga tayyorman" button appears
+ *    after a 20-second exploration timer. The learner taps when *they* feel
+ *    ready, the way they would put down an instrument.
+ *  - The reveal text shows after the sim's internal completion OR after the
+ *    20-second timer, whichever comes first — so the learner gets the
+ *    payoff without being forced to satisfy a hidden win condition. */
 function SimulationCard({
+  card,
+  subjectLabel,
+  lessonId,
+  onComplete,
+}: {
+  card: Extract<Card, { type: "simulation" }>;
+  subjectLabel: string;
+  lessonId?: string;
+  onComplete?: () => void;
+}) {
+  return (
+    <SimStateProvider>
+      <LabNotebookProvider lessonId={lessonId}>
+        <SimulationCardInner card={card} subjectLabel={subjectLabel} onComplete={onComplete} />
+      </LabNotebookProvider>
+    </SimStateProvider>
+  );
+}
+
+function SimulationCardInner({
   card,
   subjectLabel,
   onComplete,
@@ -650,8 +715,30 @@ function SimulationCard({
   subjectLabel: string;
   onComplete?: () => void;
 }) {
-  const [done, setDone] = useState(false);
+  const EXPLORATION_SECONDS = 20;
+  const [secondsLeft, setSecondsLeft] = useState(EXPLORATION_SECONDS);
+  const [internalDone, setInternalDone] = useState(false);
+  const [advanced, setAdvanced] = useState(false);
+  const [humoOpen, setHumoOpen] = useState(false);
+  const { snapshot } = useSimState();
   const Sim = SIM_REGISTRY[card.sim];
+
+  // Count down the exploration timer. Runs once per card mount.
+  useEffect(() => {
+    if (secondsLeft <= 0) return;
+    const id = window.setTimeout(() => setSecondsLeft((s) => Math.max(0, s - 1)), 1000);
+    return () => window.clearTimeout(id);
+  }, [secondsLeft]);
+
+  const canAdvance = secondsLeft === 0 || internalDone;
+  const showReveal = canAdvance && card.reveal;
+
+  function advance() {
+    if (advanced) return;
+    setAdvanced(true);
+    onComplete?.();
+  }
+
   return (
     <CardShell>
       <Overline label={`${subjectLabel} · Laboratoriya`} />
@@ -664,8 +751,9 @@ function SimulationCard({
           <Sim
             config={card.config}
             onComplete={() => {
-              setDone(true);
-              onComplete?.();
+              // Sim says "I think you've explored enough" — note it as a hint,
+              // but DO NOT auto-advance. The learner decides when to leave.
+              setInternalDone(true);
             }}
           />
         ) : (
@@ -674,12 +762,61 @@ function SimulationCard({
           </div>
         )}
       </div>
-      {done && card.reveal && (
+
+      {/* The Lab Notebook — sim-as-instrument receipt. Renders entries
+       *  recorded by the sim via useLabNotebook(). Empty state nudges
+       *  exploration; non-empty state is the proof the sim is a lab. */}
+      <LabNotebookPanel />
+
+      {showReveal && (
         <div className="mt-4 flex items-start gap-2 rounded-[14px] bg-signal-correct/10 p-3.5">
           <Check className="mt-0.5 h-4 w-4 shrink-0 text-signal-correct" />
           <p className="text-sm leading-relaxed text-void-200">{card.reveal}</p>
         </div>
       )}
+
+      <div className="mt-4 flex gap-2">
+        <button
+          type="button"
+          onClick={() => setHumoOpen(true)}
+          className="inline-flex h-[46px] items-center justify-center gap-2 rounded-full border border-antares-500/45 bg-void-800 px-5 text-[13px] font-semibold text-antares-700 transition hover:border-antares-500/75 active:scale-[0.97]"
+        >
+          <Sparkles className="h-3.5 w-3.5" />
+          Humo
+        </button>
+        <button
+          type="button"
+          onClick={advance}
+          disabled={!canAdvance || advanced}
+          className={
+            "inline-flex h-[46px] flex-1 items-center justify-center gap-2 rounded-full text-[15px] font-semibold transition active:scale-[0.97] " +
+            (canAdvance
+              ? "bg-antares-500 text-void-100 hover:bg-antares-300"
+              : "bg-void-700 text-void-300")
+          }
+        >
+          {canAdvance ? (
+            <>
+              <Check className="h-4 w-4" />
+              Davom etishga tayyorman
+            </>
+          ) : (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Kashf qilib ko&apos;ring… {secondsLeft}s
+            </>
+          )}
+        </button>
+      </div>
+
+      <HumoHelpSheet
+        open={humoOpen}
+        onClose={() => setHumoOpen(false)}
+        context={{
+          simSnapshot: formatSnapshotForPrompt(snapshot),
+        }}
+        openingPromptUz={`Men ${card.heading.toLowerCase()} darsi simulyatsiyasi bilan ishlayapman. Tushunish uchun yordam bering — bittagina savol bilan boshlang.`}
+      />
     </CardShell>
   );
 }
@@ -772,6 +909,121 @@ function StoryCard({
   );
 }
 
+/** Mastery Challenge — mixed-context retrieval. Renders the items sequentially,
+ *  one at a time. All correct → calls passMasteryChallenge() per skill and fires
+ *  onComplete. Wrong answer reveals the hint and lets the learner re-pick. */
+function MasteryChallengeCard({
+  card,
+  subjectLabel,
+  onComplete,
+}: {
+  card: Extract<Card, { type: "mastery-challenge" }>;
+  subjectLabel: string;
+  onComplete?: () => void;
+}) {
+  const items = card.items;
+  const [idx, setIdx] = useState(0);
+  const [picked, setPicked] = useState<number | null>(null);
+  const [wrongCount, setWrongCount] = useState(0);
+  const [solvedItems, setSolvedItems] = useState<number[]>([]);
+  const item = items[idx];
+  const allDone = solvedItems.length === items.length;
+
+  useEffect(() => {
+    if (!allDone) return;
+    // Persist the mastery-challenge pass for each skill that just survived
+    // mixed-context retrieval. This is the only path to "mastered".
+    void import("@/lib/mastery").then(({ passMasteryChallenge }) => {
+      for (const it of items) passMasteryChallenge(it.skillId);
+    });
+    onComplete?.();
+  }, [allDone, items, onComplete]);
+
+  function choose(i: number) {
+    if (!item) return;
+    if (i === item.correctIndex) {
+      setSolvedItems((s) => [...s, idx]);
+      setPicked(null);
+      setWrongCount(0);
+      // Step to the next item after a brief beat so the user sees the check.
+      window.setTimeout(() => setIdx((n) => Math.min(items.length, n + 1)), 600);
+    } else {
+      setPicked(i);
+      setWrongCount((c) => c + 1);
+    }
+  }
+
+  if (allDone) {
+    return (
+      <CardShell>
+        <Overline label={`${subjectLabel} · Mastery`} />
+        <h3 className="mt-4 text-[1.4rem] font-semibold leading-snug text-void-100">
+          {card.heading}
+        </h3>
+        <div className="mt-5 flex items-start gap-2 rounded-[14px] bg-signal-correct/10 p-4">
+          <Check className="mt-0.5 h-5 w-5 shrink-0 text-signal-correct" />
+          <div>
+            <p className="font-mono text-[10.5px] font-bold uppercase tracking-[0.14em] text-signal-correct">
+              {items.length} ta mavzu · barchasi to&apos;g&apos;ri
+            </p>
+            <p className="mt-2 text-[15px] leading-relaxed text-void-200">{card.reveal}</p>
+          </div>
+        </div>
+      </CardShell>
+    );
+  }
+
+  if (!item) return null;
+  const letters = ["A", "B", "C", "D"];
+  return (
+    <CardShell>
+      <div className="flex items-center justify-between">
+        <Overline label={`${subjectLabel} · Mastery`} />
+        <span className="font-mono text-[11px] tabular-nums text-void-300">
+          {idx + 1} / {items.length}
+        </span>
+      </div>
+      {card.promptUz && idx === 0 && (
+        <p className="mt-3 text-[14px] leading-relaxed text-void-300">{card.promptUz}</p>
+      )}
+      <h3 className="mt-4 text-[1.35rem] font-semibold leading-snug text-void-100">
+        {item.question}
+      </h3>
+      <div className="mt-5 flex flex-col gap-3">
+        {item.options.map((opt, i) => {
+          const isCurrentWrong = picked === i;
+          let cls =
+            "flex items-center gap-3 rounded-[14px] border px-4 py-3.5 text-left text-lg font-medium transition-colors";
+          if (isCurrentWrong) {
+            cls += " border-signal-rethink bg-signal-rethink/10 text-void-100 shake";
+          } else {
+            cls += " border-void-500 bg-void-700 text-void-100 hover:border-void-400";
+          }
+          return (
+            <button
+              key={i}
+              type="button"
+              onClick={() => choose(i)}
+              className={cls}
+            >
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-void-600 text-sm font-semibold">
+                {letters[i]}
+              </span>
+              <span>{opt}</span>
+            </button>
+          );
+        })}
+      </div>
+      {wrongCount > 0 && item.hint && (
+        <div className="mt-4 flex items-start gap-2 rounded-[14px] bg-void-700 p-3.5">
+          <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-signal-info" />
+          <p className="text-sm leading-relaxed text-void-200">{item.hint}</p>
+        </div>
+      )}
+    </CardShell>
+  );
+}
+
 function DoneCard({ card }: { card: Extract<Card, { type: "done" }> }) {
   return (
     <CardShell>
@@ -793,11 +1045,14 @@ function DoneCard({ card }: { card: Extract<Card, { type: "done" }> }) {
 export function LessonCardView({
   card,
   subjectLabel,
+  lessonId,
   onComplete,
   imageState,
 }: {
   card: Card;
   subjectLabel: string;
+  /** Used by simulation cards to key the Lab Notebook to this lesson. */
+  lessonId?: string;
   /** Fires once when a completion-required card finishes (mcq/discover/sequence/sort/numberline). */
   onComplete?: () => void;
   imageState?: ImageState;
@@ -818,7 +1073,14 @@ export function LessonCardView({
     case "numberline":
       return <NumberLineCard card={card} subjectLabel={subjectLabel} onComplete={onComplete} />;
     case "simulation":
-      return <SimulationCard card={card} subjectLabel={subjectLabel} onComplete={onComplete} />;
+      return (
+        <SimulationCard
+          card={card}
+          subjectLabel={subjectLabel}
+          lessonId={lessonId}
+          onComplete={onComplete}
+        />
+      );
     case "diagram":
       return <DiagramCard card={card} subjectLabel={subjectLabel} imageState={imageState} />;
     case "story":
@@ -839,5 +1101,9 @@ export function LessonCardView({
       return <CompareDecideCard card={card} onComplete={onComplete} />;
     case "build":
       return <BuildCard card={card} onComplete={onComplete} />;
+    case "mastery-challenge":
+      return (
+        <MasteryChallengeCard card={card} subjectLabel={subjectLabel} onComplete={onComplete} />
+      );
   }
 }

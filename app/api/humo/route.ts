@@ -6,6 +6,7 @@ import {
   isPersonaId,
   type PersonaId,
   type ProfileHints,
+  type TutorContext,
 } from "@/lib/personas";
 
 /**
@@ -80,6 +81,7 @@ export async function POST(req: Request) {
     personaId?: unknown;
     messages?: unknown;
     profile?: ProfileHints | null;
+    context?: TutorContext | null;
   };
   try {
     body = await req.json();
@@ -132,8 +134,14 @@ export async function POST(req: Request) {
     );
   }
 
-  // 3. Build the messages array sent to the LLM
-  const systemPrompt = buildSystemPrompt(personaId, body.profile ?? null);
+  // 3. Build the messages array sent to the LLM. Context (sim snapshot,
+  //    mastery summary, recent mistake) flows through to give Humo the same
+  //    canvas-awareness that Koji has inside Brilliant lessons.
+  const systemPrompt = buildSystemPrompt(
+    personaId,
+    body.profile ?? null,
+    body.context ?? null,
+  );
   const llmMessages: ChatMessage[] = [
     { role: "system", content: systemPrompt },
     ...messages,

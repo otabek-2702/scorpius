@@ -175,6 +175,26 @@ export type Card =
       voice?: string;
     }
   | {
+      /** Mixed-context retrieval — the only path to "mastered" status. Renders
+       *  3–5 short MCQs, each from a DIFFERENT skill the student recently
+       *  practiced. Pass = all correct → calls passMasteryChallenge() on each
+       *  skill in the list. Mastery Challenge cards always live at the end of
+       *  the constellation's terminal lesson; never inserted into a single
+       *  lesson's normal arc. */
+      type: "mastery-challenge";
+      heading: string;
+      /** Optional intro line shown above the first item. */
+      promptUz?: string;
+      items: ReadonlyArray<{
+        skillId: string;
+        question: string;
+        options: string[];
+        correctIndex: number;
+        hint?: string;
+      }>;
+      reveal: string;
+    }
+  | {
       type: "done";
       title: string;
       body: string;
@@ -545,6 +565,52 @@ export const arximedLesson: Lesson = {
         "Arximed qonunini biz O'zbekiston tarixida ham uchratamiz. XI asrda buyuk olim Abu Rayhon Beruniy va uning shogirdi Hozin moddalar zichligini juda aniq o'lchaydigan asboblar yaratdilar.\n\nBeruniy 18 ta turli moddaning — oltin, kumush, qo'rg'oshin, mis, qalay — zichligini o'lchadi. Uning natijalari bugungi qiymatlarga ajoyib darajada yaqin chiqdi, 800 yildan oldin yozilganiga qaramay.\n\nFizika faqat Yevropada emas, bizning yurtimizda ham qadimdan o'rganilgan.",
     },
     {
+      type: "mastery-challenge",
+      heading: "Mastery — suyuqlik qonunlari",
+      promptUz:
+        "Hozir biz o'rgangan tushunchalarni aralash savollarda sinab ko'ramiz. Hammasi to'g'ri javob bo'lsa — yulduz \"o'rganildi\" deb belgilanadi.",
+      items: [
+        {
+          skillId: "phys.fluid.buoyancy",
+          question: "Suvga botgan jismga qaratilgan ko'tarish kuchi nimaga teng?",
+          options: [
+            "Jismning og'irligi",
+            "Siqib chiqargan suv og'irligi",
+            "Suvning umumiy massasi",
+            "Jismning hajmi",
+          ],
+          correctIndex: 1,
+          hint: "Arximed qonunini eslang — F = ρ · g · V.",
+        },
+        {
+          skillId: "phys.fluid.density",
+          question: "Po'lat zichligi suvdan kattaroq. Kema nega cho'kmaydi?",
+          options: [
+            "Po'lat suvda yengillashadi",
+            "Kema + havoning o'rtacha zichligi suvdan kichik",
+            "Kema motori uni ko'taradi",
+            "Suv kemani magnit kabi tortadi",
+          ],
+          correctIndex: 1,
+          hint: "Kemaning ichi bo'shmi yoki to'lami?",
+        },
+        {
+          skillId: "phys.fluid.pressure",
+          question: "Suvda chuqurroq tushgan sari bosim qanday o'zgaradi?",
+          options: [
+            "Kamayadi",
+            "O'zgarmaydi",
+            "Ortadi",
+            "Avval ortadi, keyin kamayadi",
+          ],
+          correctIndex: 2,
+          hint: "Yuqoridagi suv ustuni qancha baland bo'lsa, ostiga shuncha kuchli bosadi.",
+        },
+      ],
+      reveal:
+        "Uchovi bir-biriga bog'liq: bosim → ko'tarish kuchi → suzish-cho'kish. Bularni alohida emas, birga eslang.",
+    },
+    {
       type: "ask",
       heading: "Yana savolingiz bormi?",
       topic: "Arximed qonuni va suzish kuchi",
@@ -746,6 +812,461 @@ export const kamalakLesson: Lesson = {
   ],
 };
 
+// ---- Bob III · Kuch momenti / Richag --------------------------------------
+export const richagLesson: Lesson = {
+  id: "richag",
+  subject: "physics",
+  subjectLabel: "FIZIKA",
+  title: "Richag — kuch momenti",
+  cards: [
+    {
+      type: "intro",
+      title: "Menga tayanch nuqtasini bering",
+      hook:
+        "\"Menga tayanch nuqtasini bering — men Yer kurrasini ko'taraman.\" Bu so'zlarni 2200 yil avval Arximed aytgan. Bugun siz Arximed sirini o'z qo'lingiz bilan sinaymiz: og'irni yengil bilan ko'tarish.",
+      estMinutes: 7,
+      cardCount: 8,
+    },
+    {
+      type: "mcq",
+      question:
+        "5 kg toshni ko'tarish uchun, 2 kg tosh richagning ikkinchi tomonida turibdi. 5 kg tayanchgacha 0,4 m. 2 kg qaysi masofada turishi kerak — muvozanat uchun?",
+      options: [
+        "0,4 m (bir xil masofa)",
+        "1,0 m (uzoqroq)",
+        "0,16 m (yaqinroq)",
+        "Hech qanday holatda muvozanat bo'lmaydi",
+      ],
+      correctIndex: 1,
+      explain:
+        "To'g'ri — 5 · 0,4 = 2,0 N·m. Bu momentni 2 kg tosh 1,0 m masofadan beradi: 2 · 1,0 = 2,0 N·m. Yengilroq tosh tayanchdan uzoqroq turishi kerak.",
+      hint:
+        "Moment = og'irlik · yelka. Ikki tomonning momentlari teng bo'lganda — muvozanat.",
+    },
+    {
+      type: "simulation",
+      heading: "Tarozini muvozanatga keltiring",
+      sim: "richag",
+      instruction:
+        "Richag ustidagi ikki toshni torting. Tayanch nuqtasini siljiting. \"Net moment\" nolga yaqinlashganda — muvozanat.",
+      reveal:
+        "Kuch momenti τ = F · d — kuch va uning yelkasi ko'paytmasi. Og'irni yengil bilan ko'tarish: yengilni tayanchdan UZOQROQ qo'ying. Aynan shu sir bilan bir bola katta toshni siljita oladi.",
+    },
+    {
+      type: "story",
+      heading: "Arximed va kema",
+      body:
+        "Mil. avv. III asrda Sirakuza shohi Hieron Arximedga katta savol berdi: \"Tortib bo'lmaydigan kemani qanday qilib dengizga tushiraman?\"\n\nArximed bloklar, polispastlar va richaglar tizimi yasadi. Shoh kema yoniga keldi, arqonni tortdi — va kema o'z-o'zidan suvga sirpandi.\n\n\"Menga tayanch nuqtasini bering — men Yer kurrasini ko'taraman,\" — bu so'zlar shu kundan qoldi. Richag — eng oddiy, lekin eng kuchli oddiy mexanizm.",
+    },
+    {
+      type: "explainer",
+      heading: "Oltin qoida",
+      body:
+        "Kuch momenti — kuchning aylantirish ta'siri:\n\nτ = F · d\n\nQayerda F — kuch (N), d — kuchning tayanchgacha bo'lgan yelka uzunligi (m).\n\nRichag muvozanati shartlari:\n• Chap tomon momenti = O'ng tomon momenti\n• F₁ · d₁ = F₂ · d₂\n\nBu — mexanikaning \"oltin qoidasi\": kuchni kamaytirsangiz, yelkani uzaytirishingiz kerak. Kichik kuch bilan katta yukni ko'tarish mumkin — lekin uni yo'lda ko'p siljitishingiz lozim. Ish (W = F · s) o'zgarmaydi.",
+    },
+    {
+      type: "mcq",
+      question:
+        "Qaysi misol — kundalik hayotdagi richag emas?",
+      options: [
+        "Qaychi",
+        "Eshik tutqichi",
+        "Tarozi",
+        "Velosiped g'ildiragi",
+      ],
+      correctIndex: 3,
+      explain:
+        "G'ildirak — richag emas, aylanma mexanizm (pona oilasidan). Qaychi, eshik tutqichi, tarozi — uchchalasi ham tayanch nuqtasi atrofida aylanadi, demak richag.",
+      hint:
+        "Richagda tayanch nuqtasi va ikki yelka bor. G'ildirak nima atrofida aylanadi? Tayanch nuqtasi qaerda?",
+    },
+    {
+      type: "ask",
+      heading: "Yana savolingiz bormi?",
+      topic: "kuch momenti, richag muvozanati va oddiy mexanizmlar",
+    },
+    {
+      type: "done",
+      title: "Bir yulduz yondi",
+      body:
+        "Endi bilasiz: og'irni yengil bilan ko'tarish mumkin — lekin yengilni uzoqroqqa qo'yish kerak. Qaychidan to kran-balkagacha, hammasida shu bitta qoida: τ = F · d. Arximed haqli edi.",
+    },
+  ],
+};
+
+// ---- Bob II · Paskal qonuni / gidravlik press -----------------------------
+export const paskalLesson: Lesson = {
+  id: "paskal",
+  subject: "physics",
+  subjectLabel: "FIZIKA",
+  title: "Paskal qonuni — kichik kuch, katta yuk",
+  cards: [
+    {
+      type: "intro",
+      title: "Bola barmog'i bilan mashina ko'taradi",
+      hook:
+        "Avtoservisda 1 tonnalik mashina havo bosimi bilan tepaga ko'tariladi. Buni hatto bola ham qo'lda bajara oladi. Sehrmi? Yo'q — bu Blez Paskal 1648-yilda kashf etgan qonun.",
+      estMinutes: 7,
+      cardCount: 8,
+    },
+    {
+      type: "mcq",
+      question:
+        "Ikki silindr suyuqlik bilan ulangan. Kichik pistonning yuzasi 10 sm². Katta pistonniki — 200 sm². Kichik pistonga 100 N kuch bilan bossangiz, katta pistonda qancha kuch paydo bo'ladi?",
+      options: [
+        "100 N (bir xil)",
+        "200 N (ikki marta ko'p)",
+        "2000 N (yigirma marta ko'p)",
+        "0 N (suyuqlik to'sadi)",
+      ],
+      correctIndex: 2,
+      explain:
+        "To'g'ri — Paskal qonuni: bosim hamma joyda bir xil. F₁/A₁ = F₂/A₂. Yuza 20 marta katta bo'lsa, kuch ham 20 marta ko'p: 100 · 20 = 2000 N. Bu — 200 kg ni ko'tara oladi.",
+      hint:
+        "Bosim P = F/A. Yuza qancha katta bo'lsa, shuncha katta kuch chiqadi.",
+    },
+    {
+      type: "simulation",
+      heading: "Gidravlik pressni o'zingiz boshqaring",
+      sim: "paskal",
+      instruction:
+        "Kichik pistonni pastga torting. Katta pistonda 1200 kg mashina turibdi. Yuzalar nisbatini ham o'zgartiring. Mashinani ko'taring.",
+      reveal:
+        "Suyuqlik siqilmaydi: kichik pistonning bosgan hajmi katta pistondan chiqadi. Lekin yuza 20 marta ko'p bo'lgani uchun, katta piston atigi 20 marta KAM siljiydi. Kuchni yutdingiz, lekin masofani yo'qotdingiz. Energiya saqlandi.",
+    },
+    {
+      type: "story",
+      heading: "Blez Paskal va vino bochkasi",
+      body:
+        "1648-yil, Frantsiya. 25 yoshli Blez Paskal vino bochkasi tepasiga uzun, ingichka quvur ulashga ruxsat oldi. Bochka suv bilan to'la, kapikning og'zigacha. Keyin quvurga oz-ozdan suv quydi.\n\nO'n metr balandlikdagi bir oz suv — bochka portladi. Ozgina suv massasi — emas, balki balandlik orqali hosil bo'lgan bosim katta yuzaga ta'sir qilib, devorni yorgan.\n\nShu tajriba bilan Paskal isbotladi: suyuqlikdagi bosim hamma yo'nalishga teng tarqaladi. Yuz yildan keyin shu kashfiyot ustiga gidravlik pressdan to avtomobil tormozigacha qurildi.",
+    },
+    {
+      type: "explainer",
+      heading: "Paskal qonuni va hayot",
+      body:
+        "Yopiq idishdagi suyuqlikka qo'yilgan bosim, suyuqlikning har bir nuqtasiga teng kuch bilan tarqaladi.\n\nP = F / A\n\nF₁/A₁ = F₂/A₂   →   F₂ = F₁ · (A₂/A₁)\n\nQayerda P — bosim (Pa), F — kuch (N), A — yuza (m²).\n\nQayerda foydalanamiz:\n• Avtomobil tormozlari — kichik pedal kuchi katta toza disklarga\n• Ekskavator chelaki — gidravlik silindrlar\n• Mashina liftlari va kraniklar\n• Hatto stomatologning kursisi shu printsipda yuqoriga ko'tariladi",
+    },
+    {
+      type: "mcq",
+      question:
+        "Paskal qonuni qaysi muhitlarda ishlaydi?",
+      options: [
+        "Faqat suvda",
+        "Faqat yog'da",
+        "Har qanday suyuqlik va gazda (siqilmaydigan)",
+        "Faqat qattiq jismda",
+      ],
+      correctIndex: 2,
+      explain:
+        "To'g'ri — Paskal qonuni suyuqlik va gazlar uchun ishlaydi. Lekin gaz siqilishi mumkin, shuning uchun amaliy mashinalarda asosan suyuqlik (yog') ishlatiladi: u siqilmaydi, bosimni yo'qotmaydi.",
+      hint:
+        "Bosim qaerda tarqaladi? Qattiq jism o'z shaklini saqlaydi, suyuqlik esa har joyga oqadi.",
+    },
+    {
+      type: "ask",
+      heading: "Yana savolingiz bormi?",
+      topic: "Paskal qonuni va gidravlik mashinalar",
+    },
+    {
+      type: "done",
+      title: "Bir yulduz yondi",
+      body:
+        "Bolaning barmog'i mashinani ko'taradi — sehr emas, qonun. Bosim har joyga teng tarqaladi. Yuzani 20 marta kattalashtiring — kuchingiz 20 marta kuchayadi. Avtomobil tormozini bosganda — Paskalga rahmat ayting.",
+    },
+  ],
+};
+
+// ---- Bob VII · Tovush kattaliklari ----------------------------------------
+export const tovushLesson: Lesson = {
+  id: "tovush",
+  subject: "physics",
+  subjectLabel: "FIZIKA",
+  title: "Tovush — balandlik va kuchlilik",
+  cards: [
+    {
+      type: "intro",
+      title: "Nima uchun nay yupqa, tuba qalin?",
+      hook:
+        "Nay ingichka tovush chiqaradi — quvnoq, yengil. Tuba esa qalin va og'ir bo'kiradi. Ikkalasi ham havoni tebratadi — lekin boshqacha. Bugun shu farq nima ekanini eshitib, ko'rib o'rganamiz.",
+      estMinutes: 7,
+      cardCount: 8,
+    },
+    {
+      type: "predict",
+      heading: "Avval taxmin qiling",
+      prompt:
+        "Frekvensiya — bir soniyada tebranishlar soni. Frekvensiya OSHSA, tovush qanday o'zgaradi?",
+      mode: "choice",
+      options: [
+        "Balandroq bo'ladi (nay kabi yupqa)",
+        "Pastroq bo'ladi (tuba kabi qalin)",
+        "Kuchliroq bo'ladi (qichqirgan kabi)",
+        "O'zgarmaydi",
+      ],
+      correctIndex: 0,
+      reveal:
+        "To'g'ri — frekvensiya balandlikni belgilaydi. Yuqori frekvensiya = yupqa, baland tovush. Past frekvensiya = qalin, bas tovush. Endi qulog'ingiz bilan tasdiqlang.",
+    },
+    {
+      type: "simulation",
+      heading: "Eshiting va ko'ring",
+      sim: "tovush",
+      instruction:
+        "\"Tovushni eshitish\" tugmasini bosing (telefonni ovozni o'chirilmagan holatda tuting). Frekvensiyani 220 dan 800 ga olib chiqing. Tovush balandlasha boshlaydi. Keyin amplitudani siljiting.",
+      reveal:
+        "Frekvensiya — balandlik (balandmi yo pastmi). Amplituda — kuchlilik (sokinmi yo baland). Bu ikkala kattalik mustaqil: yupqa tovush sokin ham, baland ham bo'lishi mumkin. Qalin tovush ham xuddi shunday.",
+    },
+    {
+      type: "explainer",
+      heading: "Tovushning ikkita yuzi",
+      body:
+        "Tovush — havoning tebranishi. Har bir tebranish ikkita kattaliklar bilan o'lchanadi:\n\n• FREKVENSIYA (Hz) — bir soniyada nechta tebranish bo'ladi. Yuqori frekvensiya — baland (yupqa) tovush. Past — qalin tovush. Inson qulog'i 20 dan 20 000 Hz gacha eshitadi.\n\n• AMPLITUDA — tebranishning kattaligi. Katta amplituda — kuchli (baland) tovush. Kichik amplituda — sokin tovush. Decibellarda (dB) o'lchanadi.\n\nBu ikkala kattalik mustaqil: yupqa tovushni sekin ham, qattiq ham eshitish mumkin. Tuba pastroq, nay balandroq, lekin har ikkalasi sokin yoki kuchli bo'la oladi.",
+    },
+    {
+      type: "mcq",
+      question:
+        "Bolaning ovozi va katta odamning ovozi farqlanishi nima sababli?",
+      options: [
+        "Ularning amplitudasi har xil",
+        "Bola ovozining frekvensiyasi balandroq, katta odamniki past",
+        "Ular har xil til ishlatadi",
+        "Hech qanday fizik farq yo'q",
+      ],
+      correctIndex: 1,
+      explain:
+        "To'g'ri — bolaning tovush boylamlari kichik va tez tebranadi (yuqori frekvensiya). Katta odamniki uzun va sekin (past frekvensiya). Ikkalasi ham baland yoki sokin gapirishi mumkin — bu amplituda.",
+      hint:
+        "Bolaning tovush boylamlari kichik. Kichik narsa tezroq tebranadi.",
+    },
+    {
+      type: "sort",
+      prompt:
+        "Quyidagi tovush manbalari frekvensiyasi taxminan (Hz). Qaysisi past tovush, qaysisi baland?",
+      bucketA: "Past tovush (< 250 Hz)",
+      bucketB: "Baland tovush (> 250 Hz)",
+      items: [
+        { value: 80, bucket: "A" },   // erkak ovozi
+        { value: 120, bucket: "A" },  // gitara bassi
+        { value: 200, bucket: "A" },  // ayol ovozi past
+        { value: 440, bucket: "B" },  // La (A4)
+        { value: 800, bucket: "B" },  // bolaning baqirishi
+        { value: 1500, bucket: "B" }, // chumchuq sayrashi
+      ],
+      reveal:
+        "Past tovushlar (80–200 Hz) — basslar, kattalar ovozi. Baland tovushlar (440 Hz +) — La notasidan tepa, ayollar, bolalar va qushlar. Eng baland nota pianinoda 4186 Hz.",
+    },
+    {
+      type: "ask",
+      heading: "Yana savolingiz bormi?",
+      topic: "tovush — frekvensiya, amplituda va balandlik",
+    },
+    {
+      type: "done",
+      title: "Bir yulduz yondi",
+      body:
+        "Endi qulog'ingiz bilgan narsani fizika ham biladi: tovushning ikki yuzi bor — balandlik (frekvensiya) va kuchlilik (amplituda). Keyingi safar nay yoki tuba eshitsangiz — endi bilasiz, ularning farqi qaerda.",
+    },
+  ],
+};
+
+// ---- Bob VI · Linzalar -----------------------------------------------------
+export const linzaLesson: Lesson = {
+  id: "linza",
+  subject: "physics",
+  subjectLabel: "FIZIKA",
+  title: "Linza — yorug'likni egadigan oyna",
+  cards: [
+    {
+      type: "intro",
+      title: "Lupa quyoshni nuqtaga to'playdi",
+      hook:
+        "Quyoshli kunda lupani qog'ozga to'g'rilang. Yorug'lik bitta yorqin nuqtaga to'planadi — qog'oz tutab boshlaydi. Lupaning ichida hech narsa yo'q, faqat shisha. Qanday qilib u nurni egib oldi? Bugun bilamiz.",
+      estMinutes: 8,
+      cardCount: 9,
+    },
+    {
+      type: "mcq",
+      question:
+        "Lupa orqali yaqindan tikilsangiz — buyumning kattalashgan rasmini ko'rasiz. Bu rasm:",
+      options: [
+        "Haqiqiy — uni ekranga tushirsa bo'ladi",
+        "Virtual — uni faqat ko'z ko'radi, ekranga tushmaydi",
+        "Rangli, lekin teskari",
+        "Buyumning soyasi",
+      ],
+      correctIndex: 1,
+      explain:
+        "To'g'ri — lupada buyum fokusdan yaqinroq turganda, hosil bo'lgan tasvir virtual. Ya'ni nurlar haqiqatda kesishmaydi — ular kesishadi degan tuyg'u beradi. Shuning uchun rasmni ekranga tushirib bo'lmaydi, lekin ko'z uni \"ko'radi\".",
+      hint:
+        "Lupada qachon kattalashishni ko'rasiz — buyum lupaga juda yaqin bo'lganda yoki uzoqda?",
+    },
+    {
+      type: "simulation",
+      heading: "Pashshani lupa orqali kuzating",
+      sim: "linza",
+      instruction:
+        "Oltin pashshani linzaning chap tomonida torting — fokusdan uzoqroqqa, keyin yaqinroqqa. Tasvir qanday o'zgaradi? Fokus masofasini ham siljiting.",
+      reveal:
+        "Uchta nur har doim aniq qoidaga bo'ysunadi: markazdan o'tgan nur to'g'ri, parallel nur fokusdan o'tadi, fokusdan keluvchi nur parallel chiqadi. Ular kesishadigan joy — tasvir. Fokusdan yaqin bo'lsa — virtual, katta, tik. Uzoq bo'lsa — haqiqiy, teskari.",
+    },
+    {
+      type: "story",
+      heading: "Galiley va birinchi teleskop",
+      body:
+        "1609-yil, Italya. Galiley Galiley Gollandiyadan kelgan yangilik eshitdi: \"Yog'och naychada ikkita shisha bilan uzoqdagi narsalarni yaqinroq ko'rsa bo'larkan.\"\n\nGaliley hech qanday chizma yoki tushuntirishni ko'rmagan edi. Faqat ikki shisha — biri qavariq, biri botiq linza — gapni eshitdi. Bir oy ichida o'zi 30 marta kattalashtiruvchi teleskopni yasadi.\n\nU teleskopni osmonga to'g'ridi va — kashfiyot. Oyda tog'lar. Yupiter atrofida 4 ta yo'ldosh. Quyoshda dog'lar. Bir kishi linza yordamida koinotni qaytadan ochdi.",
+    },
+    {
+      type: "explainer",
+      heading: "Yupqa linza tenglamasi",
+      body:
+        "Yupqa linza uchun jism (u), tasvir (v) va fokus masofasi (f) o'rtasidagi munosabat:\n\n1/f = 1/u + 1/v\n\nKattalashish: m = -v/u\n\n• u > 2f  →  haqiqiy, teskari, kichik tasvir (fotokamera)\n• u = 2f  →  haqiqiy, teskari, teng o'lchamli\n• f < u < 2f  →  haqiqiy, teskari, katta tasvir (proyektor, ko'z gavhari)\n• u = f  →  tasvir cheksizlikda (lazer)\n• u < f  →  virtual, tik, katta tasvir (lupa)\n\nFokus masofasi qanchalik kichik bo'lsa, linza shunchalik kuchli — yorug'likni qattiq egadi.",
+    },
+    {
+      type: "mcq",
+      question:
+        "Inson ko'zining gavhari ham linza. U buyum tasvirini qaerga tushiradi?",
+      options: [
+        "Ko'zning oldida — havoda",
+        "Ko'zning ichida, retsina ustida — teskari va kichik haqiqiy tasvir",
+        "Soni katta tasvir, tik",
+        "Tasvirni umuman tushirmaydi",
+      ],
+      correctIndex: 1,
+      explain:
+        "To'g'ri — ko'zda gavhar haqiqiy, teskari, kichik tasvirni retsina ustida hosil qiladi. Miya keyin bu tasvirni \"to'g'rilab\" ko'rsatadi. Shuning uchun yiqilgan bola dunyoni oyog'i bilan ko'rmaydi — miya o'zi qaytaradi.",
+      hint:
+        "Ko'zning ichida tasvirni qabul qiluvchi ekran — retsina bor. Tasvir qaerda hosil bo'ladi?",
+    },
+    {
+      type: "sort",
+      prompt:
+        "Quyidagi asboblar qaysi linza turiga asoslangan?",
+      bucketA: "Yig'uvchi linza (qavariq)",
+      bucketB: "Tarqatuvchi linza (botiq)",
+      items: [
+        { value: 1, bucket: "A" },   // lupa
+        { value: 2, bucket: "A" },   // fotokamera obyektivi
+        { value: 3, bucket: "A" },   // teleskop obyektivi
+        { value: 4, bucket: "B" },   // miyopiya (yaqindan ko'ruvchi) ko'zoynagi
+        { value: 5, bucket: "B" },   // peep-hole eshik teshigi
+        { value: 6, bucket: "A" },   // proyektor
+      ],
+      reveal:
+        "Yig'uvchi linza nurni bir nuqtaga to'playdi — lupa, kamera, teleskop, proyektor, ko'z gavhari shu turdan. Tarqatuvchi linza nurni yoyadi — miyopiya ko'zoynagi va eshik teshigi shu turga kiradi.",
+    },
+    {
+      type: "ask",
+      heading: "Yana savolingiz bormi?",
+      topic: "linzalar, fokus va tasvir hosil bo'lishi",
+    },
+    {
+      type: "done",
+      title: "Bir yulduz yondi",
+      body:
+        "Lupaning ichida hech qanday sehr yo'q — faqat geometriya. Yorug'lik shisha ichida ma'lum burchakda sinadi, va uchta nur har doim bir nuqtada uchrashadi. Galiley shu bilan koinotni ko'rdi. Siz ham endi ko'ra olasiz.",
+    },
+  ],
+};
+
+// ---- Bob V · Oddiy elektr zanjiri ------------------------------------------
+export const zanjirLesson: Lesson = {
+  id: "zanjir",
+  subject: "physics",
+  subjectLabel: "FIZIKA",
+  title: "Oddiy elektr zanjiri",
+  cards: [
+    {
+      type: "intro",
+      title: "Lampochka qanday yonadi?",
+      hook:
+        "Tugmani bosasiz — xona yorishadi. Bu jarayonda nima sodir bo'ladi? Simlarning ichida hech qanday harakat ko'rinmaydi, lekin bir narsa albatta yuradi. Bugun ko'rinmas oqimni ko'ramiz.",
+      estMinutes: 8,
+      cardCount: 9,
+    },
+    {
+      type: "predict",
+      heading: "Avval taxmin qiling",
+      prompt:
+        "Batareya kuchlanishini ikki marta oshirsangiz, lampochka yorqinligi qanday o'zgaradi?",
+      mode: "choice",
+      options: [
+        "Aynan ikki marta yorqinroq bo'ladi",
+        "To'rt marta yorqinroq bo'ladi (chunki P = I² · R)",
+        "Ikki marta sokinroq bo'ladi",
+        "O'zgarmaydi",
+      ],
+      correctIndex: 1,
+      reveal:
+        "Ehtimol siz \"ikki marta\" deb taxmin qildingiz — lekin to'g'rirog'i to'rt marta! Sababi: kuchlanish ikki marta oshganda, tok ham ikki marta oshadi (I = V/R), va quvvat P = I² · R — kvadratga ko'tariladi. Endi sinab ko'ring.",
+    },
+    {
+      type: "simulation",
+      heading: "Zanjirni yoping, elektronlarni kuzating",
+      sim: "zanjir",
+      instruction:
+        "\"Kalitni yopish\" tugmasini bosing — oltin elektronlar yo'lga tushadi, lampochka yonadi. Keyin batareya kuchlanishini va qarshilikni siljiting. Lampochka qanday o'zgaradi?",
+      reveal:
+        "Elektronlar — kichik zaryadli zarralar. Batareya ularni harakatga keltiradi, simlardan o'tib, lampochka ichida energiyani yorug'lik va issiqlikka aylantiradi. Qarshilik (rezistor) ularning yo'lini qiyinlashtiradi, tok kamayadi. Ohm qonuni: I = V/R.",
+    },
+    {
+      type: "story",
+      heading: "Edison va birinchi lampochka",
+      body:
+        "1879-yil, Menlo Park, Amerika. Tomas Edison va uning jamoasi 6000 dan ortiq materialni sinab ko'rdi — temir, platina, hatto cho'tka mo'ylovi — birinchi uzoq yonadigan lampochka uchun filamentni topish maqsadida.\n\nOktyabr 22-da kuyish jarayonida 13,5 soat yonib turgan karbonlangan bambukni topdilar. Birinchi marta inson xonasini elektr bilan yoritdi.\n\nLekin Edison ham bir narsani unutmadi: elektr toki bo'lmasa, lampochka ham bo'lmasdi. U haqiqatan elektrning Aleksandr Volta (1800), Maykl Faradey (1831) va boshqa olimlar ish bilan boshlangan ilmiy sarguzashtning yakuni edi.",
+    },
+    {
+      type: "explainer",
+      heading: "Ohm qonuni va quvvat",
+      body:
+        "Elektr zanjirida uchta asosiy kattalik bor:\n\n• KUCHLANISH V (volt, V) — batareyaning \"zo'ri\". Elektronlarni qancha kuchli itaradi.\n• TOK KUCHI I (amper, A) — bir soniyada nechta elektron sim kesimidan o'tadi.\n• QARSHILIK R (Ohm, Ω) — simning elektronga \"qarshiligi\".\n\nOhm qonuni: I = V / R\n\nQuvvat (yorug'lik + issiqlik) chiqishi: P = V · I = I² · R = V² / R\n\nQuvvat kuchlanishning KVADRATIga proportsional. Shuning uchun 1,5 V batareya bilan 220 V tarmoq orasidagi farq ulkan: 22 000 marta ko'p quvvat.",
+    },
+    {
+      type: "mcq",
+      question:
+        "Lampochka V = 6 V, I = 1,5 A da yonayapti. Uning qarshiligi qanchaga teng?",
+      options: [
+        "0,25 Ω",
+        "4 Ω",
+        "7,5 Ω",
+        "9 Ω",
+      ],
+      correctIndex: 1,
+      explain:
+        "Ohm qonunidan: R = V / I = 6 / 1,5 = 4 Ω. Ya'ni har 4 Ohm qarshilikka 1 V kuchlanish 0,25 A tokni hosil qiladi.",
+      hint:
+        "I = V/R. R ni topish uchun formulani aylantiring: R = V/I.",
+    },
+    {
+      type: "sort",
+      prompt:
+        "Quyidagi narsalar — o'tkazgichmi yoki dielektrik (qarshilik)?",
+      bucketA: "Yaxshi o'tkazgich (kichik R)",
+      bucketB: "Dielektrik (juda katta R)",
+      items: [
+        { value: 1, bucket: "A" },  // mis sim
+        { value: 2, bucket: "A" },  // alyuminiy sim
+        { value: 3, bucket: "B" },  // rezina
+        { value: 4, bucket: "B" },  // shisha
+        { value: 5, bucket: "A" },  // sho'r suv
+        { value: 6, bucket: "B" },  // quruq yog'och
+      ],
+      reveal:
+        "O'tkazgichlar (metallar, sho'r suv) — elektronlar erkin harakatlanadi. Dielektriklar (rezina, shisha, quruq yog'och) — elektronlar \"qamoqda\". Shuning uchun simni rezina bilan o'rab qo'yiladi: ichi o'tkazadi, sirti elektrni zinhor o'tkazmaydi.",
+    },
+    {
+      type: "ask",
+      heading: "Yana savolingiz bormi?",
+      topic: "elektr toki, Ohm qonuni va oddiy zanjir",
+    },
+    {
+      type: "done",
+      title: "Bir yulduz yondi",
+      body:
+        "Endi xona yorug'ligi ortida nima borligini ko'rdingiz: million elektron har soniyada simdan o'tib, filamentni qizdiradi. Ohm qonuni — V = I · R — bu nafaqat darslik formulasi, balki xonangizdagi har bir lampochka ortida turibdi.",
+    },
+  ],
+};
+
 /**
  * EKUB va EKUK — the natural sequel to boluvchi. Lights up the second math
  * star after the student finishes the first. Same teaching shape: discover
@@ -893,4 +1414,9 @@ export const LESSONS_BY_ID: Record<string, Lesson> = {
   arximed: arximedLesson,
   tutilish: tutilishLesson,
   kamalak: kamalakLesson,
+  richag: richagLesson,
+  paskal: paskalLesson,
+  tovush: tovushLesson,
+  linza: linzaLesson,
+  zanjir: zanjirLesson,
 };

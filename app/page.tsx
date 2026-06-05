@@ -56,7 +56,7 @@ export default function Home() {
       {/* Brand stamp — small, mono, top-left. Replaces a logo: defines that this is a real product, not a one-page mock. */}
       <div className="relative z-10 flex items-center justify-between pt-7 text-[11px] uppercase tracking-[0.18em] text-void-300">
         <span className="font-mono">Scorpius · 2026</span>
-        <span className="font-mono hidden sm:inline">Andijan</span>
+        <span className="font-mono hidden sm:inline">Toshkent</span>
       </div>
 
       {/* HERO — editorial column, single centered axis.
@@ -135,7 +135,7 @@ export default function Home() {
             ko&apos;rsatadi. Biz bilim mavzularini xuddi shunday bog&apos;laymiz.
           </p>
           <p className="mt-3 font-mono text-[10.5px] uppercase tracking-[0.16em] text-void-300">
-            — Andijan · Build with AI · NUU · 2026
+            — Toshkent · GDG Build with AI · NUU · 2026
           </p>
         </div>
       </footer>

@@ -27,13 +27,25 @@ import { SIM_CATALOG_BY_KEY } from "@/lib/sims/catalog";
 const VOICE_ID_BY_PERSONA: Record<PersonaId, string | undefined> = {
   scorpius: undefined,
   xorazmiy: process.env.NEXT_PUBLIC_ELEVENLABS_XORAZMIY_VOICE_ID,
+  beruniy: undefined,
+  "ibn-sino": undefined,
+  ulugbek: undefined,
   newton: process.env.NEXT_PUBLIC_ELEVENLABS_NEWTON_VOICE_ID,
   einstein: process.env.NEXT_PUBLIC_ELEVENLABS_EINSTEIN_VOICE_ID,
   elon: undefined,
 };
 
 const PERSONA_KEY = "scorpius:lab-persona";
-const PERSONA_ORDER: PersonaId[] = ["scorpius", "xorazmiy", "newton", "einstein", "elon"];
+const PERSONA_ORDER: PersonaId[] = [
+  "scorpius",
+  "xorazmiy",
+  "beruniy",
+  "ibn-sino",
+  "ulugbek",
+  "newton",
+  "einstein",
+  "elon",
+];
 
 interface Turn {
   role: "user" | "persona";

@@ -1,0 +1,854 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8" />
+<title>Scorpius — Milliy AI Xakaton · Andijon · 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700;800&family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     Scorpius pitch deck — Milliy AI Xakaton · Andijon · 2026
+     Editorial light theme · mirrors app/globals.css + Tashkent deck
+     ============================================================ */
+  :root {
+    --bg:         #f4f1e8;
+    --paper:      #ffffff;
+    --inset:      #ede9dc;
+    --border:     #e2dcc7;
+    --border-st:  #cbc4ab;
+    --faint:      #b9b29c;
+    --ink:        #1a1813;
+    --ink-2:      #55513f;
+    --ink-3:      #847e6b;
+
+    --gold:       #e8a21a;
+    --gold-deep:  #c98910;
+    --gold-700:   #a9760a;
+    --gold-50:    #fdf3dc;
+
+    --signal-ok:  #2fa86a;
+    --blue:       #3b7bd1;
+
+    --f-sans:    'Inter', system-ui, sans-serif;
+    --f-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
+    --f-serif:   'Newsreader', Georgia, serif;
+    --f-mono:    'JetBrains Mono', ui-monospace, monospace;
+
+    --r-md: 14px; --r-lg: 22px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg); color: var(--ink); font-family: var(--f-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============================================================
+     Slide chrome — 1280×720, single grid system
+     ============================================================ */
+  .slide {
+    width: 1280px; height: 720px;
+    background: var(--bg);
+    page-break-after: always;
+    break-after: page;
+    position: relative;
+    overflow: hidden;
+  }
+  .slide:last-child { page-break-after: auto; }
+
+  /* Editorial frame */
+  .slide .frame {
+    position: absolute; inset: 24px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-lg);
+    pointer-events: none;
+  }
+
+  /* Content stage — sits inside frame, generous margins, fixed grid */
+  .stage {
+    position: absolute;
+    inset: 24px;
+    padding: 96px 96px 88px;
+    display: flex; flex-direction: column;
+  }
+
+  /* Top-left chrome — same on every slide */
+  .chip-tl {
+    position: absolute; top: 24px; left: 24px;
+    background: var(--bg);
+    padding: 14px 22px 14px 18px;
+    border: 1.5px solid var(--border);
+    border-top: 0; border-left: 0;
+    border-radius: 0 0 20px 0;
+    display: flex; align-items: center; gap: 10px;
+    z-index: 2;
+  }
+  .chip-tl .dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--gold); box-shadow: 0 0 10px 1px rgba(232,162,26,0.55);
+  }
+  .chip-tl .name {
+    font-family: var(--f-display); font-weight: 700;
+    font-size: 14px; letter-spacing: -0.01em; color: var(--ink);
+  }
+  .chip-tl .sub {
+    font-family: var(--f-mono); font-weight: 600;
+    font-size: 10px; letter-spacing: 0.1em; color: var(--ink-3);
+    text-transform: uppercase;
+    margin-left: 6px; padding-left: 10px;
+    border-left: 1px solid var(--border-st);
+  }
+
+  /* Top-right chrome — hackathon badge */
+  .chip-tr {
+    position: absolute; top: 24px; right: 24px;
+    background: var(--bg);
+    padding: 14px 18px 14px 22px;
+    border: 1.5px solid var(--border);
+    border-top: 0; border-right: 0;
+    border-radius: 0 0 0 20px;
+    display: flex; flex-direction: column; align-items: flex-end;
+    z-index: 2;
+  }
+  .chip-tr .h {
+    font-family: var(--f-display); font-weight: 700;
+    font-size: 13px; letter-spacing: -0.005em; color: var(--ink);
+  }
+  .chip-tr .c {
+    font-family: var(--f-mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.12em; color: var(--gold-deep); text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  /* Bottom chrome — page number left, slug right */
+  .pageno {
+    position: absolute; bottom: 28px; left: 64px;
+    font-family: var(--f-mono); font-size: 11px; font-weight: 700;
+    color: var(--ink-3); letter-spacing: 0.14em; text-transform: uppercase;
+    z-index: 2;
+  }
+  .slug {
+    position: absolute; bottom: 28px; right: 64px;
+    font-family: var(--f-mono); font-size: 11px; font-weight: 600;
+    color: var(--faint); letter-spacing: 0.1em;
+    z-index: 2;
+  }
+
+  /* ============================================================
+     Typography — editorial serif headlines + clean sans body
+     ============================================================ */
+  .leadword {
+    font-family: var(--f-mono); font-weight: 700;
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--gold-deep);
+    display: inline-block;
+  }
+  h1.cover {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 132px; line-height: 0.96; letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  h1.cover em {
+    font-style: italic; font-weight: 500; color: var(--gold-deep);
+  }
+  h1.cover .ast {
+    color: var(--gold); font-style: italic; font-weight: 500;
+    font-size: 0.55em; vertical-align: super; line-height: 1;
+    margin-left: -2px;
+  }
+  h2.head {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 58px; line-height: 1.04; letter-spacing: -0.02em;
+    color: var(--ink);
+    max-width: 22ch;
+  }
+  h2.head em { font-style: italic; font-weight: 500; color: var(--gold-deep); }
+  h3.sub {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 30px; line-height: 1.15; letter-spacing: -0.018em;
+    color: var(--ink);
+  }
+  h3.sub em { font-style: italic; color: var(--gold-deep); }
+  p.subline {
+    font-family: var(--f-serif); font-style: italic; font-weight: 400;
+    font-size: 28px; line-height: 1.32; color: var(--ink);
+    max-width: 32ch;
+  }
+  p.subline em { color: var(--gold-deep); }
+  p.body {
+    font-family: var(--f-serif); font-size: 18px; line-height: 1.55;
+    color: var(--ink-2);
+  }
+  p.body strong { color: var(--ink); font-weight: 600; }
+  p.body em { color: var(--gold-deep); font-style: italic; }
+
+  /* ============================================================
+     SLIDE 1 — COVER
+     ============================================================ */
+  .cover-stage {
+    justify-content: center;
+  }
+  .cover-stage h1.cover { max-width: 14ch; }
+  .cover-fn {
+    margin-top: 56px;
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    padding: 22px 28px;
+    font-family: var(--f-serif); font-size: 16px; line-height: 1.55;
+    color: var(--ink-2);
+    max-width: 720px;
+  }
+  .cover-fn strong { color: var(--ink); font-weight: 600; }
+  .cover-fn .ast { color: var(--gold); font-style: italic; font-weight: 600; margin-right: 6px; }
+
+  /* ============================================================
+     SLIDE 2 — WHO / WHAT
+     ============================================================ */
+  .who-stage h2.head { margin-top: 14px; font-size: 50px; }
+  .who-grid {
+    margin-top: 28px;
+    display: grid; grid-template-columns: 1.15fr 0.95fr;
+    gap: 44px; flex: 1; align-items: stretch;
+  }
+  .who-grid .col-l { display: flex; flex-direction: column; }
+  .who-grid .col-l p.body { margin-top: 14px; font-size: 16px; }
+  .who-grid .col-l .pull {
+    border-left: 3px solid var(--gold);
+    padding: 6px 0 6px 20px;
+    margin-top: 22px;
+    font-family: var(--f-serif); font-style: italic; font-weight: 500;
+    font-size: 19px; line-height: 1.4; color: var(--ink);
+  }
+  .who-grid .col-l .pull .src { display: block; margin-top: 8px;
+    font-family: var(--f-mono); font-style: normal; font-weight: 600;
+    font-size: 10px; color: var(--ink-3); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .feat-stack { display: flex; flex-direction: column; gap: 12px; }
+  .feat {
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 16px 20px;
+  }
+  .feat .ftag {
+    font-family: var(--f-mono); font-weight: 700; font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--gold-deep);
+  }
+  .feat .ftitle {
+    font-family: var(--f-display); font-weight: 700; font-size: 18px;
+    letter-spacing: -0.015em; color: var(--ink); margin-top: 4px;
+  }
+  .feat .fbody {
+    font-family: var(--f-serif); font-size: 13.5px; line-height: 1.5;
+    color: var(--ink-2); margin-top: 5px;
+  }
+
+  /* ============================================================
+     SLIDE 3 — PROBLEMS (3 cards)
+     ============================================================ */
+  .prob-grid {
+    margin-top: 36px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    flex: 1;
+  }
+  .prob-card {
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    padding: 24px 24px 22px;
+    display: flex; flex-direction: column;
+  }
+  .prob-card .ptag {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .prob-card .ptag .pdot {
+    width: 9px; height: 9px; border-radius: 50%; background: var(--blue);
+  }
+  .prob-card .ptag .pn {
+    font-family: var(--f-mono); font-weight: 700; font-size: 10.5px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .prob-card h3 {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 26px; line-height: 1.15; letter-spacing: -0.015em;
+    color: var(--ink); margin-top: 22px;
+  }
+  .prob-card h3 em { color: var(--gold-deep); font-style: italic; }
+  .prob-card .pbody {
+    margin-top: 12px;
+    font-family: var(--f-serif); font-size: 14.5px; line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .prob-card .pbar {
+    margin-top: auto; width: 34px; height: 3px;
+    background: var(--blue); border-radius: 2px;
+  }
+
+  /* ============================================================
+     SLIDE 4 — MARKET (mega stats centered)
+     ============================================================ */
+  .market-stage { align-items: center; text-align: center; }
+  .market-stage h2.head { margin-top: 14px; max-width: 28ch; }
+  .mega-grid {
+    margin-top: 48px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 36px;
+    align-items: flex-end; width: 100%;
+  }
+  .mega {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 92px; line-height: 0.92; letter-spacing: -0.035em;
+    color: var(--ink);
+  }
+  .mega em, .mega .acc { color: var(--gold); font-style: italic; }
+  .mega-cap {
+    font-family: var(--f-mono); font-weight: 700;
+    font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--gold-deep);
+    margin-top: 14px; line-height: 1.4;
+  }
+  .mega-cap strong { color: var(--ink); }
+  .quote-line {
+    margin-top: 48px;
+    font-family: var(--f-serif); font-style: italic; font-weight: 400;
+    font-size: 19px; color: var(--ink-2); line-height: 1.4;
+    max-width: 80ch;
+  }
+  .quote-line .src {
+    display: block; margin-top: 8px;
+    font-family: var(--f-mono); font-style: normal; font-weight: 600;
+    font-size: 10px; letter-spacing: 0.14em; color: var(--ink-3); text-transform: uppercase;
+  }
+
+  /* ============================================================
+     SLIDE 5 — SOLUTION + COMPETITORS (table)
+     ============================================================ */
+  .sol-stage h2.head { margin-top: 14px; }
+  .compare-wrap { margin-top: 28px; flex: 1; display: flex; flex-direction: column; }
+  table.compare {
+    width: 100%; border-collapse: collapse;
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-lg); overflow: hidden;
+    font-family: var(--f-sans);
+  }
+  table.compare th, table.compare td {
+    padding: 11px 16px; text-align: center;
+    font-size: 14.5px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  table.compare th {
+    background: var(--inset);
+    font-family: var(--f-display); font-weight: 700;
+    font-size: 12px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink);
+  }
+  table.compare th:first-child, table.compare td:first-child {
+    text-align: left; font-weight: 600; color: var(--ink);
+  }
+  table.compare .us { background: rgba(232,162,26,0.10); color: var(--gold-deep); font-weight: 700; }
+  table.compare .yes { color: var(--signal-ok); font-weight: 700; }
+  table.compare .no  { color: var(--faint); font-weight: 700; }
+  table.compare .part { color: var(--ink-3); font-style: italic; font-size: 13px; }
+  table.compare tr:last-child td { border-bottom: 0; }
+  table.compare tr.price td { font-size: 12.5px; }
+  .moat-note {
+    margin-top: 18px;
+    font-family: var(--f-serif); font-style: italic;
+    font-size: 17px; color: var(--ink-2); line-height: 1.45;
+    border-left: 3px solid var(--gold); padding-left: 16px;
+  }
+
+  /* ============================================================
+     SLIDE 6 — MONETIZATION
+     ============================================================ */
+  .mon-stage h2.head { margin-top: 14px; }
+  .mon-grid {
+    margin-top: 36px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  .mon-card {
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 26px 24px;
+    display: flex; flex-direction: column;
+    min-height: 240px;
+  }
+  .mon-card .qn {
+    font-family: var(--f-mono); font-size: 10.5px;
+    color: var(--gold-deep); letter-spacing: 0.14em; text-transform: uppercase;
+    font-weight: 700;
+  }
+  .mon-card .qh {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 26px; letter-spacing: -0.018em; line-height: 1.15;
+    color: var(--ink); margin-top: 14px;
+  }
+  .mon-card .qh em { color: var(--gold-deep); font-style: italic; }
+  .mon-card .qb {
+    font-family: var(--f-serif); font-size: 14.5px; line-height: 1.55;
+    color: var(--ink-2); margin-top: 12px;
+  }
+  .mon-card .qb strong { color: var(--ink); font-weight: 600; }
+  .mon-card .qb em { color: var(--gold-deep); font-style: italic; }
+
+  .unit-econ {
+    margin-top: 22px;
+    background: var(--inset);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 16px 22px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+  }
+  .unit-econ .ue { text-align: center; }
+  .unit-econ .ue .v {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 28px; letter-spacing: -0.018em; color: var(--ink);
+  }
+  .unit-econ .ue .v em { color: var(--gold-deep); font-style: italic; }
+  .unit-econ .ue .k {
+    font-family: var(--f-mono); font-size: 10px; font-weight: 700;
+    color: var(--ink-3); letter-spacing: 0.14em; text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  /* ============================================================
+     SLIDE 7 — MILESTONES (timeline)
+     ============================================================ */
+  .tl-stage h2.head { margin-top: 14px; }
+  .timeline { margin-top: 56px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .tl-row {
+    position: relative;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px;
+    padding-top: 38px;
+  }
+  .tl-row::before {
+    content: ""; position: absolute; top: 14px;
+    left: 7%; right: 7%; height: 2px;
+    background: linear-gradient(to right, var(--gold) 0%, var(--gold) 25%, var(--border-st) 25%, var(--border-st) 100%);
+  }
+  .tl-stop {
+    position: relative;
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 24px 22px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .tl-stop::before {
+    content: ""; position: absolute;
+    top: -42px; left: 50%; transform: translateX(-50%);
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--bg);
+    border: 3px solid var(--border-st);
+  }
+  .tl-stop.now::before { border-color: var(--gold); background: var(--gold); box-shadow: 0 0 14px 2px rgba(232,162,26,0.55); }
+  .tl-stop .when {
+    font-family: var(--f-mono); font-weight: 700; font-size: 10.5px;
+    color: var(--ink-3); letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .tl-stop.now .when { color: var(--gold-deep); }
+  .tl-stop .what {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 22px; letter-spacing: -0.018em; color: var(--ink);
+    line-height: 1.15;
+  }
+  .tl-stop .what em { color: var(--gold-deep); font-style: italic; }
+  .tl-stop .nums {
+    font-family: var(--f-mono); font-size: 12px; font-weight: 500;
+    color: var(--ink-2); line-height: 1.7;
+    margin-top: 4px;
+  }
+  .tl-stop .nums b { color: var(--gold-deep); font-weight: 700; }
+
+  /* ============================================================
+     SLIDE 8 — TEAM
+     ============================================================ */
+  .team-stage h2.head { margin-top: 14px; }
+  .team-grid {
+    margin-top: 44px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+  }
+  .team-card {
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 26px 22px 24px;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+  }
+  .team-card .avatar {
+    width: 86px; height: 86px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fde9b0 0%, var(--gold) 60%, var(--gold-700) 100%);
+    display: grid; place-items: center;
+    font-family: var(--f-serif); font-style: italic; font-weight: 500;
+    font-size: 38px; color: var(--ink);
+    border: 1.5px solid var(--gold-deep);
+    box-shadow: 0 0 0 6px var(--bg), 0 0 0 7.5px var(--border-st);
+    margin-bottom: 22px;
+  }
+  .team-card .name {
+    font-family: var(--f-serif); font-weight: 500;
+    font-size: 22px; letter-spacing: -0.018em;
+    color: var(--ink); line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .team-card .role {
+    font-family: var(--f-mono); font-size: 10px; font-weight: 700;
+    color: var(--gold-deep); letter-spacing: 0.14em; text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .team-card .bio {
+    font-family: var(--f-serif); font-size: 13.5px; line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .team-foot {
+    margin-top: 32px;
+    font-family: var(--f-serif); font-style: italic; font-weight: 400;
+    font-size: 17px; color: var(--ink-2); line-height: 1.4;
+  }
+  .team-foot strong { color: var(--ink); font-style: normal; font-weight: 600; }
+
+  /* ============================================================
+     Print rules — one slide per page, exact size
+     ============================================================ */
+  @page { size: 1280px 720px; margin: 0; }
+  @media print { body { background: var(--bg); } }
+</style>
+</head>
+<body>
+
+<!-- ============ SLIDE 1 — COVER ============ -->
+<section class="slide">
+  <div class="frame"></div>
+  <div class="chip-tl"><span class="dot"></span><span class="name">Scorpius</span><span class="sub">scorpius.uz</span></div>
+  <div class="chip-tr"><span class="h">Milliy AI Xakaton</span><span class="c">Andijon · 2026</span></div>
+
+  <div class="stage cover-stage">
+    <span class="leadword">01 · Muqova</span>
+    <h1 class="cover" style="margin-top: 24px;">
+      Scorpius<span class="ast">*</span>
+    </h1>
+    <p class="subline" style="margin-top: 26px;">
+      <em>emaktab.uz</em> baholarini shaxsiy darslarga aylantiruvchi AI o&rsquo;qituvchi.
+    </p>
+
+    <div class="cover-fn">
+      <span class="ast">*</span><strong>Scorpius</strong> &mdash; bir guruh yulduz. Alohida yulduzlar faqat bog&rsquo;langanda yo&rsquo;lboshchiga aylanadi. Biz bilimni xuddi shunday bog&rsquo;laymiz: har mavzu &mdash; bir yulduz, har kamchilik &mdash; bir dars.
+    </div>
+  </div>
+
+  <div class="pageno">01 / 08</div>
+  <div class="slug">scorpius.uz</div>
+</section>
+
+<!-- ============ SLIDE 2 — WHO / WHAT ============ -->
+<section class="slide">
+  <div class="frame"></div>
+  <div class="chip-tl"><span class="dot"></span><span class="name">Scorpius</span><span class="sub">02 · Kim</span></div>
+  <div class="chip-tr"><span class="h">Milliy AI Xakaton</span><span class="c">Andijon · 2026</span></div>
+
+  <div class="stage who-stage">
+    <span class="leadword">02 · Biz kimmiz</span>
+    <h2 class="head">Brilliant darajasidagi shaxsiy o&rsquo;qituvchi &mdash; <em>o&rsquo;z tilingda, o&rsquo;z dasturda.</em></h2>
+
+    <div class="who-grid">
+      <div class="col-l">
+        <p class="body">
+          Scorpius &mdash; 6-sinf matematika va fizikani <strong>interaktiv simulyatsiyalar</strong> va <strong>shaxsiy AI yo&rsquo;ldosh</strong> orqali o&rsquo;qitadigan o&rsquo;quv platformasi. Brakhistoxron egri chizig&rsquo;i, Arximed qonuni, Broun harakati &mdash; Nyuton va Beruniy uslubida, telefonda, o&rsquo;zbek tilida.
+        </p>
+        <p class="body">
+          Live: <em>scorpius.uz/learn</em> &mdash; 60+ mavzu, 4 ta to&rsquo;liq simulyatsiyali dars hozir ishlamoqda.
+        </p>
+
+        <div class="pull">
+          &ldquo;emaktab menga bahoni ko&rsquo;rsatadi. Scorpius esa nima qilish kerakligini ko&rsquo;rsatadi.&rdquo;
+          <span class="src">Toshkent · cust-dev · n=70</span>
+        </div>
+      </div>
+
+      <div class="feat-stack">
+        <div class="feat">
+          <div class="ftag">Mahsulot 01</div>
+          <div class="ftitle">Yulduzli o&rsquo;quv osmoni</div>
+          <div class="fbody">Har mavzu &mdash; bir yulduz. Dars tugaganda u yonadi. Keyingisi oltin tusda tebranadi. Brilliant uslubi, lekin o&rsquo;zbekcha.</div>
+        </div>
+        <div class="feat">
+          <div class="ftag">Mahsulot 02</div>
+          <div class="ftitle">Humo &mdash; shaxsiy AI yo&rsquo;ldosh</div>
+          <div class="fbody">Nyuton, Aynshteyn yoki Al-Xorazmiy uslubidagi suhbat. emaktab manzilingizdagi mavzuga moslab javob beradi.</div>
+        </div>
+        <div class="feat">
+          <div class="ftag">Mahsulot 03</div>
+          <div class="ftitle">emaktab integratsiyasi</div>
+          <div class="fbody">Foydalanuvchi o&rsquo;z hisobi bilan ulanadi. Baho va vazifa o&rsquo;qiladi, kamchilik mavzulariga dars chiqariladi.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pageno">02 / 08</div>
+  <div class="slug">scorpius.uz</div>
+</section>
+
+<!-- ============ SLIDE 3 — PROBLEMS ============ -->
+<section class="slide">
+  <div class="frame"></div>
+  <div class="chip-tl"><span class="dot"></span><span class="name">Scorpius</span><span class="sub">03 · Muammo</span></div>
+  <div class="chip-tr"><span class="h">Milliy AI Xakaton</span><span class="c">Andijon · 2026</span></div>
+
+  <div class="stage">
+    <span class="leadword">03 · Nega bizga ehtiyoj bor</span>
+    <h2 class="head" style="margin-top: 14px;">O&rsquo;zbek edtech&rsquo;ning <em>bugungi muammosi.</em></h2>
+
+    <div class="prob-grid">
+      <div class="prob-card">
+        <div class="ptag"><span class="pdot"></span><span class="pn">Muammo 01</span></div>
+        <h3>Ota-ona <em>nima bo&rsquo;layotganini bilmaydi.</em></h3>
+        <div class="pbody">emaktab faqat bahoni ko&rsquo;rsatadi &mdash; kamchilikni, keyingi qadamni, bugun kechqurun nima qilishni emas.</div>
+        <span class="pbar"></span>
+      </div>
+      <div class="prob-card">
+        <div class="ptag"><span class="pdot"></span><span class="pn">Muammo 02</span></div>
+        <h3>O&rsquo;quvchi allaqachon <em>ChatGPT&rsquo;dan</em> so&rsquo;rayapti.</h3>
+        <div class="pbody">Bugun so&rsquo;ralgan 70 o&rsquo;quvchining 50%&rsquo;i ChatGPT bilan ishlaydi &mdash; lekin javoblar o&rsquo;zbek darsligiga mos kelmaydi.</div>
+        <span class="pbar"></span>
+      </div>
+      <div class="prob-card">
+        <div class="ptag"><span class="pdot"></span><span class="pn">Muammo 03</span></div>
+        <h3>O&rsquo;qituvchi <em>shaxsiylashtira olmaydi.</em></h3>
+        <div class="pbody">Bir sinfda 30+ o&rsquo;quvchi. Bitta dastur. Aks aloqa yo&rsquo;q. Tizim kim qaerda qoldi, ko&rsquo;rmaydi.</div>
+        <span class="pbar"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pageno">03 / 08</div>
+  <div class="slug">scorpius.uz</div>
+</section>
+
+<!-- ============ SLIDE 4 — MARKET ============ -->
+<section class="slide">
+  <div class="frame"></div>
+  <div class="chip-tl"><span class="dot"></span><span class="name">Scorpius</span><span class="sub">04 · Bozor</span></div>
+  <div class="chip-tr"><span class="h">Milliy AI Xakaton</span><span class="c">Andijon · 2026</span></div>
+
+  <div class="stage market-stage">
+    <span class="leadword">04 · Bozor hajmi</span>
+    <h2 class="head">Markaziy Osiyo&rsquo;dagi eng katta <em>maktab auditoriyasi.</em></h2>
+
+    <div class="mega-grid">
+      <div>
+        <div class="mega">6.87<em>M</em></div>
+        <div class="mega-cap">Umumiy ta&rsquo;lim <strong>o&rsquo;quvchisi</strong></div>
+      </div>
+      <div>
+        <div class="mega">+1.4<em>%</em></div>
+        <div class="mega-cap">YoY &middot; <strong>demografik o&rsquo;sish</strong></div>
+      </div>
+      <div>
+        <div class="mega">#3</div>
+        <div class="mega-cap">O&rsquo;zbekiston&rsquo;da <strong>eng ko&rsquo;p tashrif</strong></div>
+      </div>
+      <div>
+        <div class="mega">11<em>K</em></div>
+        <div class="mega-cap">emaktab&rsquo;ga ulangan <strong>maktab</strong></div>
+      </div>
+    </div>
+
+    <p class="quote-line">
+      &ldquo;emaktab &mdash; O&rsquo;zbekistondagi eng ko&rsquo;p tashrif buyuriladigan uchinchi sayt, Google va YouTube&rsquo;dan keyin.&rdquo;
+      <span class="src">Kundalik.com &middot; Xalq Ta&rsquo;limi Vazirligi</span>
+    </p>
+  </div>
+
+  <div class="pageno">04 / 08</div>
+  <div class="slug">scorpius.uz</div>
+</section>
+
+<!-- ============ SLIDE 5 — SOLUTION + COMPETITORS ============ -->
+<section class="slide">
+  <div class="frame"></div>
+  <div class="chip-tl"><span class="dot"></span><span class="name">Scorpius</span><span class="sub">05 · Yechim</span></div>
+  <div class="chip-tr"><span class="h">Milliy AI Xakaton</span><span class="c">Andijon · 2026</span></div>
+
+  <div class="stage sol-stage">
+    <span class="leadword">05 · Yechim va raqobat</span>
+    <h2 class="head">Faqat biz <em>uchovini</em> bir yerda beramiz.</h2>
+
+    <div class="compare-wrap">
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>Xususiyat</th>
+            <th class="us">Scorpius</th>
+            <th>Brilliant.org</th>
+            <th>Khan Academy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>O&rsquo;zbek tilida o&rsquo;qitish</td><td class="us yes">&#10003;</td><td class="no">&#10007;</td><td class="part">qisman</td></tr>
+          <tr><td>O&rsquo;zbek maktab dasturiga moslangan</td><td class="us yes">&#10003;</td><td class="no">&#10007;</td><td class="no">&#10007;</td></tr>
+          <tr><td>Interaktiv fizika simulyatsiyalari</td><td class="us yes">&#10003;</td><td class="yes">&#10003;</td><td class="part">qisman</td></tr>
+          <tr><td>Shaxsiy AI o&rsquo;qituvchi</td><td class="us"><strong>Humo</strong> &middot; UZ</td><td class="part">Koji &middot; EN</td><td class="part">Khanmigo &middot; EN</td></tr>
+          <tr><td>Jonli baho va vazifa integratsiyasi</td><td class="us yes">&#10003;</td><td class="no">&#10007;</td><td class="no">&#10007;</td></tr>
+          <tr><td>Ota-ona dashboard</td><td class="us yes">&#10003;</td><td class="no">&#10007;</td><td class="part">qisman</td></tr>
+          <tr class="price"><td>Oylik narx</td><td class="us">50&ndash;100K so&rsquo;m</td><td>~$25 (320K so&rsquo;m)</td><td>bepul</td></tr>
+        </tbody>
+      </table>
+      <p class="moat-note">Brilliant&rsquo;da Koji bor, Khan&rsquo;da Khanmigo &mdash; lekin ikkalasi ham <em>inglizcha</em>. Humo &mdash; o&rsquo;zbek darsligini biladigan yagona AI o&rsquo;qituvchi.</p>
+    </div>
+  </div>
+
+  <div class="pageno">05 / 08</div>
+  <div class="slug">scorpius.uz</div>
+</section>
+
+<!-- ============ SLIDE 6 — MONETIZATION ============ -->
+<section class="slide">
+  <div class="frame"></div>
+  <div class="chip-tl"><span class="dot"></span><span class="name">Scorpius</span><span class="sub">06 · Monetizatsiya</span></div>
+  <div class="chip-tr"><span class="h">Milliy AI Xakaton</span><span class="c">Andijon · 2026</span></div>
+
+  <div class="stage mon-stage">
+    <span class="leadword">06 · Qanday pul ishlaymiz</span>
+    <h2 class="head">Ota-ona to&rsquo;laydi &mdash; chunki <em>natija</em> ko&rsquo;rinadi.</h2>
+
+    <div class="mon-grid">
+      <div class="mon-card">
+        <div class="qn">Kim to&rsquo;laydi</div>
+        <div class="qh">Ota-ona &middot; <em>B2C freemium</em></div>
+        <div class="qb">Farzandining yulduzlari yonganini ko&rsquo;rsatadigan ota-ona. 3 daqiqalik test bepul, keyin oylik obuna. 2-bosqich: maktablar uchun <strong>B2B litsenziya</strong>.</div>
+      </div>
+      <div class="mon-card">
+        <div class="qn">Qancha to&rsquo;laydi</div>
+        <div class="qh"><em>80,000 so&rsquo;m</em> / oy</div>
+        <div class="qb">Standart obuna &mdash; barcha fanlar + Humo AI. Brilliant&rsquo;dan <strong>4 marta arzon</strong>, shu sifatda. Yillik: 800K so&rsquo;m (2 oy sovg&rsquo;a).</div>
+      </div>
+      <div class="mon-card">
+        <div class="qn">Nima uchun</div>
+        <div class="qh">Yulduz yondi = <em>bola tushundi.</em></div>
+        <div class="qb">Repetitor &mdash; 200K so&rsquo;m / soat. Scorpius &mdash; shu narx evaziga <strong>cheksiz mavzu</strong>. Ota-ona dashboardi o&rsquo;sishni real-time ko&rsquo;rsatadi.</div>
+      </div>
+    </div>
+
+    <div class="unit-econ">
+      <div class="ue"><div class="v">80K <em>so&rsquo;m</em></div><div class="k">ARPU / oy</div></div>
+      <div class="ue"><div class="v">~10K <em>so&rsquo;m</em></div><div class="k">CAC organik</div></div>
+      <div class="ue"><div class="v">24 <em>oy</em></div><div class="k">LTV davri</div></div>
+      <div class="ue"><div class="v">1.9M <em>so&rsquo;m</em></div><div class="k">LTV / foydalanuvchi</div></div>
+    </div>
+  </div>
+
+  <div class="pageno">06 / 08</div>
+  <div class="slug">scorpius.uz</div>
+</section>
+
+<!-- ============ SLIDE 7 — MILESTONES ============ -->
+<section class="slide">
+  <div class="frame"></div>
+  <div class="chip-tl"><span class="dot"></span><span class="name">Scorpius</span><span class="sub">07 · Yo&rsquo;l xaritasi</span></div>
+  <div class="chip-tr"><span class="h">Milliy AI Xakaton</span><span class="c">Andijon · 2026</span></div>
+
+  <div class="stage tl-stage">
+    <span class="leadword">07 · Maqsadlar va KPI</span>
+    <h2 class="head">MVP&rsquo;dan Markaziy Osiyo&rsquo;gacha &mdash; <em>uch yil.</em></h2>
+
+    <div class="timeline">
+      <div class="tl-row">
+        <div class="tl-stop now">
+          <div class="when">Hozir &middot; 2026 Q2</div>
+          <div class="what">MVP <em>jonli</em></div>
+          <div class="nums">
+            <b>60+</b> mavzu &middot; <b>4</b> simulyatsiya<br/>
+            <b>n=70</b> cust-dev<br/>
+            live: <b>scorpius.uz</b>
+          </div>
+        </div>
+        <div class="tl-stop">
+          <div class="when">6 oy &middot; 2026 Q4</div>
+          <div class="what">5K aktiv foydalanuvchi</div>
+          <div class="nums">
+            <b>250M</b> so&rsquo;m ARR<br/>
+            <b>50</b> maktab piloti<br/>
+            6&ndash;9 sinf qamrov
+          </div>
+        </div>
+        <div class="tl-stop">
+          <div class="when">1 yil &middot; 2027</div>
+          <div class="what">50K oylik obuna</div>
+          <div class="nums">
+            <b>4B</b> so&rsquo;m ARR<br/>
+            6&ndash;11 sinf to&rsquo;liq<br/>
+            B2B <b>200</b> maktab
+          </div>
+        </div>
+        <div class="tl-stop">
+          <div class="when">3 yil &middot; 2029</div>
+          <div class="what">Markaziy Osiyo</div>
+          <div class="nums">
+            <b>500K</b> foydalanuvchi<br/>
+            4 til: UZ, RU, EN, KZ<br/>
+            regional kengayish
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pageno">07 / 08</div>
+  <div class="slug">scorpius.uz</div>
+</section>
+
+<!-- ============ SLIDE 8 — TEAM ============ -->
+<section class="slide">
+  <div class="frame"></div>
+  <div class="chip-tl"><span class="dot"></span><span class="name">Scorpius</span><span class="sub">08 · Jamoa</span></div>
+  <div class="chip-tr"><span class="h">Milliy AI Xakaton</span><span class="c">Andijon · 2026</span></div>
+
+  <div class="stage team-stage">
+    <span class="leadword">08 · Jamoa</span>
+    <h2 class="head">To&rsquo;rt nafar &mdash; bitta <em>maqsad.</em></h2>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="avatar">M</div>
+        <div class="name">Muxammadyusuf</div>
+        <div class="role">Dizayner</div>
+        <div class="bio">UI/UX &mdash; Scorpius&rsquo;ning butun vizual tili, simulyatsiya kompozitsiyasi va sayt arxitekturasi.</div>
+      </div>
+      <div class="team-card">
+        <div class="avatar">O</div>
+        <div class="name">Otabek</div>
+        <div class="role">Muhandis</div>
+        <div class="bio">Mahsulot muhandisi &mdash; Next.js 16, Firebase, AI integratsiyalari va interaktiv fizika modullari.</div>
+      </div>
+      <div class="team-card">
+        <div class="avatar">H</div>
+        <div class="name">Hojiakbar</div>
+        <div class="role">Biznes-muhandis</div>
+        <div class="bio">Biznes va operatsiyalar &mdash; monetizatsiya modeli, narx tahlili, ota-ona intervyulari (n=70).</div>
+      </div>
+      <div class="team-card">
+        <div class="avatar">M</div>
+        <div class="name">Muxammadali</div>
+        <div class="role">Loyiha menejeri</div>
+        <div class="bio">Strategiya va jamoa boshqaruvi &mdash; xakaton yo&rsquo;l xaritasi, deadline va emaktab hamkorligi.</div>
+      </div>
+    </div>
+
+    <p class="team-foot">
+      Andijon&rsquo;da <strong>Milliy AI Xakaton 2026</strong> uchun yaratilgan &mdash; live demo: <em>scorpius.uz</em>
+    </p>
+  </div>
+
+  <div class="pageno">08 / 08</div>
+  <div class="slug">scorpius.uz</div>
+</section>
+
+</body>
+</html>
