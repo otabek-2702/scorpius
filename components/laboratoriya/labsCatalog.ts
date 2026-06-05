@@ -23,14 +23,15 @@ import {
   Grid3x3,
   Leaf,
   Microscope,
+  Orbit,
   Sigma,
   Spline,
   Triangle,
   type LucideIcon,
 } from "lucide-react";
 
-/** The four teachable subjects, plus the "all" pseudo-tab. */
-export type SubjectId = "fizika" | "kimyo" | "biologiya" | "matematika";
+/** The teachable subjects, plus the "all" pseudo-tab. */
+export type SubjectId = "fizika" | "kimyo" | "biologiya" | "matematika" | "astronomiya";
 export type TabId = "all" | SubjectId;
 
 /** Per-card kind drives which card component renders the entry. */
@@ -52,6 +53,7 @@ export const SUBJECTS: SubjectMeta[] = [
   { id: "kimyo", label: "Kimyo", accent: "#a855f7", soft: "rgba(168,85,247,0.14)" },
   { id: "biologiya", label: "Biologiya", accent: "#34d399", soft: "rgba(52,211,153,0.14)" },
   { id: "matematika", label: "Matematika", accent: "#3b7bd1", soft: "rgba(59,123,209,0.14)" },
+  { id: "astronomiya", label: "Astronomiya", accent: "#6366f1", soft: "rgba(99,102,241,0.14)" },
 ];
 
 /** Quick lookup of a subject's accent pair by id. */
@@ -238,5 +240,29 @@ export const CATALOG: CatalogEntry[] = [
     accent: "#3b7bd1",
     soft: "rgba(59,123,209,0.12)",
     icon: Sigma,
+  },
+
+  // ---------------- ASTRONOMIYA ----------------
+  {
+    subject: "astronomiya",
+    kind: "experiment",
+    id: "koinot",
+    title: "Quyosh tizimi 3D",
+    hook: "Sayyoralarni 3D da aylantiring",
+    href: "/laboratoriya/koinot",
+    accent: "#6366f1",
+    soft: "rgba(99,102,241,0.14)",
+    icon: Orbit,
+  },
+  {
+    subject: "astronomiya",
+    kind: "soon",
+    id: "astronomiya-fazalar",
+    title: "Oy fazalari",
+    hook: "Oy nega goh toʻlin, goh yangi koʻrinadi.",
+    href: "",
+    accent: "#6366f1",
+    soft: "rgba(99,102,241,0.14)",
+    icon: Eclipse,
   },
 ];
