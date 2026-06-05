@@ -1337,6 +1337,7 @@ export const ekubEkukLesson: Lesson = {
       explain:
         "8 ning karralilari: 8, 16, 24, 32, 40 ... 12 ning karralilari: 12, 24, 36 ... Birinchi uchragan umumiy son — 24. EKUK(8, 12) = 24.",
       hint: "Ikkala songa ham bo'linadigan eng kichik sonni qidiring. 16 — faqat 8 ga bo'linadi; 24 — ikkalasiga ham.",
+      sim: "ekub-ekuk",
     },
     {
       type: "mcq",
@@ -1351,6 +1352,7 @@ export const ekubEkukLesson: Lesson = {
       explain:
         "Aynan shunday. 1/4 + 1/6 ni hisoblash uchun avval EKUK(4,6) = 12 ni topamiz, keyin maxrajlarni 12 ga keltiramiz. EKUB esa kasrni qisqartirishda kerak — 6/12 = 1/2 chunki EKUB(6,12) = 6.",
       hint: "Keyingi mavzu kasrlar — shunda yaqqol ko'rasiz.",
+      sim: "ekub-ekuk",
     },
     {
       type: "done",
@@ -1390,6 +1392,7 @@ export const oddiyKasrLesson: Lesson = {
       explain:
         "1/3 katta. Pitsani 3 ga bo'lsak, har bir bo'lak kattaroq; 5 ga bo'lsak, har bir bo'lak kichikroq. Surat bir xil bo'lganda — maxraj kichik bo'lsa, kasr katta bo'ladi.",
       hint: "Pitsani 3 ta katta bo'lakka bo'ling, keyin 5 ta kichik bo'lakka. Qaysi bo'lak kattaroq?",
+      sim: "kasr",
     },
     {
       type: "mcq",
@@ -1399,6 +1402,7 @@ export const oddiyKasrLesson: Lesson = {
       explain:
         "3/8 ≠ 1/2 — chunki 3/8 ni qisqartirib bo'lmaydi. 2/4, 3/6, 5/10 — barchasida surat va maxraj bir xil songa ko'paytirilgan, hammasi 1/2 ning teng kasrlari. Bunday kasrlarni topish — EKUB orqali sodda holga keltirish.",
       hint: "Har birini soddalashtiring: 2/4 = 1/2, 3/6 = 1/2, 5/10 = 1/2. 3/8 — qisqarmaydi.",
+      sim: "kasr",
     },
     {
       type: "mcq",
@@ -1408,6 +1412,7 @@ export const oddiyKasrLesson: Lesson = {
       explain:
         "Surat ham, maxraj ham 2 ga bo'linadi: 6 ÷ 2 = 3, 8 ÷ 2 = 4. Demak 6/8 = 3/4. EKUB orqali kasrlarni eng sodda holga keltiramiz.",
       hint: "Surat va maxrajni EKUBga bo'ling — kasr o'zgarmaydi, sodda bo'ladi.",
+      sim: "kasr",
     },
     {
       type: "mcq",
@@ -1417,6 +1422,7 @@ export const oddiyKasrLesson: Lesson = {
       explain:
         "3/8 — surat (3) maxrajdan (8) kichik. Bu butundan kamroq. 7/4, 9/2 — noto'g'ri kasrlar (butundan ko'p), 5/5 — butunga teng.",
       hint: "Pitsadan ko'p bo'lak ololmaysiz — to'g'ri kasr har doim butundan kichik.",
+      sim: "kasr",
     },
     {
       type: "done",
