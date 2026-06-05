@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FlaskConical, MessageCircle, PencilLine, Sparkles, Users } from "lucide-react";
+import { Clapperboard, FlaskConical, MessageCircle, PencilLine, Sparkles, Users } from "lucide-react";
 
 const TABS = [
   { href: "/learn", label: "Osmonim", icon: Sparkles },
   { href: "/laboratoriya", label: "Lab", icon: FlaskConical },
+  { href: "/reels", label: "Reels", icon: Clapperboard },
   { href: "/humo", label: "Humo", icon: MessageCircle },
   { href: "/homework", label: "Uy vazifasi", icon: PencilLine },
   { href: "/parent", label: "Ota-ona", icon: Users },
