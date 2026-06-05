@@ -18,6 +18,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { BottomNav } from "@/components/nav/BottomNav";
+import LabAsk from "./LabAsk";
 
 export interface LabShellProps {
   /** Serif page title, e.g. "Fizika laboratoriyasi". */
@@ -26,6 +27,10 @@ export interface LabShellProps {
   subtitle?: string;
   /** Optional accent colour for the hairline + back chip (CSS color). Defaults to gold. */
   accent?: string;
+  /** Topic string grounding the LabAsk mentor answers. Defaults to the title. */
+  askTopic?: string;
+  /** Optional starter questions for the LabAsk sheet. */
+  askStarters?: string[];
   children: ReactNode;
 }
 
@@ -33,6 +38,8 @@ export default function LabShell({
   title,
   subtitle,
   accent,
+  askTopic,
+  askStarters,
   children,
 }: LabShellProps) {
   const accentColor = accent ?? "var(--color-antares-500)";
@@ -77,6 +84,7 @@ export default function LabShell({
       <section className="rise-in mt-5 flex flex-1 flex-col">{children}</section>
       </div>
 
+      <LabAsk topic={askTopic ?? title} accent={accentColor} starters={askStarters} />
       <BottomNav />
     </main>
   );

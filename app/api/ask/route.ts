@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getModel } from "@/lib/ai";
+import { PERSONAS, isPersonaId } from "@/lib/personas";
 
 export const dynamic = "force-dynamic";
 
@@ -38,28 +39,40 @@ function profileLine(profile?: ProfileHints | null): string {
  */
 export async function POST(request: Request) {
   try {
-    const { question, topic, profile } = (await request.json()) as {
+    const { question, topic, profile, personaId } = (await request.json()) as {
       question?: string;
       topic?: string;
       profile?: ProfileHints | null;
+      /** Optional persona voice (Newton, Al-Xorazmiy, …). Falls back to Scorpius. */
+      personaId?: string;
     };
     if (!question || question.trim().length < 2) {
       return NextResponse.json({ error: "empty" }, { status: 400 });
     }
 
     const grade = profile?.grade ?? 6;
-    const lines = [
-      `Siz Scorpius — ${grade}-sinf o'quvchisi uchun do'stona, sabrli o'qituvchisiz.`,
-      `O'quvchi hozir shu mavzuni o'rganmoqda: ${topic ?? "matematika"}.`,
-      "O'quvchining savoliga o'zbek tilida, sodda va qisqa (2-4 jumla) javob bering.",
-      "Tayyor uy-vazifa javobini bermang — tushunchani tushuntiring.",
-    ];
+    // When a persona is chosen (e.g. inside a Lab), answer in that persona's
+    // voice; otherwise stay the neutral Scorpius tutor (the lesson AskCard path).
+    const persona = personaId && isPersonaId(personaId) ? PERSONAS[personaId] : null;
+    const lines = persona
+      ? [
+          `Siz ${persona.displayName} — Scorpius laboratoriyasidagi AI o'qituvchisiz.`,
+          persona.systemPrompt,
+          `O'quvchi (${grade}-sinf) hozir shu virtual laboratoriyada jonli tajriba qilmoqda: ${topic ?? "fan laboratoriyasi"}. U animatsiya/simulyatsiya bilan ishlayapti.`,
+          "Savolga o'zbek tilida, qisqa (2-4 jumla), qiziqarli javob bering. Tushunchani tushuntiring; tayyor uy-vazifa javobini bermang.",
+        ]
+      : [
+          `Siz Scorpius — ${grade}-sinf o'quvchisi uchun do'stona, sabrli o'qituvchisiz.`,
+          `O'quvchi hozir shu mavzuni o'rganmoqda: ${topic ?? "matematika"}.`,
+          "O'quvchining savoliga o'zbek tilida, sodda va qisqa (2-4 jumla) javob bering.",
+          "Tayyor uy-vazifa javobini bermang — tushunchani tushuntiring.",
+        ];
     const pl = profileLine(profile);
     if (pl) lines.push(pl);
     lines.push("", `Savol: ${question.trim()}`);
 
     const answer = await getModel().ask(lines.join("\n"));
-    return NextResponse.json({ answer: answer.trim() });
+    return NextResponse.json({ answer: answer.trim(), personaId: persona?.id ?? null });
   } catch {
     return NextResponse.json({ error: "failed" }, { status: 500 });
   }

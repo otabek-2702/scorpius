@@ -13,6 +13,12 @@ export default function DnaPage() {
       title="DNK → Protein"
       subtitle="Markaziy dogma — transkripsiya va translatsiya"
       accent="#34d399"
+      askTopic="Biologiya — DNK, RNK, transkripsiya, translatsiya va oqsil sintezi"
+      askStarters={[
+        "Transkripsiya nima?",
+        "Kodon nima degani?",
+        "DNK qanday oqsil yasaydi?",
+      ]}
     >
       <DnaLab />
     </LabShell>
